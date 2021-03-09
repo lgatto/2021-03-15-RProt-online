@@ -2,5 +2,5 @@
 
 
 - Set-up: [R and RStudio](https://uclouvain-cbio.github.io/WSBIM1207/sec-startr.html)
-- [Bioconductor](https://uclouvain-cbio.github.io/WSBIM1207/sec-bioinfo.html)
+- [Bioconductor](https://uclouvain-cbio.github.io/WSBIM1207/sec-bioinfo.html#sec:bioconductor)
 - [Objects](https://uclouvain-cbio.github.io/WSBIM1322/sec-obj.html)

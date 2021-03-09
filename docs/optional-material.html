@@ -14,19 +14,20 @@
 
 <meta name="author" content="Laurent Gatto" />
 
-<meta name="date" content="2021-01-12" />
+<meta name="date" content="2021-03-09" />
 
 <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
   TeX: { equationNumbers: { autoNumber: "AMS" } }
 });
 </script>
-  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <meta name="description" content="Chapter 6 Optional material | R/Bioconductor for Mass Spectrometry and Proteomics">
 
 <title>Chapter 6 Optional material | R/Bioconductor for Mass Spectrometry and Proteomics</title>
 
+<script src="libs/header-attrs-2.7/header-attrs.js"></script>
 <link href="libs/tufte-css-2015.12.29/tufte.css" rel="stylesheet" />
 <link href="libs/tufte-css-2015.12.29/envisioned.css" rel="stylesheet" />
 <link href="libs/msmb-css-0/msmb.css" rel="stylesheet" />
@@ -47,46 +48,93 @@ if(f.classList.contains('fa-plus-square')) {
 
 }
 </script>
+<script>
+function copy_link(id) {
+  var dummy = document.createElement('input'),
+  text = window.location.href.split(/[?#]/)[0] + '#' + id;
+  document.body.appendChild(dummy);
+  dummy.value = text;
+  dummy.select();
+  document.execCommand('copy');
+  document.body.removeChild(dummy);
+  
+  var tooltip = document.getElementById(id + '-tooltip');
+  tooltip.innerHTML = 'Copied!';
+}
+
+function reset_tooltip(id) {
+  var tooltip = document.getElementById(id);
+  tooltip.innerHTML = 'Copy link';
+}
+</script>
 
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
-div.sourceCode { overflow-x: auto; }
-table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
-  margin: 0; padding: 0; vertical-align: baseline; border: none; }
-table.sourceCode { width: 100%; line-height: 100%; background-color: #f8f8f8; }
-td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
-td.sourceCode { padding-left: 5px; }
-pre, code { background-color: #f8f8f8; }
-code > span.kw { color: #204a87; font-weight: bold; } /* Keyword */
-code > span.dt { color: #204a87; } /* DataType */
-code > span.dv { color: #0000cf; } /* DecVal */
-code > span.bn { color: #0000cf; } /* BaseN */
-code > span.fl { color: #0000cf; } /* Float */
-code > span.ch { color: #4e9a06; } /* Char */
-code > span.st { color: #4e9a06; } /* String */
-code > span.co { color: #8f5902; font-style: italic; } /* Comment */
-code > span.ot { color: #8f5902; } /* Other */
-code > span.al { color: #ef2929; } /* Alert */
-code > span.fu { color: #000000; } /* Function */
-code > span.er { color: #a40000; font-weight: bold; } /* Error */
-code > span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
-code > span.cn { color: #000000; } /* Constant */
-code > span.sc { color: #000000; } /* SpecialChar */
-code > span.vs { color: #4e9a06; } /* VerbatimString */
-code > span.ss { color: #4e9a06; } /* SpecialString */
-code > span.im { } /* Import */
-code > span.va { color: #000000; } /* Variable */
-code > span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
-code > span.op { color: #ce5c00; font-weight: bold; } /* Operator */
-code > span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
-code > span.ex { } /* Extension */
-code > span.at { color: #c4a000; } /* Attribute */
-code > span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
-code > span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
-code > span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
-code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  background-color: #f8f8f8; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #c4a000; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #000000; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #000000; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #000000; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
 </style>
+
 
 
 <link rel="stylesheet" href="style.css" type="text/css" />
@@ -125,13 +173,22 @@ code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Inf
 <div class="row">
 <div class="col-sm-12">
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
-<html><body><div id="optional-material" class="section level1">
+<html><body><div id="optional-material" class="section level1" number="6">
 <h1>
 <span class="header-section-number">Chapter 6</span> Optional material</h1>
-<div id="sec:r4ms" class="section level2">
+<div id="sec:r4ms" class="section level2" number="6.1">
 <h2>
-<span class="header-section-number">6.1</span> R for Mass Spectrometry</h2>
-<p>The aim of the <a href="https://www.rformassspectrometry.org/">R for mass spectrometry</a> RforMassSpectrometry initiative is to provide efficient, thoroughly documented, tested and flexible R software for the analysis and interpretation of high throughput mass spectrometry assays, including proteomics and metabolomics experiments. The project formalises the longtime collaborative development efforts of its core members under the RforMassSpectrometry organisation to facilitate dissemination and accessibility of their work.</p>
+<span class="header-section-number">6.1</span> R for Mass Spectrometry<div class="tooltip"><button class="internal-link-btn" onclick="copy_link('sec:r4ms')" onmouseout="reset_tooltip('sec:r4ms-tooltip')"><span class="tooltiptext" id="sec:r4ms-tooltip">Copy link</span><i class="fa fa-link"></i></button></div>
+</h2>
+<p>The aim of the <a href="https://www.rformassspectrometry.org/">R for mass
+spectrometry</a>
+RforMassSpectrometry initiative is to provide efficient, thoroughly
+documented, tested and flexible R software for the analysis and
+interpretation of high throughput mass spectrometry assays, including
+proteomics and metabolomics experiments. The project formalises the
+longtime collaborative development efforts of its core members under
+the RforMassSpectrometry organisation to facilitate dissemination and
+accessibility of their work.</p>
 <p>Two packages of interest:</p>
 <ul>
 <li>
@@ -139,67 +196,91 @@ code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Inf
 <li><a href="https://rformassspectrometry.github.io/QFeatures/">QFeatures</a></li>
 </ul>
 </div>
-<div id="sec:apms" class="section level2">
+<div id="sec:apms" class="section level2" number="6.2">
 <h2>
-<span class="header-section-number">6.2</span> Affinity purification MS (AP-MS)</h2>
-<p>This use case features a proximity tagging protein-protein interaction dataset. In this experiment, a bait protein <code>X</code> was tagged using <a href="https://www.ncbi.nlm.nih.gov/pubmed/26912792">BioID2</a>. BioID biotinylates proteins in close proximity of the bait <code>X</code>, in particular, but not only, proteins interacting with <code>X</code>. These proteins are then be recovered using streptavidin beads and identified/quantified using mass spectrometry. The expectation is that the proteins contain interaction partners of <code>X</code>. However, given that a substantial number of false positives will also be biotinylated, it is necessary to complement this data with a negative control, where <code>X</code> is blocked from interacting with its partners. A differential analysis between the wild type and the negative control will reveal likely interacting partners of <code>X</code>.</p>
+<span class="header-section-number">6.2</span> Affinity purification MS (AP-MS)<div class="tooltip"><button class="internal-link-btn" onclick="copy_link('sec:apms')" onmouseout="reset_tooltip('sec:apms-tooltip')"><span class="tooltiptext" id="sec:apms-tooltip">Copy link</span><i class="fa fa-link"></i></button></div>
+</h2>
+<p>This use case features a proximity tagging protein-protein interaction
+dataset. In this experiment, a bait protein <code>X</code> was tagged using
+<a href="https://www.ncbi.nlm.nih.gov/pubmed/26912792">BioID2</a>. BioID
+biotinylates proteins in close proximity of the bait <code>X</code>, in
+particular, but not only, proteins interacting with <code>X</code>. These
+proteins are then be recovered using streptavidin beads and
+identified/quantified using mass spectrometry. The expectation is
+that the proteins contain interaction partners of <code>X</code>. However, given
+that a substantial number of false positives will also be
+biotinylated, it is necessary to complement this data with a negative
+control, where <code>X</code> is blocked from interacting with its partners. A
+differential analysis between the wild type and the negative control
+will reveal likely interacting partners of <code>X</code>.</p>
 <p>Identify the most likely interactors of protein <code>X</code>.</p>
 <div id="exercise-16" class="section level3 unnumbered">
-<h3>Exercise</h3>
+<h3>Exercise<div class="tooltip"><button class="internal-link-btn" onclick="copy_link('exercise-16')" onmouseout="reset_tooltip('exercise-16-tooltip')"><span class="tooltiptext" id="exercise-16-tooltip">Copy link</span><i class="fa fa-link"></i></button></div>
+</h3>
 <ul>
-<li>Load the <a href="https://raw.githubusercontent.com/lgatto/2020-02-17-RProt-Berlin/master/data/bioid.csv">data in the <code>bioid.csv</code> file</a> into R.</li>
+<li>Load the <a href="https://raw.githubusercontent.com/lgatto/2020-02-17-RProt-Berlin/master/data/bioid.csv">data in the <code>bioid.csv</code>
+file</a>
+into R.</li>
 <li>Explore the missing data pattern.</li>
-<li>Try to identify interactors using a statistical t-test, or any method you see fit. You can use the <code>pos</code> variable to guide you: <code>TRUE</code> referring to a set of expected true interactors, but there might be more.</li>
+<li>Try to identify interactors using a statistical t-test, or any
+method you see fit. You can use the <code>pos</code> variable to guide you:
+<code>TRUE</code> referring to a set of expected true interactors, but there
+might be more.</li>
 <li>What are the issues? What solutions would you suggest?</li>
 </ul>
-<p><details></details></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">"MSnbase"</span>)
-e &lt;-<span class="st"> </span><span class="kw">readMSnSet2</span>(<span class="st">"./data/bioid.csv"</span>, <span class="dt">ecol =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">6</span>, <span class="dt">fnames =</span> <span class="st">"ids"</span>)
-e<span class="op">$</span>grp &lt;-<span class="st"> </span><span class="kw">sub</span>(<span class="st">"[1-3]"</span>, <span class="st">""</span>, <span class="kw">sampleNames</span>(e))
-sel1 &lt;-<span class="st"> </span><span class="kw">fData</span>(e)<span class="op">$</span>Reverse <span class="op">==</span><span class="st"> ""</span>
-sel2 &lt;-<span class="st"> </span><span class="kw">fData</span>(e)<span class="op">$</span>Potential.contaminant <span class="op">==</span><span class="st"> ""</span>
-e &lt;-<span class="st"> </span>e[sel1 <span class="op">&amp;</span><span class="st"> </span>sel2, ]
-<span class="kw">fData</span>(e) &lt;-<span class="st"> </span><span class="kw">fData</span>(e)[, <span class="kw">c</span>(<span class="st">"pos"</span>, <span class="st">"ids"</span>)] </code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">limma<span class="op">::</span><span class="kw">plotDensities</span>(<span class="kw">log2</span>(<span class="kw">exprs</span>(e) <span class="op">+</span><span class="st"> </span><span class="dv">1</span>))</code></pre></div>
+<details><div class="sourceCode" id="cb363"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb363-1"><a href="optional-material.html#cb363-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"MSnbase"</span>)</span>
+<span id="cb363-2"><a href="optional-material.html#cb363-2" aria-hidden="true" tabindex="-1"></a>e <span class="ot">&lt;-</span> <span class="fu">readMSnSet2</span>(<span class="st">"./data/bioid.csv"</span>, <span class="at">ecol =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>, <span class="at">fnames =</span> <span class="st">"ids"</span>)</span>
+<span id="cb363-3"><a href="optional-material.html#cb363-3" aria-hidden="true" tabindex="-1"></a>e<span class="sc">$</span>grp <span class="ot">&lt;-</span> <span class="fu">sub</span>(<span class="st">"[1-3]"</span>, <span class="st">""</span>, <span class="fu">sampleNames</span>(e))</span>
+<span id="cb363-4"><a href="optional-material.html#cb363-4" aria-hidden="true" tabindex="-1"></a>sel1 <span class="ot">&lt;-</span> <span class="fu">fData</span>(e)<span class="sc">$</span>Reverse <span class="sc">==</span> <span class="st">""</span></span>
+<span id="cb363-5"><a href="optional-material.html#cb363-5" aria-hidden="true" tabindex="-1"></a>sel2 <span class="ot">&lt;-</span> <span class="fu">fData</span>(e)<span class="sc">$</span>Potential.contaminant <span class="sc">==</span> <span class="st">""</span></span>
+<span id="cb363-6"><a href="optional-material.html#cb363-6" aria-hidden="true" tabindex="-1"></a>e <span class="ot">&lt;-</span> e[sel1 <span class="sc">&amp;</span> sel2, ]</span>
+<span id="cb363-7"><a href="optional-material.html#cb363-7" aria-hidden="true" tabindex="-1"></a><span class="fu">fData</span>(e) <span class="ot">&lt;-</span> <span class="fu">fData</span>(e)[, <span class="fu">c</span>(<span class="st">"pos"</span>, <span class="st">"ids"</span>)]</span></code></pre></div>
+<div class="sourceCode" id="cb364"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb364-1"><a href="optional-material.html#cb364-1" aria-hidden="true" tabindex="-1"></a>limma<span class="sc">::</span><span class="fu">plotDensities</span>(<span class="fu">log2</span>(<span class="fu">exprs</span>(e) <span class="sc">+</span> <span class="dv">1</span>))</span></code></pre></div>
 <p><img src="berlin_files/figure-html/bioideda-1.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">exprs</span>(e)[<span class="kw">exprs</span>(e) <span class="op">==</span><span class="st"> </span><span class="dv">0</span>] &lt;-<span class="st"> </span><span class="ot">NA</span>
-(e<span class="op">$</span>nNA &lt;-<span class="st"> </span><span class="kw">colSums</span>(<span class="kw">is.na</span>(e)))</code></pre></div>
+<div class="sourceCode" id="cb365"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb365-1"><a href="optional-material.html#cb365-1" aria-hidden="true" tabindex="-1"></a><span class="fu">exprs</span>(e)[<span class="fu">exprs</span>(e) <span class="sc">==</span> <span class="dv">0</span>] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb365-2"><a href="optional-material.html#cb365-2" aria-hidden="true" tabindex="-1"></a>(e<span class="sc">$</span>nNA <span class="ot">&lt;-</span> <span class="fu">colSums</span>(<span class="fu">is.na</span>(e)))</span></code></pre></div>
 <pre><code>##  WT1  WT2  WT3 NEG1 NEG2 NEG3 
 ##  306  239  306  249  303  286</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">fData</span>(e)<span class="op">$</span>nNA &lt;-<span class="st"> </span><span class="kw">rowSums</span>(<span class="kw">is.na</span>(e))
-<span class="kw">table</span>(<span class="kw">fData</span>(e)<span class="op">$</span>nNA)</code></pre></div>
+<div class="sourceCode" id="cb367"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb367-1"><a href="optional-material.html#cb367-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fData</span>(e)<span class="sc">$</span>nNA <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(<span class="fu">is.na</span>(e))</span>
+<span id="cb367-2"><a href="optional-material.html#cb367-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(<span class="fu">fData</span>(e)<span class="sc">$</span>nNA)</span></code></pre></div>
 <pre><code>## 
 ##   0   1   2   3   4   5 
 ## 180  70  75  80 101 165</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(<span class="kw">is.na</span>(e))</code></pre></div>
+<div class="sourceCode" id="cb369"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb369-1"><a href="optional-material.html#cb369-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(<span class="fu">is.na</span>(e))</span></code></pre></div>
 <pre><code>## 
 ## FALSE  TRUE 
 ##  2337  1689</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum</span>(<span class="kw">is.na</span>(e))<span class="op">/</span><span class="kw">prod</span>(<span class="kw">dim</span>(e))</code></pre></div>
+<div class="sourceCode" id="cb371"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb371-1"><a href="optional-material.html#cb371-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.na</span>(e))<span class="sc">/</span><span class="fu">prod</span>(<span class="fu">dim</span>(e))</span></code></pre></div>
 <pre><code>## [1] 0.4195231</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">naplot</span>(e, <span class="dt">col =</span> <span class="kw">c</span>(<span class="st">"black"</span>, <span class="st">"white"</span>))</code></pre></div>
+<div class="sourceCode" id="cb373"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb373-1"><a href="optional-material.html#cb373-1" aria-hidden="true" tabindex="-1"></a><span class="fu">naplot</span>(e, <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"black"</span>, <span class="st">"white"</span>))</span></code></pre></div>
 <p><img src="berlin_files/figure-html/bioideda-2.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">e_norm &lt;-<span class="st"> </span>e <span class="op">%&gt;%</span>
-<span class="st">    </span><span class="kw">log</span>(<span class="dt">base =</span> <span class="dv">2</span>) <span class="op">%&gt;%</span>
-<span class="st">    </span><span class="kw">normalise</span>(<span class="dt">method =</span> <span class="st">"center.median"</span>)
-limma<span class="op">::</span><span class="kw">plotMDS</span>(<span class="kw">exprs</span>(e_norm))</code></pre></div>
+<div class="sourceCode" id="cb374"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb374-1"><a href="optional-material.html#cb374-1" aria-hidden="true" tabindex="-1"></a>e_norm <span class="ot">&lt;-</span> e <span class="sc">%&gt;%</span></span>
+<span id="cb374-2"><a href="optional-material.html#cb374-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">log</span>(<span class="at">base =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb374-3"><a href="optional-material.html#cb374-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">normalise</span>(<span class="at">method =</span> <span class="st">"center.median"</span>)</span>
+<span id="cb374-4"><a href="optional-material.html#cb374-4" aria-hidden="true" tabindex="-1"></a>limma<span class="sc">::</span><span class="fu">plotMDS</span>(<span class="fu">exprs</span>(e_norm))</span></code></pre></div>
 <p><img src="berlin_files/figure-html/biodata3-1.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">limma<span class="op">::</span><span class="kw">plotDensities</span>(<span class="kw">exprs</span>(e_norm))</code></pre></div>
-<p><img src="berlin_files/figure-html/biodata3-2.png" width="672"></p>
+<div class="sourceCode" id="cb375"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb375-1"><a href="optional-material.html#cb375-1" aria-hidden="true" tabindex="-1"></a>limma<span class="sc">::</span><span class="fu">plotDensities</span>(<span class="fu">exprs</span>(e_norm))</span></code></pre></div>
+<img src="berlin_files/figure-html/biodata3-2.png" width="672"></details>
 </div>
-<div id="proda-probabilistic-dropout-analysis" class="section level3">
+<div id="proda-probabilistic-dropout-analysis" class="section level3" number="6.2.1">
 <h3>
-<span class="header-section-number">6.2.1</span> <code>proDA</code>: probabilistic dropout analysis</h3>
-<p>We will now try the <code>proDA</code> package for <em>inference of protein differential abundance by probabilistic dropout analysis</em> (<a href="https://www.biorxiv.org/content/10.1101/661496v1">Ahlman-Eltze and Anders (2019)</a>) that explicity models missing values as lowly expressed features.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">"proDA"</span>)</code></pre></div>
+<span class="header-section-number">6.2.1</span> <code>proDA</code>: probabilistic dropout analysis<div class="tooltip"><button class="internal-link-btn" onclick="copy_link('proda-probabilistic-dropout-analysis')" onmouseout="reset_tooltip('proda-probabilistic-dropout-analysis-tooltip')"><span class="tooltiptext" id="proda-probabilistic-dropout-analysis-tooltip">Copy link</span><i class="fa fa-link"></i></button></div>
+</h3>
+<p>We will now try the <code>proDA</code> package for <em>inference of protein
+differential abundance by probabilistic dropout analysis</em>
+(<a href="https://www.biorxiv.org/content/10.1101/661496v1">Ahlman-Eltze and Anders
+(2019)</a>) that
+explicity models missing values as lowly expressed features.</p>
+<div class="sourceCode" id="cb376"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb376-1"><a href="optional-material.html#cb376-1" aria-hidden="true" tabindex="-1"></a>BiocManager<span class="sc">::</span><span class="fu">install</span>(<span class="st">"proDA"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb377"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb377-1"><a href="optional-material.html#cb377-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"proDA"</span>)</span></code></pre></div>
 <p>Below, we first fit the model using the <code>grp</code> variable.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">proDA_fit &lt;-<span class="st"> </span><span class="kw">proDA</span>(e_norm,
-                   <span class="dt">design =</span> <span class="op">~</span><span class="st"> </span>grp,
-                   <span class="dt">data_is_log_transformed =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<div class="sourceCode" id="cb378"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb378-1"><a href="optional-material.html#cb378-1" aria-hidden="true" tabindex="-1"></a>proDA_fit <span class="ot">&lt;-</span> <span class="fu">proDA</span>(e_norm,</span>
+<span id="cb378-2"><a href="optional-material.html#cb378-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">design =</span> <span class="sc">~</span> grp,</span>
+<span id="cb378-3"><a href="optional-material.html#cb378-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data_is_log_transformed =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <pre><code>## Warning in proDA(e_norm, design = ~grp, data_is_log_transformed = TRUE): The
 ## data contains a mix of 3 exact zeros and 1689 NA's. Will treat the zeros as
 ## valid input and not replace them with NA's.</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">proDA_fit</code></pre></div>
+<div class="sourceCode" id="cb380"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb380-1"><a href="optional-material.html#cb380-1" aria-hidden="true" tabindex="-1"></a>proDA_fit</span></code></pre></div>
 <pre><code>##  Parameters of the probabilistic dropout model
 ## 
 ## The dataset contains 6 samples and 671 proteins
@@ -212,44 +293,47 @@ limma<span class="op">::</span><span class="kw">plotMDS</span>(<span class="kw">
 ## location_prior_mean:     -1.39
 ## location_prior_scale:    11.2
 ## location_prior_df:       3
-## variance_prior_scale:    0.695
-## variance_prior_df:       1.59
-## dropout_curve_position:  -1.45, -2.21, -1.6, -2.05, ...
+## variance_prior_scale:    0.698
+## variance_prior_df:       1.56
+## dropout_curve_position:  -1.45, -2.22, -1.6, -2.05, ...
 ## dropout_curve_scale:     -1.45, -1.42, -1.8, -1.22, ...</code></pre>
-<p>Here we extract the contract of interest, setting the alternative to greater to perform a one-sided test (we are only interested in proteins with greater expression in the wild type),</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res &lt;-<span class="st"> </span><span class="kw">test_diff</span>(proDA_fit,
-          <span class="dt">contrast =</span> <span class="st">"grpWT"</span>,
-          <span class="dt">alternative =</span> <span class="st">"greater"</span>,
-          <span class="dt">pval_adjust_method =</span> <span class="st">"BH"</span>)
-
-res <span class="op">%&gt;%</span>
-<span class="st">    </span><span class="kw">arrange</span>(adj_pval) <span class="op">%&gt;%</span>
-<span class="st">    </span><span class="kw">filter</span>(adj_pval <span class="op">&lt;</span><span class="st"> </span><span class="fl">0.1</span>)</code></pre></div>
+<p>Here we extract the contract of interest, setting the alternative to
+greater to perform a one-sided test (we are only interested in
+proteins with greater expression in the wild type),</p>
+<div class="sourceCode" id="cb382"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb382-1"><a href="optional-material.html#cb382-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">test_diff</span>(proDA_fit,</span>
+<span id="cb382-2"><a href="optional-material.html#cb382-2" aria-hidden="true" tabindex="-1"></a>          <span class="at">contrast =</span> <span class="st">"grpWT"</span>,</span>
+<span id="cb382-3"><a href="optional-material.html#cb382-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">alternative =</span> <span class="st">"greater"</span>,</span>
+<span id="cb382-4"><a href="optional-material.html#cb382-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">pval_adjust_method =</span> <span class="st">"BH"</span>)</span>
+<span id="cb382-5"><a href="optional-material.html#cb382-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb382-6"><a href="optional-material.html#cb382-6" aria-hidden="true" tabindex="-1"></a>res <span class="sc">%&gt;%</span></span>
+<span id="cb382-7"><a href="optional-material.html#cb382-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(adj_pval) <span class="sc">%&gt;%</span></span>
+<span id="cb382-8"><a href="optional-material.html#cb382-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(adj_pval <span class="sc">&lt;</span> <span class="fl">0.1</span>)</span></code></pre></div>
 <pre><code>##       name         pval   adj_pval     diff t_statistic        se df
-## 1 P8706942 8.290037e-05 0.02781307 7.173387   13.671231 0.5247067  4
-## 2 P6582309 7.634347e-05 0.02781307 5.927278   13.960778 0.4245665  4
-## 3 P2936078 2.067392e-04 0.04624067 4.164363   10.822912 0.3847729  4
-## 4 P3615987 5.247346e-04 0.07041938 6.303459    8.502347 0.7413787  4
-## 5 P8350629 4.505959e-04 0.07041938 5.799505    8.847187 0.6555196  4
+## 1 P8706942 8.254885e-05 0.02769514 7.173612   13.686020 0.5241561  4
+## 2 P6582309 7.588744e-05 0.02769514 5.927273   13.982061 0.4239198  4
+## 3 P2936078 2.050331e-04 0.04585906 4.164375   10.845993 0.3839551  4
+## 4 P3615987 5.239621e-04 0.07031571 6.303656    8.505623 0.7411163  4
+## 5 P8350629 4.488580e-04 0.07031571 5.799188    8.856100 0.6548242  4
 ##   avg_abundance n_approx n_obs
-## 1     1.4191144 5.024654     5
-## 2     5.9443354 6.000000     6
-## 3     4.8914212 6.000000     6
-## 4     0.9919089 4.074235     4
-## 5     1.9211433 3.811299     4</code></pre>
-<p>Below, we integrate the results in the <code>MSnSet</code> and visualise them using a volcano plot. We observe an enrichment in true positives.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">stopifnot</span>(<span class="kw">identical</span>(res<span class="op">$</span>name, <span class="kw">featureNames</span>(e_norm)))
-<span class="kw">fData</span>(e_norm) &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="kw">fData</span>(e_norm), res)
-
-<span class="kw">with</span>(<span class="kw">fData</span>(e_norm),
-     <span class="kw">plot</span>(diff, <span class="op">-</span><span class="kw">log10</span>(adj_pval),
-          <span class="dt">col =</span> <span class="kw">as.numeric</span>(pos) <span class="op">+</span><span class="st"> </span><span class="dv">1</span>))
-<span class="kw">abline</span>(<span class="dt">h =</span> <span class="op">-</span><span class="kw">log10</span>(<span class="fl">0.05</span>))
-<span class="kw">abline</span>(<span class="dt">h =</span> <span class="op">-</span><span class="kw">log10</span>(<span class="fl">0.1</span>), <span class="dt">lty =</span> <span class="st">"dotted"</span>)</code></pre></div>
+## 1     1.4192362 5.024580     5
+## 2     5.9445489 6.000000     6
+## 3     4.8916659 6.000000     6
+## 4     0.9919914 4.074147     4
+## 5     1.9216068 3.810769     4</code></pre>
+<p>Below, we integrate the results in the <code>MSnSet</code> and visualise them
+using a volcano plot. We observe an enrichment in true positives.</p>
+<div class="sourceCode" id="cb384"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb384-1"><a href="optional-material.html#cb384-1" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">identical</span>(res<span class="sc">$</span>name, <span class="fu">featureNames</span>(e_norm)))</span>
+<span id="cb384-2"><a href="optional-material.html#cb384-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fData</span>(e_norm) <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">fData</span>(e_norm), res)</span>
+<span id="cb384-3"><a href="optional-material.html#cb384-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb384-4"><a href="optional-material.html#cb384-4" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(<span class="fu">fData</span>(e_norm),</span>
+<span id="cb384-5"><a href="optional-material.html#cb384-5" aria-hidden="true" tabindex="-1"></a>     <span class="fu">plot</span>(diff, <span class="sc">-</span><span class="fu">log10</span>(adj_pval),</span>
+<span id="cb384-6"><a href="optional-material.html#cb384-6" aria-hidden="true" tabindex="-1"></a>          <span class="at">col =</span> <span class="fu">as.numeric</span>(pos) <span class="sc">+</span> <span class="dv">1</span>))</span>
+<span id="cb384-7"><a href="optional-material.html#cb384-7" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="sc">-</span><span class="fu">log10</span>(<span class="fl">0.05</span>))</span>
+<span id="cb384-8"><a href="optional-material.html#cb384-8" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="sc">-</span><span class="fu">log10</span>(<span class="fl">0.1</span>), <span class="at">lty =</span> <span class="st">"dotted"</span>)</span></code></pre></div>
 <p><img src="berlin_files/figure-html/prodares1-1.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ms2df</span>(e_norm) <span class="op">%&gt;%</span>
-<span class="st">    </span><span class="kw">arrange</span>(adj_pval) <span class="op">%&gt;%</span>
-<span class="st">    </span><span class="kw">filter</span>(adj_pval <span class="op">&lt;</span><span class="st"> </span><span class="fl">0.1</span>)</code></pre></div>
+<div class="sourceCode" id="cb385"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb385-1"><a href="optional-material.html#cb385-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ms2df</span>(e_norm) <span class="sc">%&gt;%</span></span>
+<span id="cb385-2"><a href="optional-material.html#cb385-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(adj_pval) <span class="sc">%&gt;%</span></span>
+<span id="cb385-3"><a href="optional-material.html#cb385-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(adj_pval <span class="sc">&lt;</span> <span class="fl">0.1</span>)</span></code></pre></div>
 <pre><code>##               WT1      WT2      WT3       NEG1      NEG2     NEG3   pos
 ## P8706942 4.809723 4.843454 5.614666 -2.3246799 -1.978230       NA FALSE
 ## P6582309 8.886493 8.917121 9.096700  2.7715624  3.530842 2.837897  TRUE
@@ -257,19 +341,19 @@ res <span class="op">%&gt;%</span>
 ## P3615987 3.934746 4.958431 3.888658 -1.9859032        NA       NA  TRUE
 ## P8350629 5.046591 5.039421 4.638563 -0.5905618        NA       NA  TRUE
 ##               ids nNA     name         pval   adj_pval     diff t_statistic
-## P8706942 P8706942   1 P8706942 8.290037e-05 0.02781307 7.173387   13.671231
-## P6582309 P6582309   0 P6582309 7.634347e-05 0.02781307 5.927278   13.960778
-## P2936078 P2936078   0 P2936078 2.067392e-04 0.04624067 4.164363   10.822912
-## P3615987 P3615987   2 P3615987 5.247346e-04 0.07041938 6.303459    8.502347
-## P8350629 P8350629   2 P8350629 4.505959e-04 0.07041938 5.799505    8.847187
+## P8706942 P8706942   1 P8706942 8.254885e-05 0.02769514 7.173612   13.686020
+## P6582309 P6582309   0 P6582309 7.588744e-05 0.02769514 5.927273   13.982061
+## P2936078 P2936078   0 P2936078 2.050331e-04 0.04585906 4.164375   10.845993
+## P3615987 P3615987   2 P3615987 5.239621e-04 0.07031571 6.303656    8.505623
+## P8350629 P8350629   2 P8350629 4.488580e-04 0.07031571 5.799188    8.856100
 ##                 se df avg_abundance n_approx n_obs
-## P8706942 0.5247067  4     1.4191144 5.024654     5
-## P6582309 0.4245665  4     5.9443354 6.000000     6
-## P2936078 0.3847729  4     4.8914212 6.000000     6
-## P3615987 0.7413787  4     0.9919089 4.074235     4
-## P8350629 0.6555196  4     1.9211433 3.811299     4</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(<span class="kw">fData</span>(e_norm)<span class="op">$</span>pos,
-      <span class="kw">fData</span>(e_norm)<span class="op">$</span>nNA)</code></pre></div>
+## P8706942 0.5241561  4     1.4192362 5.024580     5
+## P6582309 0.4239198  4     5.9445489 6.000000     6
+## P2936078 0.3839551  4     4.8916659 6.000000     6
+## P3615987 0.7411163  4     0.9919914 4.074147     4
+## P8350629 0.6548242  4     1.9216068 3.810769     4</code></pre>
+<div class="sourceCode" id="cb387"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb387-1"><a href="optional-material.html#cb387-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(<span class="fu">fData</span>(e_norm)<span class="sc">$</span>pos,</span>
+<span id="cb387-2"><a href="optional-material.html#cb387-2" aria-hidden="true" tabindex="-1"></a>      <span class="fu">fData</span>(e_norm)<span class="sc">$</span>nNA)</span></code></pre></div>
 <pre><code>##        
 ##           0   1   2   3   4   5
 ##   FALSE 176  70  73  78  99 165
@@ -284,7 +368,9 @@ res <span class="op">%&gt;%</span>
 <a href="sec-si.html"><button class="btn btn-default">Next</button></a>
 </p>
 <p class="build-date">Page built: 
-2021-01-12
+2021-03-09
+ using 
+R version 4.0.3 Patched (2021-01-18 r79847)
 </p>
 </div>
 </div>

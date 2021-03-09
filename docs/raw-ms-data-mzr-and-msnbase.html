@@ -14,19 +14,20 @@
 
 <meta name="author" content="Laurent Gatto" />
 
-<meta name="date" content="2021-01-12" />
+<meta name="date" content="2021-03-09" />
 
 <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
   TeX: { equationNumbers: { autoNumber: "AMS" } }
 });
 </script>
-  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <meta name="description" content="Chapter 3 Raw MS data: mzR and MSnbase | R/Bioconductor for Mass Spectrometry and Proteomics">
 
 <title>Chapter 3 Raw MS data: mzR and MSnbase | R/Bioconductor for Mass Spectrometry and Proteomics</title>
 
+<script src="libs/header-attrs-2.7/header-attrs.js"></script>
 <link href="libs/tufte-css-2015.12.29/tufte.css" rel="stylesheet" />
 <link href="libs/tufte-css-2015.12.29/envisioned.css" rel="stylesheet" />
 <link href="libs/msmb-css-0/msmb.css" rel="stylesheet" />
@@ -47,46 +48,93 @@ if(f.classList.contains('fa-plus-square')) {
 
 }
 </script>
+<script>
+function copy_link(id) {
+  var dummy = document.createElement('input'),
+  text = window.location.href.split(/[?#]/)[0] + '#' + id;
+  document.body.appendChild(dummy);
+  dummy.value = text;
+  dummy.select();
+  document.execCommand('copy');
+  document.body.removeChild(dummy);
+  
+  var tooltip = document.getElementById(id + '-tooltip');
+  tooltip.innerHTML = 'Copied!';
+}
+
+function reset_tooltip(id) {
+  var tooltip = document.getElementById(id);
+  tooltip.innerHTML = 'Copy link';
+}
+</script>
 
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
-div.sourceCode { overflow-x: auto; }
-table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
-  margin: 0; padding: 0; vertical-align: baseline; border: none; }
-table.sourceCode { width: 100%; line-height: 100%; background-color: #f8f8f8; }
-td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
-td.sourceCode { padding-left: 5px; }
-pre, code { background-color: #f8f8f8; }
-code > span.kw { color: #204a87; font-weight: bold; } /* Keyword */
-code > span.dt { color: #204a87; } /* DataType */
-code > span.dv { color: #0000cf; } /* DecVal */
-code > span.bn { color: #0000cf; } /* BaseN */
-code > span.fl { color: #0000cf; } /* Float */
-code > span.ch { color: #4e9a06; } /* Char */
-code > span.st { color: #4e9a06; } /* String */
-code > span.co { color: #8f5902; font-style: italic; } /* Comment */
-code > span.ot { color: #8f5902; } /* Other */
-code > span.al { color: #ef2929; } /* Alert */
-code > span.fu { color: #000000; } /* Function */
-code > span.er { color: #a40000; font-weight: bold; } /* Error */
-code > span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
-code > span.cn { color: #000000; } /* Constant */
-code > span.sc { color: #000000; } /* SpecialChar */
-code > span.vs { color: #4e9a06; } /* VerbatimString */
-code > span.ss { color: #4e9a06; } /* SpecialString */
-code > span.im { } /* Import */
-code > span.va { color: #000000; } /* Variable */
-code > span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
-code > span.op { color: #ce5c00; font-weight: bold; } /* Operator */
-code > span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
-code > span.ex { } /* Extension */
-code > span.at { color: #c4a000; } /* Attribute */
-code > span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
-code > span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
-code > span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
-code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  background-color: #f8f8f8; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #c4a000; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #000000; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #000000; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #000000; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
 </style>
+
 
 
 <link rel="stylesheet" href="style.css" type="text/css" />
@@ -130,7 +178,7 @@ code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Inf
 <div class="row">
 <div class="col-sm-12">
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
-<html><body><div id="raw-ms-data-mzr-and-msnbase" class="section level1">
+<html><body><div id="raw-ms-data-mzr-and-msnbase" class="section level1" number="3">
 <h1>
 <span class="header-section-number">Chapter 3</span> Raw MS data: <code>mzR</code> and <code>MSnbase</code>
 </h1>
@@ -173,21 +221,30 @@ code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Inf
 </tr>
 </tbody>
 </table>
-<p>In this section, we will learn how to read raw data in one of the commonly used open formats (<code>mzML</code>, <code>mzXML</code> and <code>netCDF</code>) into R using <code>mzR</code> (low level access) and <code>MSnbase</code> (higher level abstraction).</p>
-<div id="low-level-access" class="section level2">
+<p>In this section, we will learn how to read raw data in one of the
+commonly used open formats (<code>mzML</code>, <code>mzXML</code> and <code>netCDF</code>) into R using
+<code>mzR</code> (low level access) and <code>MSnbase</code> (higher level abstraction).</p>
+<div id="low-level-access" class="section level2" number="3.1">
 <h2>
-<span class="header-section-number">3.1</span> Low level access</h2>
-<p>The <code>mzR</code> package in a direct interface to the <a href="http://proteowizard.sourceforge.net/">proteowizard</a> code base. It includes a substantial proportion of <em>pwiz</em>'s C/C++ code for fast and efficient parsing of these large raw data files.</p>
-<p>Let's start by using some raw data files from the <code>msdata</code> package. After loading it, we use the <code>proteomics()</code> function to return the full file names for two raw data files. We will start by focusing on the second one.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">"msdata"</span>)
-f &lt;-<span class="st"> </span><span class="kw">proteomics</span>(<span class="dt">full.names =</span> <span class="ot">TRUE</span>)
-f</code></pre></div>
+<span class="header-section-number">3.1</span> Low level access<div class="tooltip"><button class="internal-link-btn" onclick="copy_link('low-level-access')" onmouseout="reset_tooltip('low-level-access-tooltip')"><span class="tooltiptext" id="low-level-access-tooltip">Copy link</span><i class="fa fa-link"></i></button></div>
+</h2>
+<p>The <code>mzR</code> package in a direct interface to the
+<a href="http://proteowizard.sourceforge.net/">proteowizard</a> code base. It
+includes a substantial proportion of <em>pwiz</em>’s C/C++ code for fast and
+efficient parsing of these large raw data files.</p>
+<p>Let’s start by using some raw data files from the <code>msdata</code>
+package. After loading it, we use the <code>proteomics()</code> function to
+return the full file names for two raw data files. We will start by
+focusing on the second one.</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"msdata"</span>)</span>
+<span id="cb31-2"><a href="raw-ms-data-mzr-and-msnbase.html#cb31-2" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="fu">proteomics</span>(<span class="at">full.names =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb31-3"><a href="raw-ms-data-mzr-and-msnbase.html#cb31-3" aria-hidden="true" tabindex="-1"></a>f</span></code></pre></div>
 <pre><code>## [1] "/home/lgatto/R/x86_64-pc-linux-gnu-library/4.0/msdata/proteomics/MRM-standmix-5.mzML.gz"                                                
 ## [2] "/home/lgatto/R/x86_64-pc-linux-gnu-library/4.0/msdata/proteomics/MS3TMT10_01022016_32917-33481.mzML.gz"                                 
 ## [3] "/home/lgatto/R/x86_64-pc-linux-gnu-library/4.0/msdata/proteomics/MS3TMT11.mzML"                                                         
 ## [4] "/home/lgatto/R/x86_64-pc-linux-gnu-library/4.0/msdata/proteomics/TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML.gz"
 ## [5] "/home/lgatto/R/x86_64-pc-linux-gnu-library/4.0/msdata/proteomics/TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.mzML.gz"</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(f2 &lt;-<span class="st"> </span><span class="kw">grep</span>(<span class="st">"20141210"</span>, f, <span class="dt">value =</span> <span class="ot">TRUE</span>))</code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb33-1" aria-hidden="true" tabindex="-1"></a>(f2 <span class="ot">&lt;-</span> <span class="fu">grep</span>(<span class="st">"20141210"</span>, f, <span class="at">value =</span> <span class="cn">TRUE</span>))</span></code></pre></div>
 <pre><code>## [1] "/home/lgatto/R/x86_64-pc-linux-gnu-library/4.0/msdata/proteomics/TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML.gz"</code></pre>
 <p>The three main functions of <code>mzR</code> are</p>
 <ul>
@@ -198,17 +255,18 @@ f</code></pre></div>
 <li>
 <code>peaks</code> to extract one or multiple spectra of interest.</li>
 </ul>
-<p>Other functions such as <code>instrumentInfo</code>, or <code>runInfo</code> can be used to gather general information about a run.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">"mzR"</span>)
-ms &lt;-<span class="st"> </span><span class="kw">openMSfile</span>(f2)
-ms</code></pre></div>
+<p>Other functions such as <code>instrumentInfo</code>, or <code>runInfo</code> can be used to
+gather general information about a run.</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"mzR"</span>)</span>
+<span id="cb35-2"><a href="raw-ms-data-mzr-and-msnbase.html#cb35-2" aria-hidden="true" tabindex="-1"></a>ms <span class="ot">&lt;-</span> <span class="fu">openMSfile</span>(f2)</span>
+<span id="cb35-3"><a href="raw-ms-data-mzr-and-msnbase.html#cb35-3" aria-hidden="true" tabindex="-1"></a>ms</span></code></pre></div>
 <pre><code>## Mass Spectrometry file handle.
 ## Filename:  TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML.gz 
 ## Number of scans:  7534</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hd &lt;-<span class="st"> </span><span class="kw">header</span>(ms)
-<span class="kw">dim</span>(hd)</code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb37-1" aria-hidden="true" tabindex="-1"></a>hd <span class="ot">&lt;-</span> <span class="fu">header</span>(ms)</span>
+<span id="cb37-2"><a href="raw-ms-data-mzr-and-msnbase.html#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(hd)</span></code></pre></div>
 <pre><code>## [1] 7534   31</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(hd)</code></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(hd)</span></code></pre></div>
 <pre><code>##  [1] "seqNum"                     "acquisitionNum"            
 ##  [3] "msLevel"                    "polarity"                  
 ##  [5] "peaksCount"                 "totIonCurrent"             
@@ -225,7 +283,7 @@ ms</code></pre></div>
 ## [27] "isolationWindowTargetMZ"    "isolationWindowLowerOffset"
 ## [29] "isolationWindowUpperOffset" "scanWindowLowerLimit"      
 ## [31] "scanWindowUpperLimit"</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw">peaks</span>(ms, <span class="dv">117</span>))</code></pre></div>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">peaks</span>(ms, <span class="dv">117</span>))</span></code></pre></div>
 <pre><code>##          [,1] [,2]
 ## [1,] 399.9976    0
 ## [2,] 399.9991    0
@@ -233,7 +291,7 @@ ms</code></pre></div>
 ## [4,] 400.0021    0
 ## [5,] 400.2955    0
 ## [6,] 400.2970    0</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(<span class="kw">peaks</span>(ms, <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>))</code></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(<span class="fu">peaks</span>(ms, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>))</span></code></pre></div>
 <pre><code>## List of 5
 ##  $ : num [1:25800, 1:2] 400 400 400 400 400 ...
 ##  $ : num [1:25934, 1:2] 400 400 400 400 400 ...
@@ -241,12 +299,14 @@ ms</code></pre></div>
 ##  $ : num [1:26330, 1:2] 400 400 400 400 400 ...
 ##  $ : num [1:26463, 1:2] 400 400 400 400 400 ...</code></pre>
 <div id="exercise" class="section level3 unnumbered">
-<h3>Exercise</h3>
-<p>Let's extract the index of the MS2 spectrum with the highest base peak intensity and plot its spectrum. Is the data centroided or in profile mode?</p>
-<p><details></details></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hd2 &lt;-<span class="st"> </span>hd[hd<span class="op">$</span>msLevel <span class="op">==</span><span class="st"> </span><span class="dv">2</span>, ]
-i &lt;-<span class="st"> </span><span class="kw">which.max</span>(hd2<span class="op">$</span>basePeakIntensity)
-hd2[i, ]</code></pre></div>
+<h3>Exercise<div class="tooltip"><button class="internal-link-btn" onclick="copy_link('exercise')" onmouseout="reset_tooltip('exercise-tooltip')"><span class="tooltiptext" id="exercise-tooltip">Copy link</span><i class="fa fa-link"></i></button></div>
+</h3>
+<p>Let’s extract the index of the MS2 spectrum with the highest base peak
+intensity and plot its spectrum. Is the data centroided or in profile
+mode?</p>
+<details><div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb45-1" aria-hidden="true" tabindex="-1"></a>hd2 <span class="ot">&lt;-</span> hd[hd<span class="sc">$</span>msLevel <span class="sc">==</span> <span class="dv">2</span>, ]</span>
+<span id="cb45-2"><a href="raw-ms-data-mzr-and-msnbase.html#cb45-2" aria-hidden="true" tabindex="-1"></a>i <span class="ot">&lt;-</span> <span class="fu">which.max</span>(hd2<span class="sc">$</span>basePeakIntensity)</span>
+<span id="cb45-3"><a href="raw-ms-data-mzr-and-msnbase.html#cb45-3" aria-hidden="true" tabindex="-1"></a>hd2[i, ]</span></code></pre></div>
 <pre><code>##      seqNum acquisitionNum msLevel polarity peaksCount totIonCurrent
 ## 5404   5404           5404       2        1        275    2283283712
 ##      retentionTime basePeakMZ basePeakIntensity collisionEnergy
@@ -265,58 +325,80 @@ hd2[i, ]</code></pre></div>
 ## 5404                   NA                   859.5                          1
 ##      isolationWindowUpperOffset scanWindowLowerLimit scanWindowUpperLimit
 ## 5404                          1                  100                 2000</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pi &lt;-<span class="st"> </span><span class="kw">peaks</span>(ms, hd2[i, <span class="dv">1</span>])
-<span class="kw">plot</span>(pi, <span class="dt">type =</span> <span class="st">"h"</span>)</code></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb47-1" aria-hidden="true" tabindex="-1"></a>pi <span class="ot">&lt;-</span> <span class="fu">peaks</span>(ms, hd2[i, <span class="dv">1</span>])</span>
+<span id="cb47-2"><a href="raw-ms-data-mzr-and-msnbase.html#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(pi, <span class="at">type =</span> <span class="st">"h"</span>)</span></code></pre></div>
 <p><img src="berlin_files/figure-html/ex_raw-1.png" width="672" style="display: block; margin: auto;"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mz &lt;-<span class="st"> </span>hd2[i, <span class="st">"basePeakMZ"</span>]
-<span class="kw">plot</span>(pi, <span class="dt">type =</span> <span class="st">"h"</span>, <span class="dt">xlim =</span> <span class="kw">c</span>(mz <span class="op">-</span><span class="st"> </span><span class="fl">0.5</span>, mz <span class="op">+</span><span class="st"> </span><span class="fl">0.5</span>))</code></pre></div>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb48-1" aria-hidden="true" tabindex="-1"></a>mz <span class="ot">&lt;-</span> hd2[i, <span class="st">"basePeakMZ"</span>]</span>
+<span id="cb48-2"><a href="raw-ms-data-mzr-and-msnbase.html#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(pi, <span class="at">type =</span> <span class="st">"h"</span>, <span class="at">xlim =</span> <span class="fu">c</span>(mz <span class="sc">-</span> <span class="fl">0.5</span>, mz <span class="sc">+</span> <span class="fl">0.5</span>))</span></code></pre></div>
 <p><img src="berlin_files/figure-html/ex_raw-2.png" width="672" style="display: block; margin: auto;"></p>
+</details>
 </div>
 <div id="exercise-1" class="section level3 unnumbered">
-<h3>Exercise</h3>
-<p>Pick an MS1 spectrum and visually check whether it is centroided or in profile mode.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Zooming into spectrum 300 (an MS1 spectrum).
-j &lt;-<span class="st"> </span><span class="dv">300</span>
-pj &lt;-<span class="st"> </span><span class="kw">peaks</span>(ms, j)
-<span class="kw">plot</span>(pj, <span class="dt">type =</span> <span class="st">"l"</span>)</code></pre></div>
+<h3>Exercise<div class="tooltip"><button class="internal-link-btn" onclick="copy_link('exercise-1')" onmouseout="reset_tooltip('exercise-1-tooltip')"><span class="tooltiptext" id="exercise-1-tooltip">Copy link</span><i class="fa fa-link"></i></button></div>
+</h3>
+<p>Pick an MS1 spectrum and visually check whether it is centroided or in
+profile mode.</p>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Zooming into spectrum 300 (an MS1 spectrum).</span></span>
+<span id="cb49-2"><a href="raw-ms-data-mzr-and-msnbase.html#cb49-2" aria-hidden="true" tabindex="-1"></a>j <span class="ot">&lt;-</span> <span class="dv">300</span></span>
+<span id="cb49-3"><a href="raw-ms-data-mzr-and-msnbase.html#cb49-3" aria-hidden="true" tabindex="-1"></a>pj <span class="ot">&lt;-</span> <span class="fu">peaks</span>(ms, j)</span>
+<span id="cb49-4"><a href="raw-ms-data-mzr-and-msnbase.html#cb49-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(pj, <span class="at">type =</span> <span class="st">"l"</span>)</span></code></pre></div>
 <p><img src="berlin_files/figure-html/ex_raw2-1.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mz &lt;-<span class="st"> </span>hd[j, <span class="st">"basePeakMZ"</span>]
-<span class="kw">plot</span>(pj, <span class="dt">type =</span> <span class="st">"l"</span>, <span class="dt">xlim =</span> <span class="kw">c</span>(mz <span class="op">-</span><span class="st"> </span><span class="fl">0.5</span>, mz <span class="op">+</span><span class="st"> </span><span class="fl">0.5</span>))</code></pre></div>
-<p><img src="berlin_files/figure-html/ex_raw2-2.png" width="672"></p>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb50-1" aria-hidden="true" tabindex="-1"></a>mz <span class="ot">&lt;-</span> hd[j, <span class="st">"basePeakMZ"</span>]</span>
+<span id="cb50-2"><a href="raw-ms-data-mzr-and-msnbase.html#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(pj, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">xlim =</span> <span class="fu">c</span>(mz <span class="sc">-</span> <span class="fl">0.5</span>, mz <span class="sc">+</span> <span class="fl">0.5</span>))</span></code></pre></div>
+<img src="berlin_files/figure-html/ex_raw2-2.png" width="672">
 </div>
 <div id="exercise-2" class="section level3 unnumbered">
-<h3>Exercise</h3>
-<p>Using the first raw data file starting with <code>MS3TMT10</code>, answer the following questions:</p>
+<h3>Exercise<div class="tooltip"><button class="internal-link-btn" onclick="copy_link('exercise-2')" onmouseout="reset_tooltip('exercise-2-tooltip')"><span class="tooltiptext" id="exercise-2-tooltip">Copy link</span><i class="fa fa-link"></i></button></div>
+</h3>
+<p>Using the first raw data file starting with <code>MS3TMT10</code>, answer the
+following questions:</p>
 <ul>
 <li>What type of data is returned by the <code>openMSfile</code> function?</li>
 <li>How many spectra are there in that file?</li>
 <li>How many MS levels, and how many spectra per MS level?</li>
-<li>What is the index of the MS2 spectrum with the highest precursor intensity?</li>
-<li>Plot one spectrum of each level. Are they centroided or in profile mode?</li>
+<li>What is the index of the MS2 spectrum with the highest precursor
+intensity?</li>
+<li>Plot one spectrum of each level. Are they centroided or in profile
+mode?</li>
 </ul>
 </div>
 </div>
-<div id="high-level-abstraction" class="section level2">
+<div id="high-level-abstraction" class="section level2" number="3.2">
 <h2>
-<span class="header-section-number">3.2</span> High level abstraction</h2>
-<p>While having full access to the raw data gives full control, at times it requires a lot of effort to achieve mundane things and can be very repetitive. There is a need for abstraction, i.e. that we shouldn't need to know about all the details that are exposed by <code>mzR</code> to access and manipulate raw data. In comes <code>MSnbase</code> and the <code>MSnExp</code> data structure, that provides a much smoother approach to <em>handle</em> and <em>annotate</em> raw data (we will see this in more details tomorrow).</p>
+<span class="header-section-number">3.2</span> High level abstraction<div class="tooltip"><button class="internal-link-btn" onclick="copy_link('high-level-abstraction')" onmouseout="reset_tooltip('high-level-abstraction-tooltip')"><span class="tooltiptext" id="high-level-abstraction-tooltip">Copy link</span><i class="fa fa-link"></i></button></div>
+</h2>
+<p>While having full access to the raw data gives full control, at times
+it requires a lot of effort to achieve mundane things and can be very
+repetitive. There is a need for abstraction, i.e. that we shouldn’t
+need to know about all the details that are exposed by <code>mzR</code> to access
+and manipulate raw data. In comes <code>MSnbase</code> and the <code>MSnExp</code> data
+structure, that provides a much smoother approach to <em>handle</em> and
+<em>annotate</em> raw data (we will see this in more details tomorrow).</p>
 <div class="figure">
-<img src="img/pset.jpg" alt="MSnExp schematics"><p class="caption">MSnExp schematics</p>
+<img src="img/pset.jpg" alt=""><p class="caption">MSnExp schematics</p>
 </div>
-<p>An <code>MSnExp</code> contains the data and annotation to describe an MS experiment. The data is composed of all the MS spectra (the output of <code>mzR::peaks</code> above) and the annotation is stored in a <code>data.frame</code>-like structure called the <em>feature metadata</em> slot (<em>fData</em> for short). This feature metadata contains by default (or can contain, to be precise) the content the <code>mzR::header</code> seen above, but can be extended as need (adding identification data, for example).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">"MSnbase"</span>)</code></pre></div>
-<p>Using the <code>readMSdata</code> function, passing one or more raw data file names as input, we create an <code>MSnExp</code> object.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">rw1 &lt;-<span class="st"> </span><span class="kw">readMSData</span>(f2, <span class="dt">mode =</span> <span class="st">"inMemory"</span>, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)
-rw1</code></pre></div>
+<p>An <code>MSnExp</code> contains the data and annotation to describe an MS
+experiment. The data is composed of all the MS spectra (the output of
+<code>mzR::peaks</code> above) and the annotation is stored in a
+<code>data.frame</code>-like structure called the <em>feature metadata</em> slot
+(<em>fData</em> for short). This feature metadata contains by default (or can
+contain, to be precise) the content the <code>mzR::header</code> seen above,
+but can be extended as need (adding
+identification data, for example).</p>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"MSnbase"</span>)</span></code></pre></div>
+<p>Using the <code>readMSdata</code> function, passing one or more raw data file
+names as input, we create an <code>MSnExp</code> object.</p>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb52-1" aria-hidden="true" tabindex="-1"></a>rw1 <span class="ot">&lt;-</span> <span class="fu">readMSData</span>(f2, <span class="at">mode =</span> <span class="st">"inMemory"</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb52-2"><a href="raw-ms-data-mzr-and-msnbase.html#cb52-2" aria-hidden="true" tabindex="-1"></a>rw1</span></code></pre></div>
 <pre><code>## MSn experiment data ("MSnExp")
 ## Object size in memory: 41.95 Mb
 ## - - - Spectra data - - -
 ##  MS level(s): 2 
 ##  Number of spectra: 6103 
-##  MSn retention times: 3:22 - 60:2 minutes
+##  MSn retention times: 3:22 - 60:02 minutes
 ## - - - Processing information - - -
-## Data loaded: Mon Feb 17 22:42:36 2020 
-##  MSnbase version: 2.12.0 
+## Data loaded: Tue Mar  9 17:29:57 2021 
+##  MSnbase version: 2.17.5 
 ## - - - Meta data  - - -
 ## phenoData
 ##   rowNames:
@@ -331,8 +413,8 @@ rw1</code></pre></div>
 ##   fvarLabels: spectrum
 ##   fvarMetadata: labelDescription
 ## experimentData: use 'experimentData(object)'</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">rw2 &lt;-<span class="st"> </span><span class="kw">readMSData</span>(f2, <span class="dt">mode =</span> <span class="st">"onDisk"</span>, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)
-rw2</code></pre></div>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb54-1" aria-hidden="true" tabindex="-1"></a>rw2 <span class="ot">&lt;-</span> <span class="fu">readMSData</span>(f2, <span class="at">mode =</span> <span class="st">"onDisk"</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb54-2"><a href="raw-ms-data-mzr-and-msnbase.html#cb54-2" aria-hidden="true" tabindex="-1"></a>rw2</span></code></pre></div>
 <pre><code>## MSn experiment data ("OnDiskMSnExp")
 ## Object size in memory: 3.31 Mb
 ## - - - Spectra data - - -
@@ -340,8 +422,8 @@ rw2</code></pre></div>
 ##  Number of spectra: 7534 
 ##  MSn retention times: 0:00 - 60:02 minutes
 ## - - - Processing information - - -
-## Data loaded [Tue Jan 12 08:45:13 2021] 
-##  MSnbase version: 2.17.4 
+## Data loaded [Tue Mar  9 18:36:30 2021] 
+##  MSnbase version: 2.17.5 
 ## - - - Meta data  - - -
 ## phenoData
 ##   rowNames:
@@ -357,26 +439,35 @@ rw2</code></pre></div>
 ##   fvarMetadata: labelDescription
 ## experimentData: use 'experimentData(object)'</code></pre>
 <div id="exercise-3" class="section level3 unnumbered">
-<h3>Exercise</h3>
-<p>What differences can you spot between the <code>rw1</code> and <code>rw2</code> objects? Hint: compare their length.</p>
-<p><details></details></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">length</span>(rw1)</code></pre></div>
+<h3>Exercise<div class="tooltip"><button class="internal-link-btn" onclick="copy_link('exercise-3')" onmouseout="reset_tooltip('exercise-3-tooltip')"><span class="tooltiptext" id="exercise-3-tooltip">Copy link</span><i class="fa fa-link"></i></button></div>
+</h3>
+<p>What differences can you spot between the <code>rw1</code> and <code>rw2</code> objects?
+Hint: compare their length.</p>
+<details><div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(rw1)</span></code></pre></div>
 <pre><code>## [1] 6103</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">length</span>(rw2)</code></pre></div>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(rw2)</span></code></pre></div>
 <pre><code>## [1] 7534</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(<span class="kw">msLevel</span>(rw1))</code></pre></div>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(<span class="fu">msLevel</span>(rw1))</span></code></pre></div>
 <pre><code>## 
 ##    2 
 ## 6103</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(<span class="kw">msLevel</span>(rw2))</code></pre></div>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(<span class="fu">msLevel</span>(rw2))</span></code></pre></div>
 <pre><code>## 
 ##    1    2 
 ## 1431 6103</code></pre>
-<p></p>
-<p>From the outside, the two functions above are very similar. The major difference is that the former reads the data from only one type of MS level into memory. The second function, does not read any raw data into memory (and hence is much faster) and supports any number of MS levels. The raw data is accessed on demand when needed. If you are interested in a benchmark between the two approaches, look at the <a href="http://bioconductor.org/packages/devel/bioc/vignettes/MSnbase/inst/doc/benchmarking.html"><em>benchmarking</em> vignette</a>, available by typing <code>vignette("benchmarking", package = "MSnbase")</code>.</p>
-<p>Let's extract spectra 4192 and 300, or 1 to 5, as we did above. We can do this using the familiar <code>[[</code> and <code>[</code> operators:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## i and j were defined above
-rw1[[i]]</code></pre></div>
+</details><p>From the outside, the two functions above are very similar. The major
+difference is that the former reads the data from only one type of MS
+level into memory. The second function, does not read any raw data
+into memory (and hence is much faster) and supports any number of MS
+levels. The raw data is accessed on demand when needed. If you are
+interested in a benchmark between the two approaches, look at the
+<a href="http://bioconductor.org/packages/devel/bioc/vignettes/MSnbase/inst/doc/benchmarking.html"><em>benchmarking</em>
+vignette</a>,
+available by typing <code>vignette("benchmarking", package = "MSnbase")</code>.</p>
+<p>Let’s extract spectra 4192 and 300, or 1 to 5, as we did above. We
+can do this using the familiar <code>[[</code> and <code>[</code> operators:</p>
+<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb64-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="do">## i and j were defined above</span></span>
+<span id="cb64-2"><a href="raw-ms-data-mzr-and-msnbase.html#cb64-2" aria-hidden="true" tabindex="-1"></a>rw1[[i]]</span></code></pre></div>
 <pre><code>## Object of class "Spectrum2"
 ##  Precursor: 859.1722 
 ##  Retention time: 45:51 
@@ -384,7 +475,7 @@ rw1[[i]]</code></pre></div>
 ##  MSn level: 2 
 ##  Peaks count: 275 
 ##  Total ion count: 2269568558</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">rw2[[i]]</code></pre></div>
+<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb66-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb66-1" aria-hidden="true" tabindex="-1"></a>rw2[[i]]</span></code></pre></div>
 <pre><code>## Object of class "Spectrum2"
 ##  Precursor: 472.3352 
 ##  Retention time: 38:26 
@@ -392,7 +483,7 @@ rw1[[i]]</code></pre></div>
 ##  MSn level: 2 
 ##  Peaks count: 132 
 ##  Total ion count: 12185289</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">rw1[[j]]</code></pre></div>
+<div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb68-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb68-1" aria-hidden="true" tabindex="-1"></a>rw1[[j]]</span></code></pre></div>
 <pre><code>## Object of class "Spectrum2"
 ##  Precursor: 602.8553 
 ##  Retention time: 19:23 
@@ -400,13 +491,13 @@ rw1[[i]]</code></pre></div>
 ##  MSn level: 2 
 ##  Peaks count: 187 
 ##  Total ion count: 2358111</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">rw2[[j]]</code></pre></div>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb70-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb70-1" aria-hidden="true" tabindex="-1"></a>rw2[[j]]</span></code></pre></div>
 <pre><code>## Object of class "Spectrum1"
 ##  Retention time: 4:45 
 ##  MSn level: 1 
 ##  Total ion count: 2661 
 ##  Polarity: 1</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">rw1[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</code></pre></div>
+<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb72-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb72-1" aria-hidden="true" tabindex="-1"></a>rw1[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code></pre></div>
 <pre><code>## MSn experiment data ("MSnExp")
 ## Object size in memory: 0.03 Mb
 ## - - - Spectra data - - -
@@ -414,9 +505,9 @@ rw1[[i]]</code></pre></div>
 ##  Number of spectra: 5 
 ##  MSn retention times: 3:22 - 3:24 minutes
 ## - - - Processing information - - -
-## Data loaded: Mon Feb 17 22:42:36 2020 
-## Data [numerically] subsetted 5 spectra: Tue Jan 12 08:45:17 2021 
-##  MSnbase version: 2.12.0 
+## Data loaded: Tue Mar  9 17:29:57 2021 
+## Data [numerically] subsetted 5 spectra: Tue Mar  9 18:36:33 2021 
+##  MSnbase version: 2.17.5 
 ## - - - Meta data  - - -
 ## phenoData
 ##   rowNames:
@@ -431,7 +522,7 @@ rw1[[i]]</code></pre></div>
 ##   fvarLabels: spectrum
 ##   fvarMetadata: labelDescription
 ## experimentData: use 'experimentData(object)'</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">rw2[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</code></pre></div>
+<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb74-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb74-1" aria-hidden="true" tabindex="-1"></a>rw2[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code></pre></div>
 <pre><code>## MSn experiment data ("OnDiskMSnExp")
 ## Object size in memory: 0.03 Mb
 ## - - - Spectra data - - -
@@ -439,8 +530,8 @@ rw1[[i]]</code></pre></div>
 ##  Number of spectra: 5 
 ##  MSn retention times: 0:00 - 0:04 minutes
 ## - - - Processing information - - -
-## Data loaded [Tue Jan 12 08:45:13 2021] 
-##  MSnbase version: 2.17.4 
+## Data loaded [Tue Mar  9 18:36:30 2021] 
+##  MSnbase version: 2.17.5 
 ## - - - Meta data  - - -
 ## phenoData
 ##   rowNames:
@@ -456,130 +547,92 @@ rw1[[i]]</code></pre></div>
 ##   fvarMetadata: labelDescription
 ## experimentData: use 'experimentData(object)'</code></pre>
 <p>And plot them</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(rw1[[j]])</code></pre></div>
+<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb76-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(rw1[[j]])</span></code></pre></div>
 <p><img src="berlin_files/figure-html/unnamed-chunk-5-1.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(rw1[[i]], <span class="dt">full =</span> <span class="ot">TRUE</span>, <span class="dt">reporters =</span> TMT6, <span class="dt">centroided =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb77-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(rw1[[i]], <span class="at">full =</span> <span class="cn">TRUE</span>, <span class="at">reporters =</span> TMT6, <span class="at">centroided =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <p><img src="berlin_files/figure-html/unnamed-chunk-6-1.png" width="672"></p>
-<p>The feature metadata is stored as part of the <code>MSnExp</code> object and can be accessed with the <code>fData</code> accessor function</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw">fData</span>(rw2))</code></pre></div>
+<p>The feature metadata is stored as part of the <code>MSnExp</code> object and can
+be accessed with the <code>fData</code> accessor function</p>
+<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb78-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">fData</span>(rw2))</span></code></pre></div>
 <pre><code>##          fileIdx spIdx smoothed seqNum acquisitionNum msLevel polarity
 ## F1.S0001       1     1       NA      1              1       1        1
 ## F1.S0002       1     2       NA      2              2       1        1
-## F1.S0003       1     3       NA      3              3       1        1
-## F1.S0004       1     4       NA      4              4       1        1
-## F1.S0005       1     5       NA      5              5       1        1
-## F1.S0006       1     6       NA      6              6       1        1
 ##          originalPeaksCount totIonCurrent retentionTime basePeakMZ
 ## F1.S0001              25800       9187505        0.4584     445.12
 ## F1.S0002              25934       9118685        0.9725     445.12
-## F1.S0003              26148       9247653        1.8524     445.12
-## F1.S0004              26330       9195261        2.7424     445.12
-## F1.S0005              26463       9202081        3.6124     445.12
-## F1.S0006              25580       9451720        4.4925     445.12
 ##          basePeakIntensity collisionEnergy ionisationEnergy    lowMZ   highMZ
 ## F1.S0001          984171.2              NA                0 399.9987 2008.454
 ## F1.S0002          989260.4              NA                0 399.9985 2008.453
-## F1.S0003          997621.7              NA                0 399.9983 2008.453
-## F1.S0004          988598.2              NA                0 399.9981 2008.451
-## F1.S0005          971233.9              NA                0 399.9983 2008.452
-## F1.S0006         1000968.4              NA                0 399.9981 2008.451
 ##          precursorScanNum precursorMZ precursorCharge precursorIntensity
 ## F1.S0001               NA          NA              NA                 NA
 ## F1.S0002               NA          NA              NA                 NA
-## F1.S0003               NA          NA              NA                 NA
-## F1.S0004               NA          NA              NA                 NA
-## F1.S0005               NA          NA              NA                 NA
-## F1.S0006               NA          NA              NA                 NA
 ##          mergedScan mergedResultScanNum mergedResultStartScanNum
 ## F1.S0001         NA                  NA                       NA
 ## F1.S0002         NA                  NA                       NA
-## F1.S0003         NA                  NA                       NA
-## F1.S0004         NA                  NA                       NA
-## F1.S0005         NA                  NA                       NA
-## F1.S0006         NA                  NA                       NA
 ##          mergedResultEndScanNum injectionTime
 ## F1.S0001                     NA      50.38262
 ## F1.S0002                     NA      51.13650
-## F1.S0003                     NA      50.36058
-## F1.S0004                     NA      51.23796
-## F1.S0005                     NA      50.87993
-## F1.S0006                     NA      50.30515
 ##                                   filterString
 ## F1.S0001 FTMS + p NSI Full ms [400.00-2000.00]
 ## F1.S0002 FTMS + p NSI Full ms [400.00-2000.00]
-## F1.S0003 FTMS + p NSI Full ms [400.00-2000.00]
-## F1.S0004 FTMS + p NSI Full ms [400.00-2000.00]
-## F1.S0005 FTMS + p NSI Full ms [400.00-2000.00]
-## F1.S0006 FTMS + p NSI Full ms [400.00-2000.00]
 ##                                          spectrumId centroided
 ## F1.S0001 controllerType=0 controllerNumber=1 scan=1      FALSE
 ## F1.S0002 controllerType=0 controllerNumber=1 scan=2      FALSE
-## F1.S0003 controllerType=0 controllerNumber=1 scan=3      FALSE
-## F1.S0004 controllerType=0 controllerNumber=1 scan=4      FALSE
-## F1.S0005 controllerType=0 controllerNumber=1 scan=5      FALSE
-## F1.S0006 controllerType=0 controllerNumber=1 scan=6      FALSE
 ##          ionMobilityDriftTime isolationWindowTargetMZ
 ## F1.S0001                   NA                      NA
 ## F1.S0002                   NA                      NA
-## F1.S0003                   NA                      NA
-## F1.S0004                   NA                      NA
-## F1.S0005                   NA                      NA
-## F1.S0006                   NA                      NA
 ##          isolationWindowLowerOffset isolationWindowUpperOffset
 ## F1.S0001                         NA                         NA
 ## F1.S0002                         NA                         NA
-## F1.S0003                         NA                         NA
-## F1.S0004                         NA                         NA
-## F1.S0005                         NA                         NA
-## F1.S0006                         NA                         NA
 ##          scanWindowLowerLimit scanWindowUpperLimit spectrum
 ## F1.S0001                  400                 2000        1
 ## F1.S0002                  400                 2000        2
-## F1.S0003                  400                 2000        3
-## F1.S0004                  400                 2000        4
-## F1.S0005                  400                 2000        5
-## F1.S0006                  400                 2000        6</code></pre>
+##  [ reached 'max' / getOption("max.print") -- omitted 4 rows ]</code></pre>
 <p>Below, we will continue to work with the <em>on disk</em> raw data object.</p>
 </div>
 </div>
-<div id="more-data-handling" class="section level2">
+<div id="more-data-handling" class="section level2" number="3.3">
 <h2>
-<span class="header-section-number">3.3</span> More data handling</h2>
+<span class="header-section-number">3.3</span> More data handling<div class="tooltip"><button class="internal-link-btn" onclick="copy_link('more-data-handling')" onmouseout="reset_tooltip('more-data-handling-tooltip')"><span class="tooltiptext" id="more-data-handling-tooltip">Copy link</span><i class="fa fa-link"></i></button></div>
+</h2>
 <p>Is the data centroided or in profile mode?</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw">centroided</span>(rw2))</code></pre></div>
+<div class="sourceCode" id="cb80"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb80-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">centroided</span>(rw2))</span></code></pre></div>
 <pre><code>## F1.S0001 F1.S0002 F1.S0003 F1.S0004 F1.S0005 F1.S0006 
 ##    FALSE    FALSE    FALSE    FALSE    FALSE    FALSE</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(<span class="kw">centroided</span>(rw2))</code></pre></div>
+<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb82-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(<span class="fu">centroided</span>(rw2))</span></code></pre></div>
 <pre><code>## 
 ## FALSE  TRUE 
 ##  1431  6103</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(<span class="kw">centroided</span>(rw2), <span class="kw">msLevel</span>(rw2))</code></pre></div>
+<div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb84-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(<span class="fu">centroided</span>(rw2), <span class="fu">msLevel</span>(rw2))</span></code></pre></div>
 <pre><code>##        
 ##            1    2
 ##   FALSE 1431    0
 ##   TRUE     0 6103</code></pre>
 <p>It is also possible to set this when readin the data or manually</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tmp &lt;-<span class="st"> </span><span class="kw">readMSData</span>(f2, <span class="dt">mode =</span> <span class="st">"onDisk"</span>, <span class="dt">centroided =</span> <span class="kw">c</span>(<span class="ot">FALSE</span>, <span class="ot">TRUE</span>), <span class="dt">verbose =</span> <span class="ot">FALSE</span>)
-<span class="kw">table</span>(<span class="kw">centroided</span>(tmp), <span class="kw">msLevel</span>(tmp))</code></pre></div>
+<div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb86-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb86-1" aria-hidden="true" tabindex="-1"></a>tmp <span class="ot">&lt;-</span> <span class="fu">readMSData</span>(f2, <span class="at">mode =</span> <span class="st">"onDisk"</span>, <span class="at">centroided =</span> <span class="fu">c</span>(<span class="cn">FALSE</span>, <span class="cn">TRUE</span>), <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb86-2"><a href="raw-ms-data-mzr-and-msnbase.html#cb86-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(<span class="fu">centroided</span>(tmp), <span class="fu">msLevel</span>(tmp))</span></code></pre></div>
 <pre><code>##        
 ##            1    2
 ##   FALSE 1431    0
 ##   TRUE     0 6103</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tmp &lt;-<span class="st"> </span><span class="kw">readMSData</span>(f2, <span class="dt">mode =</span> <span class="st">"onDisk"</span>, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)
-<span class="kw">centroided</span>(tmp, <span class="dt">msLevel =</span> <span class="dv">1</span>) &lt;-<span class="st"> </span><span class="ot">FALSE</span>
-<span class="kw">centroided</span>(tmp, <span class="dt">msLevel =</span> <span class="dv">2</span>) &lt;-<span class="st"> </span><span class="ot">TRUE</span>
-<span class="kw">table</span>(<span class="kw">centroided</span>(tmp), <span class="kw">msLevel</span>(tmp))</code></pre></div>
+<div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb88-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb88-1" aria-hidden="true" tabindex="-1"></a>tmp <span class="ot">&lt;-</span> <span class="fu">readMSData</span>(f2, <span class="at">mode =</span> <span class="st">"onDisk"</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb88-2"><a href="raw-ms-data-mzr-and-msnbase.html#cb88-2" aria-hidden="true" tabindex="-1"></a><span class="fu">centroided</span>(tmp, <span class="at">msLevel =</span> <span class="dv">1</span>) <span class="ot">&lt;-</span> <span class="cn">FALSE</span></span>
+<span id="cb88-3"><a href="raw-ms-data-mzr-and-msnbase.html#cb88-3" aria-hidden="true" tabindex="-1"></a><span class="fu">centroided</span>(tmp, <span class="at">msLevel =</span> <span class="dv">2</span>) <span class="ot">&lt;-</span> <span class="cn">TRUE</span></span>
+<span id="cb88-4"><a href="raw-ms-data-mzr-and-msnbase.html#cb88-4" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(<span class="fu">centroided</span>(tmp), <span class="fu">msLevel</span>(tmp))</span></code></pre></div>
 <pre><code>##        
 ##            1    2
 ##   FALSE 1431    0
 ##   TRUE     0 6103</code></pre>
-<div id="peak-lists" class="section level3">
+<div id="peak-lists" class="section level3" number="3.3.1">
 <h3>
-<span class="header-section-number">3.3.1</span> Peak lists</h3>
-<p>Similarly as for raw data, peak lists can be read into R as <code>MSnExp</code> data using the <code>readMgfData</code>. See <code>?readMgfData</code> for details.</p>
+<span class="header-section-number">3.3.1</span> Peak lists<div class="tooltip"><button class="internal-link-btn" onclick="copy_link('peak-lists')" onmouseout="reset_tooltip('peak-lists-tooltip')"><span class="tooltiptext" id="peak-lists-tooltip">Copy link</span><i class="fa fa-link"></i></button></div>
+</h3>
+<p>Similarly as for raw data, peak lists can be read into R as <code>MSnExp</code>
+data using the <code>readMgfData</code>. See <code>?readMgfData</code> for details.</p>
 </div>
 <div id="exercise-4" class="section level3 unnumbered">
-<h3>Exercise</h3>
+<h3>Exercise<div class="tooltip"><button class="internal-link-btn" onclick="copy_link('exercise-4')" onmouseout="reset_tooltip('exercise-4-tooltip')"><span class="tooltiptext" id="exercise-4-tooltip">Copy link</span><i class="fa fa-link"></i></button></div>
+</h3>
 <p>Using the file starting with <code>MS3TMT10</code>:</p>
 <ul>
 <li>Create an <code>MSnExp</code> object</li>
@@ -588,99 +641,114 @@ rw1[[i]]</code></pre></div>
 </ul>
 </div>
 </div>
-<div id="visualisation-of-raw-ms-data" class="section level2">
+<div id="visualisation-of-raw-ms-data" class="section level2" number="3.4">
 <h2>
-<span class="header-section-number">3.4</span> Visualisation of raw MS data</h2>
-<p>The importance of flexible access to specialised data becomes visible in the figure below (taken from the <code>RforProteomics</code> <a href="http://bioconductor.org/packages/release/data/experiment/vignettes/RforProteomics/inst/doc/RProtVis.html">visualisation vignette</a>). Not only can we access specific data and understand/visualise them, but we can transverse all the data and extracted/visualise/understand structured slices of data.</p>
+<span class="header-section-number">3.4</span> Visualisation of raw MS data<div class="tooltip"><button class="internal-link-btn" onclick="copy_link('visualisation-of-raw-ms-data')" onmouseout="reset_tooltip('visualisation-of-raw-ms-data-tooltip')"><span class="tooltiptext" id="visualisation-of-raw-ms-data-tooltip">Copy link</span><i class="fa fa-link"></i></button></div>
+</h2>
+<p>The importance of flexible access to specialised data becomes visible
+in the figure below (taken from the <code>RforProteomics</code> <a href="http://bioconductor.org/packages/release/data/experiment/vignettes/RforProteomics/inst/doc/RProtVis.html">visualisation
+vignette</a>).
+Not only can we access specific data and understand/visualise them,
+but we can transverse all the data and extracted/visualise/understand
+structured slices of data.</p>
 <p><img src="img/msvisfig.png" width="100%" style="display: block; margin: auto;"></p>
-<p>In this code chunks we start by selecting relevant spectra of interest. We will focus on the first MS1 spectrum acquired after 30 minutes of retention time.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## (3) MS1 spectra indices
-ms1 &lt;-<span class="st"> </span><span class="kw">which</span>(<span class="kw">msLevel</span>(rw2) <span class="op">==</span><span class="st"> </span><span class="dv">1</span>)
-## (4) Select MS1 spectra with retention time between 30 and 35 minutes
-rtsel &lt;-<span class="st"> </span><span class="kw">rtime</span>(rw2)[ms1] <span class="op">/</span><span class="st"> </span><span class="dv">60</span> <span class="op">&gt;</span><span class="st"> </span><span class="dv">30</span> <span class="op">&amp;</span>
-<span class="st">                  </span><span class="kw">rtime</span>(rw2)[ms1] <span class="op">/</span><span class="st"> </span><span class="dv">60</span> <span class="op">&lt;</span><span class="st"> </span><span class="dv">35</span>
-## (5) Indices of the 1st and 2nd MS1 spectra after 30 minutes
-i &lt;-<span class="st"> </span>ms1[<span class="kw">which</span>(rtsel)][<span class="dv">1</span>]
-j &lt;-<span class="st"> </span>ms1[<span class="kw">which</span>(rtsel)][<span class="dv">2</span>]
-## (6) Interleaved MS2 spectra
-ms2 &lt;-<span class="st"> </span>(i<span class="op">+</span><span class="dv">1</span>)<span class="op">:</span>(j<span class="dv">-1</span>)</code></pre></div>
-<p>Now let's extract and plot all relevant information:</p>
+<p>In this code chunks we start by selecting relevant spectra of
+interest. We will focus on the first MS1 spectrum acquired after 30
+minutes of retention time.</p>
+<div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb90-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="do">## (3) MS1 spectra indices</span></span>
+<span id="cb90-2"><a href="raw-ms-data-mzr-and-msnbase.html#cb90-2" aria-hidden="true" tabindex="-1"></a>ms1 <span class="ot">&lt;-</span> <span class="fu">which</span>(<span class="fu">msLevel</span>(rw2) <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb90-3"><a href="raw-ms-data-mzr-and-msnbase.html#cb90-3" aria-hidden="true" tabindex="-1"></a><span class="do">## (4) Select MS1 spectra with retention time between 30 and 35 minutes</span></span>
+<span id="cb90-4"><a href="raw-ms-data-mzr-and-msnbase.html#cb90-4" aria-hidden="true" tabindex="-1"></a>rtsel <span class="ot">&lt;-</span> <span class="fu">rtime</span>(rw2)[ms1] <span class="sc">/</span> <span class="dv">60</span> <span class="sc">&gt;</span> <span class="dv">30</span> <span class="sc">&amp;</span></span>
+<span id="cb90-5"><a href="raw-ms-data-mzr-and-msnbase.html#cb90-5" aria-hidden="true" tabindex="-1"></a>                  <span class="fu">rtime</span>(rw2)[ms1] <span class="sc">/</span> <span class="dv">60</span> <span class="sc">&lt;</span> <span class="dv">35</span></span>
+<span id="cb90-6"><a href="raw-ms-data-mzr-and-msnbase.html#cb90-6" aria-hidden="true" tabindex="-1"></a><span class="do">## (5) Indices of the 1st and 2nd MS1 spectra after 30 minutes</span></span>
+<span id="cb90-7"><a href="raw-ms-data-mzr-and-msnbase.html#cb90-7" aria-hidden="true" tabindex="-1"></a>i <span class="ot">&lt;-</span> ms1[<span class="fu">which</span>(rtsel)][<span class="dv">1</span>]</span>
+<span id="cb90-8"><a href="raw-ms-data-mzr-and-msnbase.html#cb90-8" aria-hidden="true" tabindex="-1"></a>j <span class="ot">&lt;-</span> ms1[<span class="fu">which</span>(rtsel)][<span class="dv">2</span>]</span>
+<span id="cb90-9"><a href="raw-ms-data-mzr-and-msnbase.html#cb90-9" aria-hidden="true" tabindex="-1"></a><span class="do">## (6) Interleaved MS2 spectra</span></span>
+<span id="cb90-10"><a href="raw-ms-data-mzr-and-msnbase.html#cb90-10" aria-hidden="true" tabindex="-1"></a>ms2 <span class="ot">&lt;-</span> (i<span class="sc">+</span><span class="dv">1</span>)<span class="sc">:</span>(j<span class="dv">-1</span>)</span></code></pre></div>
+<p>Now let’s extract and plot all relevant information:</p>
 <ul>
-<li>The upper panel represents the chromatogram of the TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML.gz raw data file, produced with <code>chromatogram</code>. See <code>?chromatogram</code> for details.</li>
+<li>The upper panel represents the chromatogram of the TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML.gz
+raw data file, produced with <code>chromatogram</code>. See <code>?chromatogram</code> for details.</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">chr &lt;-<span class="st"> </span><span class="kw">chromatogram</span>(rw2)
-chr</code></pre></div>
+<div class="sourceCode" id="cb91"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb91-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb91-1" aria-hidden="true" tabindex="-1"></a>chr <span class="ot">&lt;-</span> <span class="fu">chromatogram</span>(rw2)</span>
+<span id="cb91-2"><a href="raw-ms-data-mzr-and-msnbase.html#cb91-2" aria-hidden="true" tabindex="-1"></a>chr</span></code></pre></div>
 <pre><code>## MChromatograms with 1 row and 1 column
 ##      TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML.gz
 ##                                                              &lt;Chromatogram&gt;
 ## [1,]                                                           length: 1431
 ## phenoData with 1 variables
 ## featureData with 1 variables</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(chr)</code></pre></div>
+<div class="sourceCode" id="cb93"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb93-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(chr)</span></code></pre></div>
 <p><img src="berlin_files/figure-html/visfig01-1.png" width="672"></p>
 <ul>
-<li>We concentrate at a specific retention time, 30:01 minutes (1800.6836 seconds)</li>
+<li>We concentrate at a specific retention time,
+30:01 minutes (1800.6836 seconds)</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(chr)
-<span class="kw">abline</span>(<span class="dt">v =</span> <span class="kw">fData</span>(rw2)[i, <span class="st">"retentionTime"</span>], <span class="dt">col =</span> <span class="st">"red"</span>)</code></pre></div>
+<div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb94-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb94-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(chr)</span>
+<span id="cb94-2"><a href="raw-ms-data-mzr-and-msnbase.html#cb94-2" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="fu">fData</span>(rw2)[i, <span class="st">"retentionTime"</span>], <span class="at">col =</span> <span class="st">"red"</span>)</span></code></pre></div>
 <p><img src="berlin_files/figure-html/visfig02-1.png" width="672"></p>
 <ul>
 <li>This corresponds to the 2807 th MS1 spectrum, shown on the second row of figures.</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">plot</span>(rw2[[i]]) </code></pre></div>
+<div class="sourceCode" id="cb95"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb95-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb95-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">plot</span>(rw2[[i]]) </span></code></pre></div>
 <p><img src="berlin_files/figure-html/visfig03-1.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p <span class="op">+</span><span class="st"> </span>ggplot2<span class="op">::</span><span class="kw">xlim</span>(<span class="dv">400</span>, <span class="dv">1000</span>)</code></pre></div>
+<div class="sourceCode" id="cb96"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb96-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb96-1" aria-hidden="true" tabindex="-1"></a>p <span class="sc">+</span> ggplot2<span class="sc">::</span><span class="fu">xlim</span>(<span class="dv">400</span>, <span class="dv">1000</span>)</span></code></pre></div>
 <pre><code>## Warning: Removed 3812 row(s) containing missing values (geom_path).</code></pre>
 <p><img src="berlin_files/figure-html/visfig03-2.png" width="672"></p>
 <p>or using base plotting:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pi &lt;-<span class="st"> </span><span class="kw">as</span>(rw2[[i]], <span class="st">"data.frame"</span>)
-<span class="kw">plot</span>(pi, <span class="dt">type =</span> <span class="st">"l"</span>, <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">400</span>, <span class="dv">1000</span>))
-<span class="kw">legend</span>(<span class="st">"topright"</span>, <span class="dt">bty =</span> <span class="st">"n"</span>,
-       <span class="dt">legend =</span> <span class="kw">paste0</span>(
-           <span class="st">"Acquisition "</span>, <span class="kw">acquisitionNum</span>(rw2)[i],  <span class="st">"</span><span class="ch">\n</span><span class="st">"</span>,
-           <span class="st">"Retention time "</span>, <span class="kw">formatRt</span>(<span class="kw">rtime</span>(rw2)[i])))</code></pre></div>
+<div class="sourceCode" id="cb98"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb98-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb98-1" aria-hidden="true" tabindex="-1"></a>pi <span class="ot">&lt;-</span> <span class="fu">as</span>(rw2[[i]], <span class="st">"data.frame"</span>)</span>
+<span id="cb98-2"><a href="raw-ms-data-mzr-and-msnbase.html#cb98-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(pi, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">400</span>, <span class="dv">1000</span>))</span>
+<span id="cb98-3"><a href="raw-ms-data-mzr-and-msnbase.html#cb98-3" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topright"</span>, <span class="at">bty =</span> <span class="st">"n"</span>,</span>
+<span id="cb98-4"><a href="raw-ms-data-mzr-and-msnbase.html#cb98-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">legend =</span> <span class="fu">paste0</span>(</span>
+<span id="cb98-5"><a href="raw-ms-data-mzr-and-msnbase.html#cb98-5" aria-hidden="true" tabindex="-1"></a>           <span class="st">"Acquisition "</span>, <span class="fu">acquisitionNum</span>(rw2)[i],  <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb98-6"><a href="raw-ms-data-mzr-and-msnbase.html#cb98-6" aria-hidden="true" tabindex="-1"></a>           <span class="st">"Retention time "</span>, <span class="fu">formatRt</span>(<span class="fu">rtime</span>(rw2)[i])))</span></code></pre></div>
 <p><img src="berlin_files/figure-html/visfog03b-1.png" width="672"></p>
 <ul>
-<li>The ions that were selected for MS2 are highlighted by vertical lines. These are represented in the bottom part of the figure.</li>
+<li>The ions that were selected for MS2 are highlighted by vertical
+lines. These are represented in the bottom part of the figure.</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(pi, <span class="dt">type =</span> <span class="st">"l"</span>, <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">400</span>, <span class="dv">1000</span>))
-<span class="kw">legend</span>(<span class="st">"topright"</span>, <span class="dt">bty =</span> <span class="st">"n"</span>,
-       <span class="dt">legend =</span> <span class="kw">paste0</span>(
-           <span class="st">"Acquisition "</span>, <span class="kw">acquisitionNum</span>(rw2)[i],  <span class="st">"</span><span class="ch">\n</span><span class="st">"</span>,
-           <span class="st">"Retention time "</span>, <span class="kw">formatRt</span>(<span class="kw">rtime</span>(rw2)[i])))
-<span class="kw">abline</span>(<span class="dt">v =</span> <span class="kw">precursorMz</span>(rw2)[ms2],
-       <span class="dt">col =</span> <span class="kw">c</span>(<span class="st">"#FF000080"</span>,
-           <span class="kw">rep</span>(<span class="st">"#12121280"</span>, <span class="dv">9</span>)))</code></pre></div>
+<div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb99-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb99-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(pi, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">400</span>, <span class="dv">1000</span>))</span>
+<span id="cb99-2"><a href="raw-ms-data-mzr-and-msnbase.html#cb99-2" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topright"</span>, <span class="at">bty =</span> <span class="st">"n"</span>,</span>
+<span id="cb99-3"><a href="raw-ms-data-mzr-and-msnbase.html#cb99-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">legend =</span> <span class="fu">paste0</span>(</span>
+<span id="cb99-4"><a href="raw-ms-data-mzr-and-msnbase.html#cb99-4" aria-hidden="true" tabindex="-1"></a>           <span class="st">"Acquisition "</span>, <span class="fu">acquisitionNum</span>(rw2)[i],  <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb99-5"><a href="raw-ms-data-mzr-and-msnbase.html#cb99-5" aria-hidden="true" tabindex="-1"></a>           <span class="st">"Retention time "</span>, <span class="fu">formatRt</span>(<span class="fu">rtime</span>(rw2)[i])))</span>
+<span id="cb99-6"><a href="raw-ms-data-mzr-and-msnbase.html#cb99-6" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="fu">precursorMz</span>(rw2)[ms2],</span>
+<span id="cb99-7"><a href="raw-ms-data-mzr-and-msnbase.html#cb99-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"#FF000080"</span>,</span>
+<span id="cb99-8"><a href="raw-ms-data-mzr-and-msnbase.html#cb99-8" aria-hidden="true" tabindex="-1"></a>           <span class="fu">rep</span>(<span class="st">"#12121280"</span>, <span class="dv">9</span>)))</span></code></pre></div>
 <p><img src="berlin_files/figure-html/visfig04-1.png" width="672"></p>
 <ul>
-<li>On the right, we zoom on the isotopic envelope of one peptide in particular (the one highlighted with a red line).</li>
+<li>On the right, we zoom on the isotopic envelope of one peptide in
+particular (the one highlighted with a red line).</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(pi, <span class="dt">type =</span> <span class="st">"l"</span>, <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">521</span>, <span class="fl">522.5</span>))
-<span class="kw">abline</span>(<span class="dt">v =</span> <span class="kw">precursorMz</span>(rw2)[ms2], <span class="dt">col =</span> <span class="st">"#FF000080"</span>)</code></pre></div>
+<div class="sourceCode" id="cb100"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb100-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(pi, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">521</span>, <span class="fl">522.5</span>))</span>
+<span id="cb100-2"><a href="raw-ms-data-mzr-and-msnbase.html#cb100-2" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="fu">precursorMz</span>(rw2)[ms2], <span class="at">col =</span> <span class="st">"#FF000080"</span>)</span></code></pre></div>
 <p><img src="berlin_files/figure-html/visfig05-1.png" width="672"></p>
 <ul>
-<li>A final loop through the relevant MS2 spectra plots the <code>length(ms2)</code> MS2 spectra highlighted above.</li>
+<li>A final loop through the relevant MS2 spectra plots the
+<code>length(ms2)</code> MS2 spectra highlighted above.</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">5</span>, <span class="dv">2</span>), <span class="dt">mar =</span> <span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">1</span>))
-<span class="cf">for</span> (ii <span class="cf">in</span> ms2) {
-    pj &lt;-<span class="st"> </span><span class="kw">as</span>(rw2[[ii]], <span class="st">"data.frame"</span>)
-    <span class="kw">plot</span>(pj, <span class="dt">xlab =</span> <span class="st">""</span>, <span class="dt">ylab =</span> <span class="st">""</span>, <span class="dt">type =</span> <span class="st">"h"</span>, <span class="dt">cex.axis =</span> <span class="fl">.6</span>)
-    <span class="kw">legend</span>(<span class="st">"topright"</span>, <span class="dt">legend =</span> <span class="kw">paste0</span>(<span class="st">"Prec M/Z</span><span class="ch">\n</span><span class="st">"</span>,
-                           <span class="kw">round</span>(<span class="kw">precursorMz</span>(rw2)[ii], <span class="dv">2</span>)),
-           <span class="dt">bty =</span> <span class="st">"n"</span>, <span class="dt">cex =</span> <span class="fl">.8</span>)
-}</code></pre></div>
+<div class="sourceCode" id="cb101"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb101-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb101-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">2</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">1</span>))</span>
+<span id="cb101-2"><a href="raw-ms-data-mzr-and-msnbase.html#cb101-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (ii <span class="cf">in</span> ms2) {</span>
+<span id="cb101-3"><a href="raw-ms-data-mzr-and-msnbase.html#cb101-3" aria-hidden="true" tabindex="-1"></a>    pj <span class="ot">&lt;-</span> <span class="fu">as</span>(rw2[[ii]], <span class="st">"data.frame"</span>)</span>
+<span id="cb101-4"><a href="raw-ms-data-mzr-and-msnbase.html#cb101-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plot</span>(pj, <span class="at">xlab =</span> <span class="st">""</span>, <span class="at">ylab =</span> <span class="st">""</span>, <span class="at">type =</span> <span class="st">"h"</span>, <span class="at">cex.axis =</span> .<span class="dv">6</span>)</span>
+<span id="cb101-5"><a href="raw-ms-data-mzr-and-msnbase.html#cb101-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">legend</span>(<span class="st">"topright"</span>, <span class="at">legend =</span> <span class="fu">paste0</span>(<span class="st">"Prec M/Z</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb101-6"><a href="raw-ms-data-mzr-and-msnbase.html#cb101-6" aria-hidden="true" tabindex="-1"></a>                           <span class="fu">round</span>(<span class="fu">precursorMz</span>(rw2)[ii], <span class="dv">2</span>)),</span>
+<span id="cb101-7"><a href="raw-ms-data-mzr-and-msnbase.html#cb101-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">bty =</span> <span class="st">"n"</span>, <span class="at">cex =</span> .<span class="dv">8</span>)</span>
+<span id="cb101-8"><a href="raw-ms-data-mzr-and-msnbase.html#cb101-8" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p><img src="berlin_files/figure-html/visfig06-1.png" width="768"></p>
 </div>
-<div id="relations-between-spectra" class="section level2">
+<div id="relations-between-spectra" class="section level2" number="3.5">
 <h2>
-<span class="header-section-number">3.5</span> Relations between spectra</h2>
-<p>The <code>filterPrecursorScan</code> makes the above much easier by extracting <em>related</em> spectra:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">i &lt;-<span class="st"> </span><span class="kw">which</span>(<span class="kw">rtime</span>(rw2)<span class="op">/</span><span class="dv">60</span> <span class="op">&gt;</span><span class="st"> </span><span class="dv">30</span> <span class="op">&amp;</span><span class="st"> </span><span class="kw">msLevel</span>(rw2) <span class="op">==</span><span class="st"> </span><span class="dv">1</span>)[<span class="dv">1</span>]
-<span class="kw">acquisitionNum</span>(rw2)[i]</code></pre></div>
+<span class="header-section-number">3.5</span> Relations between spectra<div class="tooltip"><button class="internal-link-btn" onclick="copy_link('relations-between-spectra')" onmouseout="reset_tooltip('relations-between-spectra-tooltip')"><span class="tooltiptext" id="relations-between-spectra-tooltip">Copy link</span><i class="fa fa-link"></i></button></div>
+</h2>
+<p>The <code>filterPrecursorScan</code> makes the above much easier by extracting
+<em>related</em> spectra:</p>
+<div class="sourceCode" id="cb102"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb102-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb102-1" aria-hidden="true" tabindex="-1"></a>i <span class="ot">&lt;-</span> <span class="fu">which</span>(<span class="fu">rtime</span>(rw2)<span class="sc">/</span><span class="dv">60</span> <span class="sc">&gt;</span> <span class="dv">30</span> <span class="sc">&amp;</span> <span class="fu">msLevel</span>(rw2) <span class="sc">==</span> <span class="dv">1</span>)[<span class="dv">1</span>]</span>
+<span id="cb102-2"><a href="raw-ms-data-mzr-and-msnbase.html#cb102-2" aria-hidden="true" tabindex="-1"></a><span class="fu">acquisitionNum</span>(rw2)[i]</span></code></pre></div>
 <pre><code>## F1.S2807 
 ##     2807</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">rw3 &lt;-<span class="st"> </span><span class="kw">filterPrecursorScan</span>(rw2, <span class="dv">2807</span>)
-rw3</code></pre></div>
+<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb104-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb104-1" aria-hidden="true" tabindex="-1"></a>rw3 <span class="ot">&lt;-</span> <span class="fu">filterPrecursorScan</span>(rw2, <span class="dv">2807</span>)</span>
+<span id="cb104-2"><a href="raw-ms-data-mzr-and-msnbase.html#cb104-2" aria-hidden="true" tabindex="-1"></a>rw3</span></code></pre></div>
 <pre><code>## MSn experiment data ("OnDiskMSnExp")
 ## Object size in memory: 0.04 Mb
 ## - - - Spectra data - - -
@@ -688,9 +756,9 @@ rw3</code></pre></div>
 ##  Number of spectra: 11 
 ##  MSn retention times: 30:01 - 30:04 minutes
 ## - - - Processing information - - -
-## Data loaded [Tue Jan 12 08:45:13 2021] 
-## Filter: select parent/children scans for 2807 [Tue Jan 12 08:46:27 2021] 
-##  MSnbase version: 2.17.4 
+## Data loaded [Tue Mar  9 18:36:30 2021] 
+## Filter: select parent/children scans for 2807 [Tue Mar  9 18:37:22 2021] 
+##  MSnbase version: 2.17.5 
 ## - - - Meta data  - - -
 ## phenoData
 ##   rowNames:
@@ -706,38 +774,51 @@ rw3</code></pre></div>
 ##   fvarMetadata: labelDescription
 ## experimentData: use 'experimentData(object)'</code></pre>
 </div>
-<div id="ms-map" class="section level2">
+<div id="ms-map" class="section level2" number="3.6">
 <h2>
-<span class="header-section-number">3.6</span> MS map</h2>
-<p>Below, we illustrate some additional visualisation and animations of raw MS data, also taken from the <code>RforProteomics</code> <a href="http://bioconductor.org/packages/release/data/experiment/vignettes/RforProteomics/inst/doc/RProtVis.html">visualisation vignette</a>. On the left, we have a heatmap visualisation of a MS map and a 3 dimensional representation of the same data. On the right, 2 MS1 spectra in blue and the set of interleaves 10 MS2 spectra.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Additional packages
-<span class="kw">library</span>(<span class="st">"lattice"</span>)
-<span class="kw">library</span>(<span class="st">"gridExtra"</span>)
-
-M3 &lt;-<span class="st"> </span><span class="kw">MSmap</span>(rw2, ms1[rtsel], <span class="dv">521</span>, <span class="dv">523</span>, <span class="fl">.005</span>)
-<span class="kw">plot</span>(M3, <span class="dt">aspect =</span> <span class="dv">1</span>, <span class="dt">allTicks =</span> <span class="ot">FALSE</span>)</code></pre></div>
+<span class="header-section-number">3.6</span> MS map<div class="tooltip"><button class="internal-link-btn" onclick="copy_link('ms-map')" onmouseout="reset_tooltip('ms-map-tooltip')"><span class="tooltiptext" id="ms-map-tooltip">Copy link</span><i class="fa fa-link"></i></button></div>
+</h2>
+<p>Below, we illustrate some additional visualisation and animations of
+raw MS data, also taken from the <code>RforProteomics</code>
+<a href="http://bioconductor.org/packages/release/data/experiment/vignettes/RforProteomics/inst/doc/RProtVis.html">visualisation vignette</a>. On
+the left, we have a heatmap visualisation of a MS map and a 3
+dimensional representation of the same data. On the right, 2 MS1
+spectra in blue and the set of interleaves 10 MS2 spectra.</p>
+<div class="sourceCode" id="cb106"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb106-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb106-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Additional packages</span></span>
+<span id="cb106-2"><a href="raw-ms-data-mzr-and-msnbase.html#cb106-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"lattice"</span>)</span>
+<span id="cb106-3"><a href="raw-ms-data-mzr-and-msnbase.html#cb106-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"gridExtra"</span>)</span>
+<span id="cb106-4"><a href="raw-ms-data-mzr-and-msnbase.html#cb106-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb106-5"><a href="raw-ms-data-mzr-and-msnbase.html#cb106-5" aria-hidden="true" tabindex="-1"></a>M3 <span class="ot">&lt;-</span> <span class="fu">MSmap</span>(rw2, ms1[rtsel], <span class="dv">521</span>, <span class="dv">523</span>, .<span class="dv">005</span>)</span>
+<span id="cb106-6"><a href="raw-ms-data-mzr-and-msnbase.html#cb106-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(M3, <span class="at">aspect =</span> <span class="dv">1</span>, <span class="at">allTicks =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <p><img src="berlin_files/figure-html/msmap1-1.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot3D</span>(M3)</code></pre></div>
+<div class="sourceCode" id="cb107"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb107-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb107-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot3D</span>(M3)</span></code></pre></div>
 <p><img src="berlin_files/figure-html/msmap1-2.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="cf">if</span> (<span class="kw">require</span>(<span class="st">"rgl"</span>) <span class="op">&amp;</span><span class="st"> </span><span class="kw">interactive</span>())
-    <span class="kw">plot3D</span>(M3, <span class="dt">rgl =</span> <span class="ot">TRUE</span>)</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">i &lt;-<span class="st"> </span>ms1[<span class="kw">which</span>(rtsel)][<span class="dv">1</span>]
-j &lt;-<span class="st"> </span>ms1[<span class="kw">which</span>(rtsel)][<span class="dv">2</span>]
-M4 &lt;-<span class="st"> </span><span class="kw">MSmap</span>(rw2, i<span class="op">:</span>j, <span class="dv">100</span>, <span class="dv">1000</span>, <span class="dv">1</span>)
-<span class="kw">plot3D</span>(M4)    </code></pre></div>
+<div class="sourceCode" id="cb108"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb108-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb108-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">require</span>(<span class="st">"rgl"</span>) <span class="sc">&amp;</span> <span class="fu">interactive</span>())</span>
+<span id="cb108-2"><a href="raw-ms-data-mzr-and-msnbase.html#cb108-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plot3D</span>(M3, <span class="at">rgl =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb109"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb109-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb109-1" aria-hidden="true" tabindex="-1"></a>i <span class="ot">&lt;-</span> ms1[<span class="fu">which</span>(rtsel)][<span class="dv">1</span>]</span>
+<span id="cb109-2"><a href="raw-ms-data-mzr-and-msnbase.html#cb109-2" aria-hidden="true" tabindex="-1"></a>j <span class="ot">&lt;-</span> ms1[<span class="fu">which</span>(rtsel)][<span class="dv">2</span>]</span>
+<span id="cb109-3"><a href="raw-ms-data-mzr-and-msnbase.html#cb109-3" aria-hidden="true" tabindex="-1"></a>M4 <span class="ot">&lt;-</span> <span class="fu">MSmap</span>(rw2, i<span class="sc">:</span>j, <span class="dv">100</span>, <span class="dv">1000</span>, <span class="dv">1</span>)</span>
+<span id="cb109-4"><a href="raw-ms-data-mzr-and-msnbase.html#cb109-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot3D</span>(M4)    </span></code></pre></div>
 <p><img src="berlin_files/figure-html/msmap2-1.png" width="1440"></p>
 <p>Below, we have animations build from extracting successive slices as above.</p>
 <p><img src="img/msanim1.gif" alt="MS animation 1"><img src="img/msanim2.gif" alt="MS animation 2"></p>
 </div>
-<div id="raw-data-processing" class="section level2">
+<div id="raw-data-processing" class="section level2" number="3.7">
 <h2>
-<span class="header-section-number">3.7</span> Raw data processing</h2>
-<p>For raw data processing look at <code>MSnbase</code>'s <code>clean</code>, <code>smooth</code>, <code>pickPeaks</code>, <code>removePeaks</code> and <code>trimMz</code> for <code>MSnExp</code> and spectra processing methods.</p>
-<p>As an illustration, we show the <code>pickPeaks</code> function on the <code>itraqdata</code> data. Centoiding transforms the distribution of M/Z values measured for an ion (i.e. a set of M/Z and intensities, first figure below) into a single M/Z and intensity pair of values (second figure below).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">"ggplot2"</span>) ## for coord_cartesian
-<span class="kw">data</span>(itraqdata)
-<span class="kw">plot</span>(itraqdata[[<span class="dv">10</span>]], <span class="dt">full =</span> <span class="ot">TRUE</span>) <span class="op">+</span>
-<span class="st">    </span><span class="kw">coord_cartesian</span>(<span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">915</span>, <span class="dv">925</span>))</code></pre></div>
+<span class="header-section-number">3.7</span> Raw data processing<div class="tooltip"><button class="internal-link-btn" onclick="copy_link('raw-data-processing')" onmouseout="reset_tooltip('raw-data-processing-tooltip')"><span class="tooltiptext" id="raw-data-processing-tooltip">Copy link</span><i class="fa fa-link"></i></button></div>
+</h2>
+<p>For raw data processing look at <code>MSnbase</code>’s <code>clean</code>, <code>smooth</code>,
+<code>pickPeaks</code>, <code>removePeaks</code> and <code>trimMz</code> for <code>MSnExp</code> and spectra
+processing methods.</p>
+<p>As an illustration, we show the <code>pickPeaks</code> function on the
+<code>itraqdata</code> data. Centoiding transforms the distribution of M/Z values
+measured for an ion (i.e. a set of M/Z and intensities, first figure
+below) into a single M/Z and intensity pair of values (second figure
+below).</p>
+<div class="sourceCode" id="cb110"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb110-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb110-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"ggplot2"</span>) <span class="do">## for coord_cartesian</span></span>
+<span id="cb110-2"><a href="raw-ms-data-mzr-and-msnbase.html#cb110-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(itraqdata)</span>
+<span id="cb110-3"><a href="raw-ms-data-mzr-and-msnbase.html#cb110-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(itraqdata[[<span class="dv">10</span>]], <span class="at">full =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb110-4"><a href="raw-ms-data-mzr-and-msnbase.html#cb110-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">915</span>, <span class="dv">925</span>))</span></code></pre></div>
 <div class="figure">
 <span id="fig:peakpicking"></span>
 <p class="caption marginnote shownote">
@@ -745,9 +826,9 @@ Figure 3.1: Peak picking: profile mode.
 </p>
 <img src="berlin_files/figure-html/peakpicking-1.png" alt="Peak picking: profile mode." width="672">
 </div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">itraqdata2 &lt;-<span class="st"> </span><span class="kw">pickPeaks</span>(itraqdata)
-<span class="kw">plot</span>(itraqdata2[[<span class="dv">10</span>]], <span class="dt">full =</span> <span class="ot">TRUE</span>) <span class="op">+</span>
-<span class="st">    </span><span class="kw">coord_cartesian</span>(<span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">915</span>, <span class="dv">925</span>))</code></pre></div>
+<div class="sourceCode" id="cb111"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb111-1"><a href="raw-ms-data-mzr-and-msnbase.html#cb111-1" aria-hidden="true" tabindex="-1"></a>itraqdata2 <span class="ot">&lt;-</span> <span class="fu">pickPeaks</span>(itraqdata)</span>
+<span id="cb111-2"><a href="raw-ms-data-mzr-and-msnbase.html#cb111-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(itraqdata2[[<span class="dv">10</span>]], <span class="at">full =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb111-3"><a href="raw-ms-data-mzr-and-msnbase.html#cb111-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">915</span>, <span class="dv">925</span>))</span></code></pre></div>
 <div class="figure">
 <span id="fig:peakpicking2"></span>
 <p class="caption marginnote shownote">
@@ -755,8 +836,13 @@ Figure 3.2: Peak picking: centroided.
 </p>
 <img src="berlin_files/figure-html/peakpicking2-1.png" alt="Peak picking: centroided." width="672">
 </div>
-<p>See also section 6 <em>Raw data processing</em> of the <a href="http://lgatto.github.io/MSnbase/articles/v01-MSnbase-demo.html">main <code>MSnbase</code> vignette</a> and the <a href="http://lgatto.github.io/MSnbase/articles/v03-MSnbase-centroiding.html"><em>centroiding of profile-mode MS data</em></a>.</p>
-<p>The <em><a href="https://bioconductor.org/packages/3.12/MALDIquant">MALDIquant</a></em> and <em><a href="https://bioconductor.org/packages/3.12/xcms">xcms</a></em> packages also features a wide range of raw data processing methods on their own ad hoc data instance types.</p>
+<p>See also section 6 <em>Raw data processing</em> of the <a href="http://lgatto.github.io/MSnbase/articles/v01-MSnbase-demo.html">main <code>MSnbase</code>
+vignette</a>
+and the <a href="http://lgatto.github.io/MSnbase/articles/v03-MSnbase-centroiding.html"><em>centroiding of profile-mode MS
+data</em></a>.</p>
+<p>The <em><a href="https://bioconductor.org/packages/3.12/MALDIquant">MALDIquant</a></em> and <em><a href="https://bioconductor.org/packages/3.12/xcms">xcms</a></em> packages also
+features a wide range of raw data processing methods on their own ad
+hoc data instance types.</p>
 
 </div>
 </div></body></html>
@@ -766,7 +852,9 @@ Figure 3.2: Peak picking: centroided.
 <a href="identification-data.html"><button class="btn btn-default">Next</button></a>
 </p>
 <p class="build-date">Page built: 
-2021-01-12
+2021-03-09
+ using 
+R version 4.0.3 Patched (2021-01-18 r79847)
 </p>
 </div>
 </div>

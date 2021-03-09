@@ -14,19 +14,20 @@
 
 <meta name="author" content="Laurent Gatto" />
 
-<meta name="date" content="2021-01-12" />
+<meta name="date" content="2021-03-09" />
 
 <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
   TeX: { equationNumbers: { autoNumber: "AMS" } }
 });
 </script>
-  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <meta name="description" content="Chapter 7 Session information | R/Bioconductor for Mass Spectrometry and Proteomics">
 
 <title>Chapter 7 Session information | R/Bioconductor for Mass Spectrometry and Proteomics</title>
 
+<script src="libs/header-attrs-2.7/header-attrs.js"></script>
 <link href="libs/tufte-css-2015.12.29/tufte.css" rel="stylesheet" />
 <link href="libs/tufte-css-2015.12.29/envisioned.css" rel="stylesheet" />
 <link href="libs/msmb-css-0/msmb.css" rel="stylesheet" />
@@ -47,46 +48,93 @@ if(f.classList.contains('fa-plus-square')) {
 
 }
 </script>
+<script>
+function copy_link(id) {
+  var dummy = document.createElement('input'),
+  text = window.location.href.split(/[?#]/)[0] + '#' + id;
+  document.body.appendChild(dummy);
+  dummy.value = text;
+  dummy.select();
+  document.execCommand('copy');
+  document.body.removeChild(dummy);
+  
+  var tooltip = document.getElementById(id + '-tooltip');
+  tooltip.innerHTML = 'Copied!';
+}
+
+function reset_tooltip(id) {
+  var tooltip = document.getElementById(id);
+  tooltip.innerHTML = 'Copy link';
+}
+</script>
 
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
-div.sourceCode { overflow-x: auto; }
-table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
-  margin: 0; padding: 0; vertical-align: baseline; border: none; }
-table.sourceCode { width: 100%; line-height: 100%; background-color: #f8f8f8; }
-td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
-td.sourceCode { padding-left: 5px; }
-pre, code { background-color: #f8f8f8; }
-code > span.kw { color: #204a87; font-weight: bold; } /* Keyword */
-code > span.dt { color: #204a87; } /* DataType */
-code > span.dv { color: #0000cf; } /* DecVal */
-code > span.bn { color: #0000cf; } /* BaseN */
-code > span.fl { color: #0000cf; } /* Float */
-code > span.ch { color: #4e9a06; } /* Char */
-code > span.st { color: #4e9a06; } /* String */
-code > span.co { color: #8f5902; font-style: italic; } /* Comment */
-code > span.ot { color: #8f5902; } /* Other */
-code > span.al { color: #ef2929; } /* Alert */
-code > span.fu { color: #000000; } /* Function */
-code > span.er { color: #a40000; font-weight: bold; } /* Error */
-code > span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
-code > span.cn { color: #000000; } /* Constant */
-code > span.sc { color: #000000; } /* SpecialChar */
-code > span.vs { color: #4e9a06; } /* VerbatimString */
-code > span.ss { color: #4e9a06; } /* SpecialString */
-code > span.im { } /* Import */
-code > span.va { color: #000000; } /* Variable */
-code > span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
-code > span.op { color: #ce5c00; font-weight: bold; } /* Operator */
-code > span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
-code > span.ex { } /* Extension */
-code > span.at { color: #c4a000; } /* Attribute */
-code > span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
-code > span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
-code > span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
-code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  background-color: #f8f8f8; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #c4a000; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #000000; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #000000; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #000000; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
 </style>
+
 
 
 <link rel="stylesheet" href="style.css" type="text/css" />
@@ -122,26 +170,26 @@ code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Inf
 <div class="row">
 <div class="col-sm-12">
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
-<html><body><div id="sec:si" class="section level1">
+<html><body><div id="sec:si" class="section level1" number="7">
 <h1>
 <span class="header-section-number">Chapter 7</span> Session information</h1>
 <p>The following packages have been used to generate this document.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sessionInfo</span>()</code></pre></div>
-<pre><code>## R version 4.0.0 (2020-04-24)
+<div class="sourceCode" id="cb389"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb389-1"><a href="sec-si.html#cb389-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code></pre></div>
+<pre><code>## R version 4.0.3 Patched (2021-01-18 r79847)
 ## Platform: x86_64-pc-linux-gnu (64-bit)
-## Running under: Ubuntu 18.04.5 LTS
+## Running under: Manjaro Linux
 ## 
 ## Matrix products: default
-## BLAS:   /usr/lib/x86_64-linux-gnu/libf77blas.so.3.10.3
-## LAPACK: /usr/lib/x86_64-linux-gnu/atlas/liblapack.so.3.10.3
+## BLAS:   /usr/lib/libblas.so.3.9.0
+## LAPACK: /usr/lib/liblapack.so.3.9.0
 ## 
 ## locale:
 ##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
-##  [3] LC_TIME=en_GB.UTF-8        LC_COLLATE=en_US.UTF-8    
-##  [5] LC_MONETARY=en_GB.UTF-8    LC_MESSAGES=en_US.UTF-8   
-##  [7] LC_PAPER=en_GB.UTF-8       LC_NAME=C                 
+##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
 ##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-## [11] LC_MEASUREMENT=en_GB.UTF-8 LC_IDENTIFICATION=C       
+## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
 ## 
 ## attached base packages:
 ## [1] stats4    parallel  stats     graphics  grDevices utils     datasets 
@@ -149,86 +197,70 @@ code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Inf
 ## 
 ## other attached packages:
 ##  [1] proDA_1.4.0           magrittr_2.0.1        MSqRob_0.7.7         
-##  [4] lme4_1.1-26           Matrix_1.2-18         ggrepel_0.9.0        
-##  [7] forcats_0.5.0         stringr_1.4.0         purrr_0.3.4          
-## [10] readr_1.4.0           tidyr_1.1.2           tibble_3.0.4         
+##  [4] lme4_1.1-26           Matrix_1.3-2          ggrepel_0.9.1        
+##  [7] forcats_0.5.1         stringr_1.4.0         purrr_0.3.4          
+## [10] readr_1.4.0           tidyr_1.1.3           tibble_3.1.0         
 ## [13] tidyverse_1.3.0       limma_3.46.0          mzID_1.28.0          
-## [16] dplyr_1.0.2           ggplot2_3.3.3         rgl_0.103.5          
-## [19] msdata_0.30.0         rpx_1.99.2            RforProteomics_1.27.1
+## [16] dplyr_1.0.5           ggplot2_3.3.3         rgl_0.105.22         
+## [19] msdata_0.30.0         rpx_1.99.1            RforProteomics_1.28.1
 ## [22] MSnID_1.24.0          gridExtra_2.3         lattice_0.20-41      
-## [25] AnnotationHub_2.22.0  BiocFileCache_1.14.0  dbplyr_2.0.0         
-## [28] MSnbase_2.17.4        ProtGenerics_1.23.6   S4Vectors_0.28.1     
+## [25] AnnotationHub_2.22.0  BiocFileCache_1.14.0  dbplyr_2.1.0         
+## [28] MSnbase_2.17.5        ProtGenerics_1.23.7   S4Vectors_0.28.1     
 ## [31] Biobase_2.50.0        BiocGenerics_0.36.0   mzR_2.24.1           
-## [34] Rcpp_1.0.5            BiocStyle_2.18.1     
+## [34] Rcpp_1.0.6            BiocStyle_2.18.1     
 ## 
 ## loaded via a namespace (and not attached):
-##   [1] readxl_1.3.1                  backports_1.2.1              
-##   [3] gmm_1.6-5                     plyr_1.8.6                   
-##   [5] splines_4.0.0                 BiocParallel_1.24.1          
-##   [7] crosstalk_1.1.0.1             GenomeInfoDb_1.26.2          
-##   [9] digest_0.6.27                 msmbstyle_0.0.11             
-##  [11] foreach_1.5.1                 htmltools_0.5.0              
-##  [13] fansi_0.4.1                   memoise_1.1.0                
-##  [15] doParallel_1.0.16             Biostrings_2.58.0            
-##  [17] modelr_0.1.8                  matrixStats_0.57.0           
-##  [19] R.utils_2.10.1                sandwich_3.0-0               
-##  [21] imputeLCMD_2.0                colorspace_2.0-0             
-##  [23] rvest_0.3.6                   blob_1.2.1                   
-##  [25] rappdirs_0.3.1                haven_2.3.1                  
-##  [27] xfun_0.19                     crayon_1.3.4                 
-##  [29] RCurl_1.98-1.2                jsonlite_1.7.2               
-##  [31] graph_1.68.0                  impute_1.64.0                
-##  [33] zoo_1.8-8                     iterators_1.0.13             
-##  [35] glue_1.4.2                    gtable_0.3.0                 
-##  [37] zlibbioc_1.36.0               XVector_0.30.0               
-##  [39] webshot_0.5.2                 DelayedArray_0.16.0          
-##  [41] R.cache_0.14.0                scales_1.1.1                 
-##  [43] mvtnorm_1.1-1                 vsn_3.58.0                   
-##  [45] DBI_1.1.0                     miniUI_0.1.1.1               
-##  [47] xtable_1.8-4                  bit_4.0.4                    
-##  [49] preprocessCore_1.52.1         MsCoreUtils_1.3.2            
-##  [51] htmlwidgets_1.5.3             httr_1.4.2                   
-##  [53] gplots_3.1.1                  ellipsis_0.3.1               
-##  [55] pkgconfig_2.0.3               XML_3.99-0.5                 
-##  [57] R.methodsS3_1.8.1             farver_2.0.3                 
-##  [59] tidyselect_1.1.0              labeling_0.4.2               
-##  [61] rlang_0.4.10                  manipulateWidget_0.10.1      
-##  [63] reshape2_1.4.4                later_1.1.0.1                
-##  [65] AnnotationDbi_1.52.0          cellranger_1.1.0             
-##  [67] munsell_0.5.0                 biocViews_1.58.1             
-##  [69] BiocVersion_3.12.0            tools_4.0.0                  
-##  [71] cli_2.2.0                     generics_0.1.0               
-##  [73] RSQLite_2.2.1                 broom_0.7.3                  
-##  [75] evaluate_0.14                 fastmap_1.0.1                
-##  [77] yaml_2.2.1                    fs_1.5.0                     
-##  [79] knitr_1.30                    bit64_4.0.5                  
-##  [81] caTools_1.18.0                ncdf4_1.17                   
-##  [83] RBGL_1.66.0                   nlme_3.1-151                 
-##  [85] mime_0.9                      R.oo_1.24.0                  
-##  [87] xml2_1.3.2                    compiler_4.0.0               
-##  [89] rstudioapi_0.13               curl_4.3                     
-##  [91] png_0.1-7                     interactiveDisplayBase_1.28.0
-##  [93] affyio_1.60.0                 reprex_0.3.0                 
-##  [95] statmod_1.4.35                stringi_1.5.3                
-##  [97] ps_1.5.0                      highr_0.8                    
-##  [99] pRolocdata_1.28.0             nloptr_1.2.2.2               
-## [101] tmvtnorm_1.4-10               vctrs_0.3.6                  
-## [103] norm_1.0-9.5                  pillar_1.4.7                 
-## [105] lifecycle_0.2.0               RUnit_0.4.32                 
-## [107] BiocManager_1.30.10           MALDIquant_1.19.3            
-## [109] data.table_1.13.4             bitops_1.0-6                 
-## [111] GenomicRanges_1.42.0          httpuv_1.5.4                 
-## [113] R6_2.5.0                      pcaMethods_1.82.0            
-## [115] affy_1.68.0                   bookdown_0.21                
-## [117] promises_1.1.1                KernSmooth_2.23-18           
-## [119] IRanges_2.24.1                codetools_0.2-16             
-## [121] boot_1.3-25                   MASS_7.3-53                  
-## [123] gtools_3.8.2                  assertthat_0.2.1             
-## [125] SummarizedExperiment_1.20.0   withr_2.3.0                  
-## [127] GenomeInfoDbData_1.2.4        hms_0.5.3                    
-## [129] grid_4.0.0                    minqa_1.2.4                  
-## [131] rmarkdown_2.6                 MatrixGenerics_1.2.0         
-## [133] lubridate_1.7.9.2             shiny_1.5.0</code></pre>
+##   [1] utf8_1.1.4                  R.utils_2.10.1             
+##   [3] gmm_1.6-6                   RUnit_0.4.32               
+##   [5] tidyselect_1.1.0            RSQLite_2.2.3              
+##   [7] AnnotationDbi_1.52.0        htmlwidgets_1.5.3          
+##   [9] grid_4.0.3                  BiocParallel_1.24.1        
+##  [11] norm_1.0-9.5                munsell_0.5.0              
+##  [13] codetools_0.2-18            preprocessCore_1.52.1      
+##  [15] statmod_1.4.35              miniUI_0.1.1.1             
+##  [17] withr_2.4.1                 colorspace_2.0-0           
+##  [19] highr_0.8                   knitr_1.31.3               
+##  [21] rstudioapi_0.13             MatrixGenerics_1.2.1       
+##  [23] labeling_0.4.2              GenomeInfoDbData_1.2.4     
+##  [25] bit64_4.0.5                 farver_2.1.0               
+##  [27] vctrs_0.3.6                 generics_0.1.0             
+##  [29] xfun_0.21                   GenomeInfoDb_1.26.2        
+##  [31] R6_2.5.0                    doParallel_1.0.16          
+##  [33] MsCoreUtils_1.3.2           manipulateWidget_0.10.1    
+##  [35] DelayedArray_0.16.2         bitops_1.0-6               
+##  [37] pRolocdata_1.28.0           cachem_1.0.4               
+##  [39] assertthat_0.2.1            promises_1.2.0.1           
+##  [41] scales_1.1.1                gtable_0.3.0               
+##  [43] extraDistr_1.9.1            affy_1.68.0                
+##  [45] biocViews_1.58.1            sandwich_3.0-0             
+##  [47] rlang_0.4.10                splines_4.0.3              
+##  [49] impute_1.64.0               broom_0.7.5                
+##  [51] BiocManager_1.30.10         yaml_2.2.1                 
+##  [53] reshape2_1.4.4              modelr_0.1.8               
+##  [55] crosstalk_1.1.1             backports_1.2.1            
+##  [57] httpuv_1.5.5                RBGL_1.66.0                
+##  [59] tools_4.0.3                 bookdown_0.21.6            
+##  [61] affyio_1.60.0               ellipsis_0.3.1             
+##  [63] gplots_3.1.1                jquerylib_0.1.3            
+##  [65] plyr_1.8.6                  zlibbioc_1.36.0            
+##  [67] RCurl_1.98-1.2              ps_1.6.0                   
+##  [69] zoo_1.8-8                   SummarizedExperiment_1.20.0
+##  [71] haven_2.3.1                 fs_1.5.0                   
+##  [73] data.table_1.14.0           reprex_1.0.0               
+##  [75] pcaMethods_1.82.0           mvtnorm_1.1-1              
+##  [77] msmbstyle_0.0.18            matrixStats_0.58.0         
+##  [79] R.cache_0.14.0              hms_1.0.0                  
+##  [81] mime_0.10                   evaluate_0.14              
+##  [83] xtable_1.8-4                XML_3.99-0.5               
+##  [85] readxl_1.3.1                IRanges_2.24.1             
+##  [87] compiler_4.0.3              KernSmooth_2.23-18         
+##  [89] ncdf4_1.17                  crayon_1.4.1               
+##  [91] minqa_1.2.4                 R.oo_1.24.0                
+##  [93] htmltools_0.5.1.1           later_1.1.0.1              
+##  [95] lubridate_1.7.10            DBI_1.1.1                  
+##  [97] MASS_7.3-53                 tmvtnorm_1.4-10            
+##  [99] rappdirs_0.3.3              boot_1.3-25                
+##  [ reached getOption("max.print") -- omitted 40 entries ]</code></pre>
 
 </div></body></html>
 
@@ -236,7 +268,9 @@ code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Inf
 <a href="optional-material.html"><button class="btn btn-default">Previous</button></a>
 </p>
 <p class="build-date">Page built: 
-2021-01-12
+2021-03-09
+ using 
+R version 4.0.3 Patched (2021-01-18 r79847)
 </p>
 </div>
 </div>
