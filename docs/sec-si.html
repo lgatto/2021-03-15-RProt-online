@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Chapter 7 Session information | R/Bioconductor for Mass Spectrometry and Proteomics" />
+<meta property="og:type" content="book" />
+
+
+
+
+
+<meta name="author" content="Laurent Gatto" />
+
+<meta name="date" content="2021-01-12" />
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  TeX: { equationNumbers: { autoNumber: "AMS" } }
+});
+</script>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
+
+<meta name="description" content="Chapter 7 Session information | R/Bioconductor for Mass Spectrometry and Proteomics">
+
+<title>Chapter 7 Session information | R/Bioconductor for Mass Spectrometry and Proteomics</title>
+
+<link href="libs/tufte-css-2015.12.29/tufte.css" rel="stylesheet" />
+<link href="libs/tufte-css-2015.12.29/envisioned.css" rel="stylesheet" />
+<link href="libs/msmb-css-0/msmb.css" rel="stylesheet" />
+<script>
+function toggle_visibility(id1, id2) {
+var e = document.getElementById(id1);
+var f = document.getElementById(id2);
+
+e.style.display = ((e.style.display!='none') ? 'none' : 'block');
+
+if(f.classList.contains('fa-plus-square')) {
+    f.classList.add('fa-minus-square')
+    f.classList.remove('fa-plus-square')
+} else {
+    f.classList.add('fa-plus-square')
+    f.classList.remove('fa-minus-square')
+}
+
+}
+</script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; background-color: #f8f8f8; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+pre, code { background-color: #f8f8f8; }
+code > span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code > span.dt { color: #204a87; } /* DataType */
+code > span.dv { color: #0000cf; } /* DecVal */
+code > span.bn { color: #0000cf; } /* BaseN */
+code > span.fl { color: #0000cf; } /* Float */
+code > span.ch { color: #4e9a06; } /* Char */
+code > span.st { color: #4e9a06; } /* String */
+code > span.co { color: #8f5902; font-style: italic; } /* Comment */
+code > span.ot { color: #8f5902; } /* Other */
+code > span.al { color: #ef2929; } /* Alert */
+code > span.fu { color: #000000; } /* Function */
+code > span.er { color: #a40000; font-weight: bold; } /* Error */
+code > span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #000000; } /* Constant */
+code > span.sc { color: #000000; } /* SpecialChar */
+code > span.vs { color: #4e9a06; } /* VerbatimString */
+code > span.ss { color: #4e9a06; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #000000; } /* Variable */
+code > span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code > span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code > span.ex { } /* Extension */
+code > span.at { color: #c4a000; } /* Attribute */
+code > span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code > span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+<div class="row">
+<div class="col-sm-12">
+<div id="TOC">
+<ul class="navbar">
+<li class="msmb"><p class="title">R/Bioconductor for Mass Spectrometry and Proteomics<p><p class="author">Laurent Gatto</p>
+<li class="dropdown" style="float:right">
+<a href="javascript:void(0)" class="dropbtn">&#x25BE; Chapters</a>
+<div class="dropdown-content">
+<a href="index.html">Preamble</a>
+<a href="sec-setup.html"><span class="toc-section-number">1</span> Setup</a>
+<a href="sec-msintro.html"><span class="toc-section-number">2</span> MS Introduction</a>
+<a href="raw-ms-data-mzr-and-msnbase.html"><span class="toc-section-number">3</span> Raw MS data: <code>mzR</code> and <code>MSnbase</code></a>
+<a href="identification-data.html"><span class="toc-section-number">4</span> Identification data</a>
+<a href="sec-quant.html"><span class="toc-section-number">5</span> Quantitative data</a>
+<a href="optional-material.html"><span class="toc-section-number">6</span> Optional material</a>
+<a id="active-page" href="sec-si.html"><span class="toc-section-number">7</span> Session information</a>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="row">
+<div class="col-sm-12">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html><body><div id="sec:si" class="section level1">
+<h1>
+<span class="header-section-number">Chapter 7</span> Session information</h1>
+<p>The following packages have been used to generate this document.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sessionInfo</span>()</code></pre></div>
+<pre><code>## R version 4.0.0 (2020-04-24)
+## Platform: x86_64-pc-linux-gnu (64-bit)
+## Running under: Ubuntu 18.04.5 LTS
+## 
+## Matrix products: default
+## BLAS:   /usr/lib/x86_64-linux-gnu/libf77blas.so.3.10.3
+## LAPACK: /usr/lib/x86_64-linux-gnu/atlas/liblapack.so.3.10.3
+## 
+## locale:
+##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+##  [3] LC_TIME=en_GB.UTF-8        LC_COLLATE=en_US.UTF-8    
+##  [5] LC_MONETARY=en_GB.UTF-8    LC_MESSAGES=en_US.UTF-8   
+##  [7] LC_PAPER=en_GB.UTF-8       LC_NAME=C                 
+##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+## [11] LC_MEASUREMENT=en_GB.UTF-8 LC_IDENTIFICATION=C       
+## 
+## attached base packages:
+## [1] stats4    parallel  stats     graphics  grDevices utils     datasets 
+## [8] methods   base     
+## 
+## other attached packages:
+##  [1] proDA_1.4.0           magrittr_2.0.1        MSqRob_0.7.7         
+##  [4] lme4_1.1-26           Matrix_1.2-18         ggrepel_0.9.0        
+##  [7] forcats_0.5.0         stringr_1.4.0         purrr_0.3.4          
+## [10] readr_1.4.0           tidyr_1.1.2           tibble_3.0.4         
+## [13] tidyverse_1.3.0       limma_3.46.0          mzID_1.28.0          
+## [16] dplyr_1.0.2           ggplot2_3.3.3         rgl_0.103.5          
+## [19] msdata_0.30.0         rpx_1.99.2            RforProteomics_1.27.1
+## [22] MSnID_1.24.0          gridExtra_2.3         lattice_0.20-41      
+## [25] AnnotationHub_2.22.0  BiocFileCache_1.14.0  dbplyr_2.0.0         
+## [28] MSnbase_2.17.4        ProtGenerics_1.23.6   S4Vectors_0.28.1     
+## [31] Biobase_2.50.0        BiocGenerics_0.36.0   mzR_2.24.1           
+## [34] Rcpp_1.0.5            BiocStyle_2.18.1     
+## 
+## loaded via a namespace (and not attached):
+##   [1] readxl_1.3.1                  backports_1.2.1              
+##   [3] gmm_1.6-5                     plyr_1.8.6                   
+##   [5] splines_4.0.0                 BiocParallel_1.24.1          
+##   [7] crosstalk_1.1.0.1             GenomeInfoDb_1.26.2          
+##   [9] digest_0.6.27                 msmbstyle_0.0.11             
+##  [11] foreach_1.5.1                 htmltools_0.5.0              
+##  [13] fansi_0.4.1                   memoise_1.1.0                
+##  [15] doParallel_1.0.16             Biostrings_2.58.0            
+##  [17] modelr_0.1.8                  matrixStats_0.57.0           
+##  [19] R.utils_2.10.1                sandwich_3.0-0               
+##  [21] imputeLCMD_2.0                colorspace_2.0-0             
+##  [23] rvest_0.3.6                   blob_1.2.1                   
+##  [25] rappdirs_0.3.1                haven_2.3.1                  
+##  [27] xfun_0.19                     crayon_1.3.4                 
+##  [29] RCurl_1.98-1.2                jsonlite_1.7.2               
+##  [31] graph_1.68.0                  impute_1.64.0                
+##  [33] zoo_1.8-8                     iterators_1.0.13             
+##  [35] glue_1.4.2                    gtable_0.3.0                 
+##  [37] zlibbioc_1.36.0               XVector_0.30.0               
+##  [39] webshot_0.5.2                 DelayedArray_0.16.0          
+##  [41] R.cache_0.14.0                scales_1.1.1                 
+##  [43] mvtnorm_1.1-1                 vsn_3.58.0                   
+##  [45] DBI_1.1.0                     miniUI_0.1.1.1               
+##  [47] xtable_1.8-4                  bit_4.0.4                    
+##  [49] preprocessCore_1.52.1         MsCoreUtils_1.3.2            
+##  [51] htmlwidgets_1.5.3             httr_1.4.2                   
+##  [53] gplots_3.1.1                  ellipsis_0.3.1               
+##  [55] pkgconfig_2.0.3               XML_3.99-0.5                 
+##  [57] R.methodsS3_1.8.1             farver_2.0.3                 
+##  [59] tidyselect_1.1.0              labeling_0.4.2               
+##  [61] rlang_0.4.10                  manipulateWidget_0.10.1      
+##  [63] reshape2_1.4.4                later_1.1.0.1                
+##  [65] AnnotationDbi_1.52.0          cellranger_1.1.0             
+##  [67] munsell_0.5.0                 biocViews_1.58.1             
+##  [69] BiocVersion_3.12.0            tools_4.0.0                  
+##  [71] cli_2.2.0                     generics_0.1.0               
+##  [73] RSQLite_2.2.1                 broom_0.7.3                  
+##  [75] evaluate_0.14                 fastmap_1.0.1                
+##  [77] yaml_2.2.1                    fs_1.5.0                     
+##  [79] knitr_1.30                    bit64_4.0.5                  
+##  [81] caTools_1.18.0                ncdf4_1.17                   
+##  [83] RBGL_1.66.0                   nlme_3.1-151                 
+##  [85] mime_0.9                      R.oo_1.24.0                  
+##  [87] xml2_1.3.2                    compiler_4.0.0               
+##  [89] rstudioapi_0.13               curl_4.3                     
+##  [91] png_0.1-7                     interactiveDisplayBase_1.28.0
+##  [93] affyio_1.60.0                 reprex_0.3.0                 
+##  [95] statmod_1.4.35                stringi_1.5.3                
+##  [97] ps_1.5.0                      highr_0.8                    
+##  [99] pRolocdata_1.28.0             nloptr_1.2.2.2               
+## [101] tmvtnorm_1.4-10               vctrs_0.3.6                  
+## [103] norm_1.0-9.5                  pillar_1.4.7                 
+## [105] lifecycle_0.2.0               RUnit_0.4.32                 
+## [107] BiocManager_1.30.10           MALDIquant_1.19.3            
+## [109] data.table_1.13.4             bitops_1.0-6                 
+## [111] GenomicRanges_1.42.0          httpuv_1.5.4                 
+## [113] R6_2.5.0                      pcaMethods_1.82.0            
+## [115] affy_1.68.0                   bookdown_0.21                
+## [117] promises_1.1.1                KernSmooth_2.23-18           
+## [119] IRanges_2.24.1                codetools_0.2-16             
+## [121] boot_1.3-25                   MASS_7.3-53                  
+## [123] gtools_3.8.2                  assertthat_0.2.1             
+## [125] SummarizedExperiment_1.20.0   withr_2.3.0                  
+## [127] GenomeInfoDbData_1.2.4        hms_0.5.3                    
+## [129] grid_4.0.0                    minqa_1.2.4                  
+## [131] rmarkdown_2.6                 MatrixGenerics_1.2.0         
+## [133] lubridate_1.7.9.2             shiny_1.5.0</code></pre>
+
+</div></body></html>
+
+<p style="text-align: center;">
+<a href="optional-material.html"><button class="btn btn-default">Previous</button></a>
+</p>
+<p class="build-date">Page built: 
+2021-01-12
+</p>
+</div>
+</div>
+
+
+
+</body>
+</html>

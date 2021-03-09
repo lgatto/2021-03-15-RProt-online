@@ -1,0 +1,140 @@
+# Optional material
+
+## R for Mass Spectrometry {#sec:r4ms}
+
+The aim of the [R for mass
+spectrometry](https://www.rformassspectrometry.org/)
+RforMassSpectrometry initiative is to provide efficient, thoroughly
+documented, tested and flexible R software for the analysis and
+interpretation of high throughput mass spectrometry assays, including
+proteomics and metabolomics experiments. The project formalises the
+longtime collaborative development efforts of its core members under
+the RforMassSpectrometry organisation to facilitate dissemination and
+accessibility of their work.
+
+Two packages of interest:
+
+- [Spectra](https://rformassspectrometry.github.io/Spectra/) ([poster](https://github.com/rformassspectrometry/Conferences/raw/master/EuroBioc2019/Spectra/poster/poster.pdf))
+- [QFeatures](https://rformassspectrometry.github.io/QFeatures/)
+
+
+## Affinity purification MS (AP-MS) {#sec:apms}
+
+This use case features a proximity tagging protein-protein interaction
+dataset. In this experiment, a bait protein `X` was tagged using
+[BioID2](https://www.ncbi.nlm.nih.gov/pubmed/26912792). BioID
+biotinylates proteins in close proximity of the bait `X`, in
+particular, but not only, proteins interacting with `X`. These
+proteins are then be recovered using streptavidin beads and
+identified/quantified using mass spectrometry. The expectation is
+that the proteins contain interaction partners of `X`. However, given
+that a substantial number of false positives will also be
+biotinylated, it is necessary to complement this data with a negative
+control, where `X` is blocked from interacting with its partners. A
+differential analysis between the wild type and the negative control
+will reveal likely interacting partners of `X`.
+
+Identify the most likely interactors of protein `X`.
+
+### Exercise {-}
+
+- Load the [data in the `bioid.csv`
+  file](https://raw.githubusercontent.com/lgatto/2020-02-17-RProt-Berlin/master/data/bioid.csv)
+  into R.
+- Explore the missing data pattern.
+- Try to identify interactors using a statistical t-test, or any
+  method you see fit. You can use the `pos` variable to guide you:
+  `TRUE` referring to a set of expected true interactors, but there
+  might be more. 
+- What are the issues? What solutions would you suggest?
+
+<details>
+```{r bioiddata}
+library("MSnbase")
+e <- readMSnSet2("./data/bioid.csv", ecol = 1:6, fnames = "ids")
+e$grp <- sub("[1-3]", "", sampleNames(e))
+sel1 <- fData(e)$Reverse == ""
+sel2 <- fData(e)$Potential.contaminant == ""
+e <- e[sel1 & sel2, ]
+fData(e) <- fData(e)[, c("pos", "ids")] 
+```
+
+```{r bioideda}
+limma::plotDensities(log2(exprs(e) + 1))
+exprs(e)[exprs(e) == 0] <- NA
+(e$nNA <- colSums(is.na(e)))
+fData(e)$nNA <- rowSums(is.na(e))
+table(fData(e)$nNA)
+table(is.na(e))
+sum(is.na(e))/prod(dim(e))
+naplot(e, col = c("black", "white"))
+```
+
+```{r biodata3}
+e_norm <- e %>%
+    log(base = 2) %>%
+    normalise(method = "center.median")
+limma::plotMDS(exprs(e_norm))
+limma::plotDensities(exprs(e_norm))
+```
+</details>
+
+### `proDA`: probabilistic dropout analysis
+
+We will now try the `proDA` package for *inference of protein
+differential abundance by probabilistic dropout analysis*
+([Ahlman-Eltze and Anders
+(2019)](https://www.biorxiv.org/content/10.1101/661496v1)) that
+explicity models missing values as lowly expressed features.
+
+```{r}
+library("proDA")
+```
+
+Below, we first fit the model using the `grp` variable.
+
+```{r proda1, cache = TRUE}
+proDA_fit <- proDA(e_norm,
+                   design = ~ grp,
+                   data_is_log_transformed = TRUE)
+proDA_fit
+```
+
+Here we extract the contract of interest, setting the alternative to
+greater to perform a one-sided test (we are only interested in
+proteins with greater expression in the wild type),
+
+```{r proda2}
+res <- test_diff(proDA_fit,
+          contrast = "grpWT",
+          alternative = "greater",
+          pval_adjust_method = "BH")
+
+res %>%
+    arrange(adj_pval) %>%
+    filter(adj_pval < 0.1)
+```
+
+Below, we integrate the results in the `MSnSet` and visualise them
+using a volcano plot. We observe an enrichment in true positives.
+
+
+```{r prodares1}
+stopifnot(identical(res$name, featureNames(e_norm)))
+fData(e_norm) <- cbind(fData(e_norm), res)
+
+with(fData(e_norm),
+     plot(diff, -log10(adj_pval),
+          col = as.numeric(pos) + 1))
+abline(h = -log10(0.05))
+abline(h = -log10(0.1), lty = "dotted")
+```
+
+```{r prodares2}
+ms2df(e_norm) %>%
+    arrange(adj_pval) %>%
+    filter(adj_pval < 0.1)
+
+table(fData(e_norm)$pos,
+      fData(e_norm)$nNA)
+```

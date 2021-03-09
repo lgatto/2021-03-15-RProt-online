@@ -1,0 +1,481 @@
+# Identification data
+
+
+## Identification data.frame
+
+Let's use the identification from from `msdata`:
+
+```{r mzrvsid, eval = TRUE}
+idf <- msdata::ident(full.names = TRUE)
+basename(idf)
+```
+
+The easiest way to read identification data in `mzIdentML` (often
+abbreviated with `mzid`) into R is to read it with `readMzIdData`,
+that will parse it, process it, and return a `data.frame`:
+
+```{r readid}
+iddf <- readMzIdData(idf)
+head(iddf)
+```
+
+When adding identification data with the `addIdentificationData`
+function (as shown below), the data is first read with `readMzIdData`,
+and is then cleaned up:
+
+- only PSMs matching the regular (non-decoy) database are retained;
+- PSMs or rank greater than 1 are discarded;
+- only proteotypic peptides are kept, i.e. those that match to a
+  unique peptide.
+
+```{r idfilt}
+## at this stage, we still have all the PSMs
+table(iddf$isDecoy)
+table(iddf$rank)
+```
+
+### Exercise {-}
+
+This behaviour can be replicates with the
+`filterIdentificationDataFrame` function. Try it out for yourself.
+
+<details>
+```{r filtid}
+iddf2 <- filterIdentificationDataFrame(iddf)
+table(iddf2$isDecoy)
+table(iddf2$rank)
+```
+</details>
+
+### Exercise {-} 
+
+The `r CRANpkg("tidyverse")` 
+tools are fit for data wrangling with identification data. Using the
+above identification dataframe, calculate the length of each peptide
+(you can use `nchar` with the peptide sequence `sequence`) and the
+number of peptides for each protein (defined as
+`DatabaseDescription`). Plot the length of the proteins against their
+respective number of peptides. Optionally, stratify the plot by the
+peptide e-value score (`MS.GF.EValue`) using for example `cut` to
+define bins.
+
+
+<details>
+```{r answid1, fig.cap="Identifcation data wrangling 1"}
+suppressPackageStartupMessages(library("dplyr"))
+iddf2 <- as_tibble(iddf2) %>%
+    mutate(peplen = nchar(sequence))
+npeps <- iddf2 %>%
+    group_by(DatabaseDescription) %>%
+    tally
+iddf2 <- full_join(iddf2, npeps)
+
+library("ggplot2")
+ggplot(iddf2, aes(x = n, y = DBseqLength)) + geom_point()
+```
+
+```{r answid2, fig.cap="Identifcation data wrangling 2"}
+iddf2$evalBins <- cut(iddf2$MS.GF.EValue, summary(iddf2$MS.GF.EValue))
+ggplot(iddf2, aes(x = n, y = DBseqLength, color = peplen)) +
+    geom_point() +
+    facet_wrap(~ evalBins)
+```
+</details>
+
+
+## Low level access to id data
+
+There are two packages that can be used to parse `mzIdentML` files,
+namely `mzR` (that we have already used for raw data) and `mzID`. The
+major difference is that the former leverages C++ code from
+`proteowizard` and is hence faster than the latter (which uses the
+`XML` R package). They both work in similar ways.
+
+```{r idpkgs, echo = FALSE}
+x <- RforProteomics:::msDataTab()
+sel <- x[, 1] %in% c("Identification")
+knitr::kable(x[sel, ])
+```
+
+### `mzID`
+
+The main functions are `mzID` to read the data into a dedicated data
+class and `flatten` to transform it into a `data.frame`. 
+
+```{r mzid1}
+idf
+library("mzID")
+id <- mzID(idf)
+id
+```
+
+Various data can be extracted from the `mzID` object, using one the
+accessor functions such as `database`, `software`, `scans`, `peptides`,
+... The object can also be converted into a `data.frame` using the
+`flatten` function.
+
+```{r flatmzid}
+head(flatten(id))
+```
+
+### `mzR`
+
+The `mzR` interface provides a similar interface. It is however much
+faster as it does not read all the data into memory and only extracts
+relevant data on demand. It has also accessor functions such as
+`softwareInfo`, `mzidInfo`, ... (use `showMethods(classes = "mzRident", where = "package:mzR")`)
+to see all available methods.
+
+```{r idmzr}
+library("mzR")
+id2 <- openIDfile(idf)
+id2
+softwareInfo(id2)
+```
+
+The identification data can be accessed as a `data.frame` with the
+`psms` accessor.
+
+```{r psmsmzr}
+head(psms(id2))
+```
+
+## Adding identification data to raw data
+
+Here are two matching raw and identification data files:
+
+```{r addid}
+library("MSnbase")
+## find path to a mzXML file
+rwf <- dir(system.file(package = "MSnbase", dir = "extdata"),
+           full.name = TRUE, pattern = "mzXML$")
+## find path to a mzIdentML file
+idf <- dir(system.file(package = "MSnbase", dir = "extdata"),
+           full.name = TRUE, pattern = "dummyiTRAQ.mzid")
+```
+
+We first create the raw data object:
+
+```{r}
+msexp <- readMSData(rwf, verbose = FALSE)
+head(fData(msexp))
+```
+
+The simply add identification data. The matching of spectra from the
+raw data and the PSMs from the identification data is done internally.
+
+```{r addid2}
+msexp <- addIdentificationData(msexp, idf)
+head(fData(msexp))
+```
+
+## MS/MS database search
+
+While searches are generally performed using third-party software
+independently of R or can be started from R using a `system` call, the
+`r Biocpkg("MSGFplus")` package enables to perform a search using the
+MSGF+ engine, as illustrated below.
+
+
+We search the
+`TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML.gz`
+file against the fasta file from `PXD000001` using `MSGFplus`.
+
+We first download the fasta files from ProteomeXchange:
+
+```{r ex_getfas, eval = FALSE}
+fas <- pxget(px, "erwinia_carotovora.fasta")
+basename(fas)
+```
+
+Below, we setup and run the
+search^[In the `runMSGF` call, the memory allocated to the java virtual machine is limited to 1GB. In general, there is no need to specify this argument, unless you experience an error regarding the *maximum heap size*.].
+
+```{r ex_msgfplus, eval = FALSE}
+library("MSGFplus")
+msgfpar <- msgfPar(database = fas,
+                   instrument = 'HighRes',
+                   tda = TRUE,
+                   enzyme = 'Trypsin',
+                   protocol = 'iTRAQ')
+idres <- runMSGF(msgfpar, mzf, memory=1000)
+idres
+```
+
+```
+## An mzID object
+## 
+## Software used:   MS-GF+ (version: Beta (v10072))
+## 
+## Rawfile:         /home/lg390/Documents/Teaching/bioc-ms-prot/TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML
+## 
+## Database:        /home/lg390/Documents/Teaching/bioc-ms-prot/erwinia_carotovora.fasta
+## 
+## Number of scans: 5343
+## Number of PSM's: 5656
+```
+
+A graphical interface to perform the search the data and explore the
+results is also available:
+
+```{r msgfgui, eval=FALSE}
+library("MSGFgui")
+MSGFgui()
+```
+
+![The `r Biocpkg("MSGFgui")` interface](./img/MSGFgui.png)
+
+## Visualising identification data
+
+For this part, let's use a ready made `MSnExp` object that is
+distributed with the `MSnbase` package. Simply use the `data()`
+function with the name of the desired data.
+
+```{r}
+library("MSnbase")
+data(itraqdata)
+```
+
+### Annotated spectra and spectra comparison
+
+```{r plotwithseq1, fig.width=10}
+itraqdata2 <- pickPeaks(itraqdata, verbose = FALSE)
+s <- "SIGFEGDSIGR"
+plot(itraqdata2[[14]], s, main = s)
+```
+
+```{r plotwithseq2, fig.width=10}
+plot(itraqdata2[[25]], itraqdata2[[28]], sequences = rep("IMIDLDGTENK", 2))
+```
+
+The annotation of spectra is obtained by simulating fragmentation of a
+peptide and matching observed peaks to fragments:
+
+```{r frag}
+calculateFragments("SIGFEGDSIGR")
+```
+
+Visualising a pair of spectra means that we can access them, and that,
+in addition to plotting, we can manipulate them and perform
+computations. The two spectra corresponding to the `IMIDLDGTENK`
+peptide, for example have
+`r compareSpectra(itraqdata2[[25]], itraqdata2[[28]], fun = "common")`
+common peaks, a correlation of
+`r round(compareSpectra(itraqdata2[[25]], itraqdata2[[28]], fun = "cor"), 3)`
+and a dot product of
+`r round(compareSpectra(itraqdata2[[25]], itraqdata2[[28]], fun = "dotproduct"), 3)`
+(see `?compareSpectra` for details).
+
+### Exercise {-}
+
+Use the `compareSpectra` function to compare spectra 25 and 28 plotted
+above, calculating the metrics mentioned above. Don't forget to pick
+peaks from `itraqdata` first.
+
+<details>
+```{r compspex}
+data(itraqdata)
+itraqdata2 <- pickPeaks(itraqdata, verbose = FALSE)
+compareSpectra(itraqdata2[[25]], itraqdata2[[28]], fun = "common")
+compareSpectra(itraqdata2[[25]], itraqdata2[[28]], fun = "cor")
+compareSpectra(itraqdata2[[25]], itraqdata2[[28]], fun = "dotproduct")
+```
+</details>
+
+
+## Exploration and Assessment of Confidence of LC-MSn Proteomics Identifications using `MSnID`
+
+The `MSnID` package extracts MS/MS ID data from mzIdentML (leveraging
+the `mzID` package) or text files. After collating the search results
+from multiple datasets it assesses their identification quality and
+optimises filtering criteria to achieve the maximum number of
+identifications while not exceeding a specified false discovery
+rate. It also contains a number of utilities to explore the MS/MS
+results and assess missed and irregular enzymatic cleavages, mass
+measurement accuracy, etc.
+
+### Step-by-step work-flow
+
+Let's reproduce parts of the analysis described the `MSnID`
+vignette. You can explore more with 
+
+```{r, eval = FALSE}
+vignette("msnid_vignette", package = "MSnID")
+```
+
+The `r Biocpkg("MSnID")` package can be used for post-search filtering
+of MS/MS identifications. One starts with the construction of an
+`MSnID` object that is populated with identification results that can
+be imported from a `data.frame` or from `mzIdenML` files. Here, we
+will use the example identification data provided with the package.
+
+```{r idf}
+mzids <- system.file("extdata", "c_elegans.mzid.gz", package="MSnID")
+basename(mzids)
+```
+
+We start by loading the package, initialising the `MSnID` object, and
+add the identification result from our `mzid` file (there could of
+course be more that one).
+
+```{r msnid1}
+library("MSnID")
+msnid <- MSnID(".")
+msnid <- read_mzIDs(msnid, mzids)
+show(msnid)
+```
+
+Printing the `MSnID` object returns some basic information such as
+
+* Working directory.
+* Number of spectrum files used to generate data.
+* Number of peptide-to-spectrum matches and corresponding FDR.
+* Number of unique peptide sequences and corresponding FDR.
+* Number of unique proteins or amino acid sequence accessions and corresponding FDR.
+
+
+The package then enables to define, optimise and apply filtering based
+for example on missed cleavages, identification scores, precursor mass
+errors, etc. and assess PSM, peptide and protein FDR levels. To
+properly function, it expects to have access to the following data
+
+```{r msnidcols, echo=FALSE}
+sort(MSnID:::.mustBeColumns)
+```
+
+which are indeed present in our data:
+
+```{r msnidnames}
+names(msnid)
+```
+
+Here, we summarise a few steps and redirect the reader to the
+package's vignette for more details:
+
+
+### Analysis of peptide sequences
+
+Cleaning irregular cleavages at the termini of the peptides and
+missing cleavage site within the peptide sequences. The following two
+function call create the new `numMisCleavages` and `numIrregCleavages`
+columns in the `MSnID` object
+
+```{r msnidtermini}
+msnid <- assess_termini(msnid, validCleavagePattern="[KR]\\.[^P]")
+msnid <- assess_missed_cleavages(msnid, missedCleavagePattern="[KR](?=[^P$])")
+```
+
+### Trimming the data
+
+Now, we can use the `apply_filter` function to effectively apply
+filters. The strings passed to the function represent expressions that
+will be evaluated, thus keeping only PSMs that have 0 irregular
+cleavages and 2 or less missed cleavages.
+
+```{r msnidtrim}
+msnid <- apply_filter(msnid, "numIrregCleavages == 0")
+msnid <- apply_filter(msnid, "numMissCleavages <= 2")
+show(msnid)
+```
+
+### Parent ion mass errors
+
+Using `"calculatedMassToCharge"` and `"experimentalMassToCharge"`, the
+`mass_measurement_error` function calculates the parent ion mass
+measurement error in parts per million.
+
+```{r msnidppm1}
+summary(mass_measurement_error(msnid))
+```
+
+We then filter any matches that do not fit the +/- 20 ppm tolerance
+
+```{r msnidppm2}
+msnid <- apply_filter(msnid, "abs(mass_measurement_error(msnid)) < 20")
+summary(mass_measurement_error(msnid))
+```
+
+### Filtering criteria
+
+Filtering of the identification data will rely on 
+
+* -log10 transformed MS-GF+ Spectrum E-value, reflecting the goodness
+  of match experimental and theoretical fragmentation patterns
+  
+```{r filt1}
+msnid$msmsScore <- -log10(msnid$`MS-GF:SpecEValue`)
+```  
+
+* the absolute mass measurement error (in ppm units) of the parent ion
+
+```{r filt2}
+msnid$absParentMassErrorPPM <- abs(mass_measurement_error(msnid))
+```
+
+### Setting filters
+
+MS2 filters are handled by a special `MSnIDFilter` class objects, where
+individual filters are set by name (that is present in `names(msnid)`)
+and comparison operator (>, <, = , ...)  defining if we should retain
+hits with higher or lower given the threshold and finally the
+threshold value itself.
+
+```{r filt3}
+filtObj <- MSnIDFilter(msnid)
+filtObj$absParentMassErrorPPM <- list(comparison="<", threshold=10.0)
+filtObj$msmsScore <- list(comparison=">", threshold=10.0)
+show(filtObj)
+```
+
+We can then evaluate the filter on the identification data object,
+which return the false discovery rate and number of retained
+identifications for the filtering criteria at hand.
+
+```{r filt4}
+evaluate_filter(msnid, filtObj)
+```
+
+### Filter optimisation
+
+Rather than setting filtering values by hand, as shown above, these
+can be set automatically to meet a specific false discovery rate.
+
+```{r optim1}
+filtObj.grid <- optimize_filter(filtObj, msnid, fdr.max=0.01,
+                                method="Grid", level="peptide",
+                                n.iter=500)
+show(filtObj.grid)
+```
+
+```{r optim2}
+evaluate_filter(msnid, filtObj.grid)
+```
+
+Filters can eventually be applied (rather than just evaluated) using
+the `apply_filter` function.
+
+```{r optim3}
+msnid <- apply_filter(msnid, filtObj.grid)
+show(msnid)
+```
+
+And finally, identifications that matched decoy and contaminant
+protein sequences are removed 
+
+```{r optim4}
+msnid <- apply_filter(msnid, "isDecoy == FALSE") 
+msnid <- apply_filter(msnid, "!grepl('Contaminant',accession)")
+show(msnid)
+```
+
+### Export `MSnID` data
+
+The resulting filtered identification data can be exported to a
+`data.frame` or to a dedicated `MSnSet` data structure for
+quantitative MS data, described below, and further processed and
+analyses using appropriate statistical tests.
+
+```{r}
+head(psms(msnid))
+as(msnid, "MSnSet")
+```

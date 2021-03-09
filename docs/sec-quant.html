@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Chapter 5 Quantitative data | R/Bioconductor for Mass Spectrometry and Proteomics" />
+<meta property="og:type" content="book" />
+
+
+
+
+
+<meta name="author" content="Laurent Gatto" />
+
+<meta name="date" content="2021-01-12" />
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  TeX: { equationNumbers: { autoNumber: "AMS" } }
+});
+</script>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
+
+<meta name="description" content="Chapter 5 Quantitative data | R/Bioconductor for Mass Spectrometry and Proteomics">
+
+<title>Chapter 5 Quantitative data | R/Bioconductor for Mass Spectrometry and Proteomics</title>
+
+<link href="libs/tufte-css-2015.12.29/tufte.css" rel="stylesheet" />
+<link href="libs/tufte-css-2015.12.29/envisioned.css" rel="stylesheet" />
+<link href="libs/msmb-css-0/msmb.css" rel="stylesheet" />
+<script>
+function toggle_visibility(id1, id2) {
+var e = document.getElementById(id1);
+var f = document.getElementById(id2);
+
+e.style.display = ((e.style.display!='none') ? 'none' : 'block');
+
+if(f.classList.contains('fa-plus-square')) {
+    f.classList.add('fa-minus-square')
+    f.classList.remove('fa-plus-square')
+} else {
+    f.classList.add('fa-plus-square')
+    f.classList.remove('fa-minus-square')
+}
+
+}
+</script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; background-color: #f8f8f8; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+pre, code { background-color: #f8f8f8; }
+code > span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code > span.dt { color: #204a87; } /* DataType */
+code > span.dv { color: #0000cf; } /* DecVal */
+code > span.bn { color: #0000cf; } /* BaseN */
+code > span.fl { color: #0000cf; } /* Float */
+code > span.ch { color: #4e9a06; } /* Char */
+code > span.st { color: #4e9a06; } /* String */
+code > span.co { color: #8f5902; font-style: italic; } /* Comment */
+code > span.ot { color: #8f5902; } /* Other */
+code > span.al { color: #ef2929; } /* Alert */
+code > span.fu { color: #000000; } /* Function */
+code > span.er { color: #a40000; font-weight: bold; } /* Error */
+code > span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #000000; } /* Constant */
+code > span.sc { color: #000000; } /* SpecialChar */
+code > span.vs { color: #4e9a06; } /* VerbatimString */
+code > span.ss { color: #4e9a06; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #000000; } /* Variable */
+code > span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code > span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code > span.ex { } /* Extension */
+code > span.at { color: #c4a000; } /* Attribute */
+code > span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code > span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+<div class="row">
+<div class="col-sm-12">
+<div id="TOC">
+<ul class="navbar">
+<li class="msmb"><p class="title">R/Bioconductor for Mass Spectrometry and Proteomics<p><p class="author">Laurent Gatto</p>
+<li class="dropdown" style="float:right">
+<a href="javascript:void(0)" class="dropbtn">&#x25BE; Chapters</a>
+<div class="dropdown-content">
+<a href="index.html">Preamble</a>
+<a href="sec-setup.html"><span class="toc-section-number">1</span> Setup</a>
+<a href="sec-msintro.html"><span class="toc-section-number">2</span> MS Introduction</a>
+<a href="raw-ms-data-mzr-and-msnbase.html"><span class="toc-section-number">3</span> Raw MS data: <code>mzR</code> and <code>MSnbase</code></a>
+<a href="identification-data.html"><span class="toc-section-number">4</span> Identification data</a>
+<a id="active-page" href="sec-quant.html"><span class="toc-section-number">5</span> Quantitative data</a><ul class="toc-sections">
+<li class="toc"><a href="#the-msnset-class-for-quantitative-data"> The <code>MSnSet</code> class for quantitative data</a></li>
+<li class="toc"><a href="#isobaric-tagging"> Isobaric tagging</a></li>
+<li class="toc"><a href="#spectral-counting"> Spectral counting</a></li>
+<li class="toc"><a href="#importing-third-party-quantitation-data"> Importing third-party quantitation data</a></li>
+<li class="toc"><a href="#data-processing"> Data processing</a></li>
+<li class="toc"><a href="#handling-overlapping-protein-groups"> Handling overlapping protein groups</a></li>
+<li class="toc"><a href="#filtering-out-contaminants-and-reverse-hits"> Filtering out contaminants and reverse hits</a></li>
+<li class="toc"><a href="#removing-ptm-only-proteins"> Removing PTM-only proteins</a></li>
+<li class="toc"><a href="#missing-values"> Missing values</a></li>
+<li class="toc"><a href="#log-transformation"> Log transformation</a></li>
+<li class="toc"><a href="#normalisation"> Normalisation</a></li>
+<li class="toc"><a href="#summarisation"> Summarisation</a></li>
+<li class="toc"><a href="#more-on-missing-values"> More on missing values</a></li>
+<li class="toc"><a href="#differential-expression"> Differential expression</a></li>
+<li class="toc"><a href="#visualising-de-results"> Visualising DE results</a></li>
+</ul>
+<a href="optional-material.html"><span class="toc-section-number">6</span> Optional material</a>
+<a href="sec-si.html"><span class="toc-section-number">7</span> Session information</a>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="row">
+<div class="col-sm-12">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html><body><div id="sec:quant" class="section level1">
+<h1>
+<span class="header-section-number">Chapter 5</span> Quantitative data</h1>
+<p>There are a wide range of proteomics quantitation techniques that can broadly be classified as labelled vs. label-free, depending whether the features are labelled prior the MS acquisition and the MS level at which quantitation is inferred, namely MS1 or MS2.</p>
+<table>
+<thead><tr class="header">
+<th align="left"></th>
+<th align="left">Label-free</th>
+<th align="left">Labelled</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">MS1</td>
+<td align="left">XIC</td>
+<td align="left">SILAC, 15N</td>
+</tr>
+<tr class="even">
+<td align="left">MS2</td>
+<td align="left">Counting</td>
+<td align="left">iTRAQ, TMT</td>
+</tr>
+</tbody>
+</table>
+<p>In terms of raw data quantitation, most efforts have been devoted to MS2-level quantitation. Label-free XIC quantitation has however been addressed in the frame of metabolomics data processing by the <em><a href="https://bioconductor.org/packages/3.12/xcms">xcms</a></em> infrastructure.</p>
+<p>Below is a list of suggested packages for some common proteomics quantitation technologies:</p>
+<ul>
+<li>Isobaric tagging (iTRAQ and TMT): <em><a href="https://bioconductor.org/packages/3.12/MSnbase">MSnbase</a></em> and <em><a href="https://bioconductor.org/packages/3.12/isobar">isobar</a></em>.</li>
+<li>Label-free: <em><a href="https://bioconductor.org/packages/3.12/xcms">xcms</a></em> (metabolomics).</li>
+<li>Counting: <em><a href="https://bioconductor.org/packages/3.12/MSnbase">MSnbase</a></em> and <em><a href="https://bioconductor.org/packages/3.12/MSnID">MSnID</a></em> for peptide-spectrum matching confidence assessment.</li>
+<li>
+<em><a href="https://github.com/vladpetyuk/N14N15">N14N15</a></em> for heavy Nitrogen-labelled data.</li>
+</ul>
+<div id="the-msnset-class-for-quantitative-data" class="section level2">
+<h2>
+<span class="header-section-number">5.1</span> The <code>MSnSet</code> class for quantitative data</h2>
+<p>Quantitative data is stored in a dedicated data structure called <code>MSnSet</code>. The figure below gives a schematics of an <code>MSnSet</code> instance and the relation between the assay data and the respective feature and sample metadata, accessible respectively with the <code>exprs</code>, <code>fData</code> and <code>pData</code> functions.</p>
+<div class="figure">
+<img src="img/msnset.png" alt="The MSnSet structure"><p class="caption">The MSnSet structure</p>
+</div>
+<p>Storing quantitative data in an <code>MSnSet</code> quaranties that the feature (peptides or proteins) and sample annotations are correctly aligned with the quantitative data, i.e.</p>
+<ul>
+<li>there is a one-to-one match between the expression data rows and feature meta data rows;</li>
+<li>there is a one-to-one match between the expression data columns and sample meta data rows.</li>
+</ul>
+<p>This correspondance is also guaranteed during all data processing and manipulation.</p>
+</div>
+<div id="isobaric-tagging" class="section level2">
+<h2>
+<span class="header-section-number">5.2</span> Isobaric tagging</h2>
+<p>An <code>MSnExp</code> is converted to an <code>MSnSet</code> by the <code>quantitation</code> method. Below, we use the iTRAQ 4-plex isobaric tagging strategy (defined by the <code>iTRAQ4</code> parameter; other tags are available: see <code>?ReporterIons</code>) and the <code>max</code> method to calculate the use the maximum of the reporter peak for quantitation.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(msexp[[<span class="dv">1</span>]], <span class="dt">full=</span><span class="ot">TRUE</span>, <span class="dt">reporters =</span> iTRAQ4)</code></pre></div>
+<div class="figure">
+<span id="fig:itraq4plot"></span>
+<p class="caption marginnote shownote">
+Figure 5.1: MS2 spectrum and it's iTRAQ4 reporter ions.
+</p>
+<img src="berlin_files/figure-html/itraq4plot-1.png" alt="MS2 spectrum and it's iTRAQ4 reporter ions." width="672">
+</div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">msset &lt;-<span class="st"> </span><span class="kw">quantify</span>(msexp, <span class="dt">method =</span> <span class="st">"max"</span>, <span class="dt">reporters =</span> iTRAQ4)</code></pre></div>
+<p>Below, we access the quantitative and metadata slots of the newly created <code>MSnSet</code> object.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">exprs</span>(msset)</code></pre></div>
+<pre><code>##       iTRAQ4.114 iTRAQ4.115 iTRAQ4.116 iTRAQ4.117
+## F1.S1   706555.7   685055.1   929016.1   668245.2
+## F1.S2   260663.7   212745.0   163782.8   239142.7
+## F1.S3  2213566.0  2069209.6  2204032.2  2331846.8
+## F1.S4   616043.4   705976.6   671828.8   666845.6
+## F1.S5  1736128.2  1787622.5  1795311.8  1825523.0</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw">fData</span>(msset))</code></pre></div>
+<pre><code>##       spectrum acquisition.number          sequence chargeState rank
+## F1.S1        1                  1 VESITARHGEVLQLRPK           3    1
+## F1.S2        2                  2     IDGQWVTHQWLKK           3    1
+## F1.S3        3                  3              &lt;NA&gt;          NA   NA
+## F1.S4        4                  4              &lt;NA&gt;          NA   NA
+## F1.S5        5                  5           LVILLFR           2    1
+##       passThreshold experimentalMassToCharge calculatedMassToCharge peptideRef
+## F1.S1          TRUE                 645.3741               645.0375       Pep2
+## F1.S2          TRUE                 546.9586               546.9633       Pep1
+## F1.S3            NA                       NA                     NA       &lt;NA&gt;
+## F1.S4            NA                       NA                     NA       &lt;NA&gt;
+## F1.S5          TRUE                 437.8040               437.2997       Pep4
+##       modNum isDecoy post  pre start end DatabaseAccess DBseqLength DatabaseSeq
+## F1.S1      0   FALSE    A    R   170 186        ECA0984         231            
+## F1.S2      0   FALSE    A    K    50  62        ECA1028         275            
+## F1.S3     NA      NA &lt;NA&gt; &lt;NA&gt;    NA  NA           &lt;NA&gt;          NA        &lt;NA&gt;
+## F1.S4     NA      NA &lt;NA&gt; &lt;NA&gt;    NA  NA           &lt;NA&gt;          NA        &lt;NA&gt;
+## F1.S5      0   FALSE    L    K    22  28        ECA0510         166            
+##                                                              DatabaseDescription
+## F1.S1                                        ECA0984 DNA mismatch repair protein
+## F1.S2 ECA1028 2,3,4,5-tetrahydropyridine-2,6-dicarboxylate N-succinyltransferase
+## F1.S3                                                                       &lt;NA&gt;
+## F1.S4                                                                       &lt;NA&gt;
+## F1.S5           ECA0510 putative capsular polysacharide biosynthesis transferase
+##       scan.number.s.          idFile MS.GF.RawScore MS.GF.DeNovoScore
+## F1.S1              1 dummyiTRAQ.mzid            -39                77
+## F1.S2              2 dummyiTRAQ.mzid            -30                39
+## F1.S3             NA            &lt;NA&gt;             NA                NA
+## F1.S4             NA            &lt;NA&gt;             NA                NA
+## F1.S5              5 dummyiTRAQ.mzid            -42                 5
+##       MS.GF.SpecEValue MS.GF.EValue modPeptideRef modName modMass modLocation
+## F1.S1     5.527468e-05     79.36958          &lt;NA&gt;    &lt;NA&gt;      NA          NA
+## F1.S2     9.399048e-06     13.46615          &lt;NA&gt;    &lt;NA&gt;      NA          NA
+## F1.S3               NA           NA          &lt;NA&gt;    &lt;NA&gt;      NA          NA
+## F1.S4               NA           NA          &lt;NA&gt;    &lt;NA&gt;      NA          NA
+## F1.S5     2.577830e-04    366.38422          &lt;NA&gt;    &lt;NA&gt;      NA          NA
+##       subOriginalResidue subReplacementResidue subLocation nprot npep.prot
+## F1.S1               &lt;NA&gt;                  &lt;NA&gt;          NA     1         1
+## F1.S2               &lt;NA&gt;                  &lt;NA&gt;          NA     1         1
+## F1.S3               &lt;NA&gt;                  &lt;NA&gt;          NA    NA        NA
+## F1.S4               &lt;NA&gt;                  &lt;NA&gt;          NA    NA        NA
+## F1.S5               &lt;NA&gt;                  &lt;NA&gt;          NA     1         1
+##       npsm.prot npsm.pep fileIdx retention.time precursor.mz
+## F1.S1         1        1       1        1501.35     645.3741
+## F1.S2         1        1       1        1501.59     546.9586
+## F1.S3        NA       NA       1        1501.85     645.3741
+## F1.S4        NA       NA       1        1502.07     716.3405
+## F1.S5         1        1       1        1502.31     437.8040
+##       precursor.intensity charge peaks.count       tic  ionCount ms.level
+## F1.S1            47659400      3        2921 182542000 668170086        2
+## F1.S2            26356100      3        1012  16488100  56758067        2
+## F1.S3            23432400      2        2125  41969700 150838188        2
+## F1.S4            24854800      2        2687  50299600 181168542        2
+## F1.S5             7052960      2        1748  24295200  86373884        2
+##       collision.energy
+## F1.S1               40
+## F1.S2               40
+## F1.S3               40
+## F1.S4               40
+## F1.S5               40</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">pData</span>(msset)</code></pre></div>
+<pre><code>##                  mz reporters
+## iTRAQ4.114 114.1112    iTRAQ4
+## iTRAQ4.115 115.1083    iTRAQ4
+## iTRAQ4.116 116.1116    iTRAQ4
+## iTRAQ4.117 117.1150    iTRAQ4</code></pre>
+<p>New columns can be added to the metadata slots.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">pData</span>(msset)<span class="op">$</span>groups &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">"Treat"</span>, <span class="st">"Cond"</span>), <span class="dt">each =</span> <span class="dv">2</span>)
+<span class="kw">pData</span>(msset)</code></pre></div>
+<pre><code>##                  mz reporters groups
+## iTRAQ4.114 114.1112    iTRAQ4  Treat
+## iTRAQ4.115 115.1083    iTRAQ4  Treat
+## iTRAQ4.116 116.1116    iTRAQ4   Cond
+## iTRAQ4.117 117.1150    iTRAQ4   Cond</code></pre>
+<p>Another useful slot is <code>processingData</code>, accessed with <code>processingData(.)</code>, that records all the processing that objects have undergone since their creation.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">processingData</span>(msset)</code></pre></div>
+<pre><code>## - - - Processing information - - -
+## Data loaded: Tue Jan 12 08:46:44 2021 
+## iTRAQ4 quantification by max: Tue Jan 12 08:46:46 2021 
+##  MSnbase version: 2.17.4</code></pre>
+</div>
+<div id="spectral-counting" class="section level2">
+<h2>
+<span class="header-section-number">5.3</span> Spectral counting</h2>
+<p>Other MS2 quantitation methods available in <code>quantify</code> include the (normalised) spectral index <code>SI</code> and (normalised) spectral abundance factor <code>SAF</code> or simply a simple count method<label for="tufte-sn-4" class="margin-toggle sidenote-number">4</label><input type="checkbox" id="tufte-sn-4" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">4</span> The code below is for illustration only - it doesn't make much sense to perform any of these quantitations on such a multiplexed data</span>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">exprs</span>(si &lt;-<span class="st"> </span><span class="kw">quantify</span>(msexp, <span class="dt">method =</span> <span class="st">"SIn"</span>))</code></pre></div>
+<pre><code>##         dummyiTRAQ.mzXML
+## ECA0510     0.0006553518
+## ECA0984     0.0035384487
+## ECA1028     0.0002684726</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">exprs</span>(saf &lt;-<span class="st"> </span><span class="kw">quantify</span>(msexp, <span class="dt">method =</span> <span class="st">"NSAF"</span>))</code></pre></div>
+<pre><code>##         dummyiTRAQ.mzXML
+## ECA0510        0.4306167
+## ECA0984        0.3094475
+## ECA1028        0.2599359</code></pre>
+<p>Note that spectra that have not been assigned any peptide (<code>NA</code>) or that match non-unique peptides (<code>npsm &gt; 1</code>) are discarded in the counting process.</p>
+<p>As shown above, the <em><a href="https://bioconductor.org/packages/3.12/MSnID">MSnID</a></em> package enables to explore and assess the confidence of identification data using <code>mzid</code> files. A subset of all peptide-spectrum matches, that pass a specific false discovery rate threshold can them be converted to an <code>MSnSet</code>, where the number of peptide occurrences are used to populate the assay data.</p>
+</div>
+<div id="importing-third-party-quantitation-data" class="section level2">
+<h2>
+<span class="header-section-number">5.4</span> Importing third-party quantitation data</h2>
+<div id="from-mztab-files" class="section level3 unnumbered">
+<h3>From <code>MzTab</code> files</h3>
+<div class="boxed yellow">
+On-line
+</div>
+<p>The Proteomics Standard Initiative (PSI) <code>mzTab</code> file format is aimed at providing a simpler (than XML formats) and more accessible file format to the wider community. It is composed of a key-value metadata section and peptide/protein/small molecule tabular sections. These data can be imported with the <code>readMzTabData</code> function<label for="tufte-sn-5" class="margin-toggle sidenote-number">5</label><input type="checkbox" id="tufte-sn-5" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">5</span> We specify version 0.9 (which generates the warning) to fit with the version of that file. For recent files, the <code>version</code> argument should be ignored to use the importer for the current file version 1.0.</span>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mztf &lt;-<span class="st"> </span><span class="kw">pxget</span>(px, <span class="st">"F063721.dat-mztab.txt"</span>)
+(mzt &lt;-<span class="st"> </span><span class="kw">readMzTabData</span>(mztf, <span class="dt">what =</span> <span class="st">"PEP"</span>, <span class="dt">version =</span> <span class="st">"0.9"</span>))</code></pre></div>
+</div>
+<div id="from-spreadsheets" class="section level3 unnumbered">
+<h3>From spreadsheets</h3>
+<p>It is also possible to import arbitrary spreadsheets (such as those exported by MaxQuant, ProteomeDiscoverer, ...) as <code>MSnSet</code> objects into R with the <code>readMSnSet2</code> function. The main 2 arguments of the function are (1) a text-based spreadsheet and (2) column names of indices that identify the quantitation data. The latter can be queried with the <code>getEcols</code> function.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">csv &lt;-<span class="st"> </span><span class="kw">dir</span>(<span class="kw">system.file</span> (<span class="st">"extdata"</span> , <span class="dt">package =</span> <span class="st">"pRolocdata"</span>),
+           <span class="dt">full.names =</span> <span class="ot">TRUE</span>, <span class="dt">pattern =</span> <span class="st">"pr800866n_si_004-rep1.csv"</span>)
+<span class="kw">getEcols</span>(csv, <span class="dt">split =</span> <span class="st">","</span>)</code></pre></div>
+<pre><code>##  [1] "\"Protein ID\""              "\"FBgn\""                   
+##  [3] "\"Flybase Symbol\""          "\"No. peptide IDs\""        
+##  [5] "\"Mascot score\""            "\"No. peptides quantified\""
+##  [7] "\"area 114\""                "\"area 115\""               
+##  [9] "\"area 116\""                "\"area 117\""               
+## [11] "\"PLS-DA classification\""   "\"Peptide sequence\""       
+## [13] "\"Precursor ion mass\""      "\"Precursor ion charge\""   
+## [15] "\"pd.2013\""                 "\"pd.markers\""</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ecols &lt;-<span class="st"> </span><span class="dv">7</span><span class="op">:</span><span class="dv">10</span>
+res &lt;-<span class="st"> </span><span class="kw">readMSnSet2</span>(csv, ecols)
+<span class="kw">head</span>(<span class="kw">exprs</span>(res))</code></pre></div>
+<pre><code>##   area.114 area.115 area.116 area.117
+## 1 0.379000 0.281000 0.225000 0.114000
+## 2 0.420000 0.209667 0.206111 0.163889
+## 3 0.187333 0.167333 0.169667 0.476000
+## 4 0.247500 0.253000 0.320000 0.179000
+## 5 0.216000 0.183000 0.342000 0.259000
+## 6 0.072000 0.212333 0.573000 0.142667</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw">fData</span>(res))</code></pre></div>
+<pre><code>##   Protein.ID        FBgn Flybase.Symbol No..peptide.IDs Mascot.score
+## 1    CG10060 FBgn0001104    G-ialpha65A               3       179.86
+## 2    CG10067 FBgn0000044         Act57B               5       222.40
+## 3    CG10077 FBgn0035720        CG10077               5       219.65
+## 4    CG10079 FBgn0003731           Egfr               2        86.39
+## 5    CG10106 FBgn0029506        Tsp42Ee               1        52.10
+## 6    CG10130 FBgn0010638      Sec61beta               2        79.90
+##   No..peptides.quantified PLS.DA.classification Peptide.sequence
+## 1                       1                    PM                 
+## 2                       9                    PM                 
+## 3                       3                                       
+## 4                       2                    PM                 
+## 5                       1                              GGVFDTIQK
+## 6                       3              ER/Golgi                 
+##   Precursor.ion.mass Precursor.ion.charge     pd.2013 pd.markers
+## 1                                                  PM    unknown
+## 2                                                  PM    unknown
+## 3                                             unknown    unknown
+## 4                                                  PM    unknown
+## 5            626.887                    2 Phenotype 1    unknown
+## 6                                            ER/Golgi         ER</code></pre>
+<p>However, as we see below, we do not have any metadata about samples, i.e. about the design of the experiment.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">pData</span>(res)</code></pre></div>
+<pre><code>## data frame with 0 columns and 4 rows</code></pre>
+<p>This can be done manually, or by importing a csv file containing that design. Below, we define two groups and two operators for the 4 samples of the <code>res</code> object created above:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">pData</span>(res)<span class="op">$</span>group &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>), <span class="dt">each =</span> <span class="dv">2</span>)
+<span class="kw">pData</span>(res)<span class="op">$</span>operator &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>, <span class="dv">2</span>)
+<span class="kw">pData</span>(res)</code></pre></div>
+<pre><code>##          group operator
+## area.114     A        1
+## area.115     A        2
+## area.116     B        1
+## area.117     B        2</code></pre>
+<p>Note that <code>pData(res)$</code> can be shortened with <code>res$</code>. This is also valid when setting new metadata, as shown above.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">pData</span>(res)<span class="op">$</span>group</code></pre></div>
+<pre><code>## [1] "A" "A" "B" "B"</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res<span class="op">$</span>group</code></pre></div>
+<pre><code>## [1] "A" "A" "B" "B"</code></pre>
+</div>
+<div id="exercise-8" class="section level3 unnumbered">
+<h3>Exercise</h3>
+<p>Using <code>readMSnSet2</code>, load the following file that was part of the supplementary information of a manuscript.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">csvfile &lt;-<span class="st"> </span><span class="kw">dir</span>(<span class="kw">system.file</span>(<span class="st">"extdata"</span>, <span class="dt">package =</span> <span class="st">"pRolocdata"</span>),
+               <span class="dt">pattern =</span> <span class="st">"hyperLOPIT-SIData-ms3-rep12-intersect.csv"</span>,
+               <span class="dt">full.names =</span> <span class="ot">TRUE</span>)
+<span class="kw">basename</span>(csvfile)</code></pre></div>
+<pre><code>## [1] "hyperLOPIT-SIData-ms3-rep12-intersect.csv.gz"</code></pre>
+<p>You'll first need to identify which columns to use as expression data. In this case however, two rows are used as header, and you'll need to set <code>n</code> in <code>getEcols</code> to retrieve the appropriate one. There are 20 expresion columns annotated as TMT 10 plex reporter ion M/Z values (if you don't know these, you can find them out by looking at the <code>TMT10</code> reporter ion object). You can now use <code>readMSnSet2</code>, remembering to skip 1 line and, optionally, use the first column as feature names (see the <code>fnames</code> argument). What are the number of features and samples in the data?</p>
+<p><details></details></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">getEcols</span>(csvfile, <span class="dt">split =</span> <span class="st">","</span>, <span class="dt">n =</span> <span class="dv">2</span>)</code></pre></div>
+<pre><code>##  [1] ""                                  ""                                 
+##  [3] ""                                  "Experiment 1"                     
+##  [5] "Experiment 2"                      "Experiment 1"                     
+##  [7] "Experiment 2"                      "126"                              
+##  [9] "127N"                              "127C"                             
+## [11] "128N"                              "128C"                             
+## [13] "129N"                              "129C"                             
+## [15] "130N"                              "130C"                             
+## [17] "131"                               "126"                              
+## [19] "127N"                              "127C"                             
+## [21] "128N"                              "128C"                             
+## [23] "129N"                              "129C"                             
+## [25] "130N"                              "130C"                             
+## [27] "131"                               "phenoDisco Input"                 
+## [29] "phenoDisco Output"                 "Curated phenoDisco Output"        
+## [31] "SVM marker set"                    "SVM classification"               
+## [33] "SVM score"                         "SVM classification (top quartile)"
+## [35] "Final Localization Assignment"     "First localization evidence?"     
+## [37] "Curated Organelles"                "Cytoskeletal Components"          
+## [39] "Trafficking Proteins"              "Protein Complexes"                
+## [41] "Signaling Cascades"                "Oct4 Interactome"                 
+## [43] "Nanog Interactome"                 "Sox2 Interactome"                 
+## [45] "Cell Surface Proteins"</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">msn &lt;-<span class="st"> </span><span class="kw">readMSnSet2</span>(csvfile, <span class="dt">ecol =</span> <span class="dv">8</span><span class="op">:</span><span class="dv">27</span>, <span class="dt">fnames =</span> <span class="dv">1</span>, <span class="dt">skip =</span> <span class="dv">1</span>)
+<span class="kw">dim</span>(msn)</code></pre></div>
+<pre><code>## [1] 5032   20</code></pre>
+<p></p>
+</div>
+<div id="exercise-9" class="section level3 unnumbered">
+<h3>Exercise</h3>
+<p>Add the following experimental design to the <code>MSnSet</code> created above. The 10 first samples originate from batch A, and the 10 following from batch B. Sameple 1 to 5 and 11 to 15 belong to the control group, and the others to the condition group. Even samples are female and odd samples are male.</p>
+<p><details></details></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">msn<span class="op">$</span>batch &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>), <span class="dt">each =</span> <span class="dv">10</span>)
+msn<span class="op">$</span>group &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">"CTRL"</span>, <span class="st">"COND"</span>), <span class="dt">each =</span> <span class="dv">5</span>), <span class="dv">2</span>)
+msn<span class="op">$</span>gender &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">"M"</span>, <span class="st">"F"</span>), <span class="dv">10</span>)
+<span class="kw">pData</span>(msn)</code></pre></div>
+<pre><code>##         batch group gender
+## X126        A  CTRL      M
+## X127N       A  CTRL      F
+## X127C       A  CTRL      M
+## X128N       A  CTRL      F
+## X128C       A  CTRL      M
+## X129N       A  COND      F
+## X129C       A  COND      M
+## X130N       A  COND      F
+## X130C       A  COND      M
+## X131        A  COND      F
+## X126.1      B  CTRL      M
+## X127N.1     B  CTRL      F
+## X127C.1     B  CTRL      M
+## X128N.1     B  CTRL      F
+## X128C.1     B  CTRL      M
+## X129N.1     B  COND      F
+## X129C.1     B  COND      M
+## X130N.1     B  COND      F
+## X130C.1     B  COND      M
+## X131.1      B  COND      F</code></pre>
+<p></p>
+</div>
+</div>
+<div id="data-processing" class="section level2">
+<h2>
+<span class="header-section-number">5.5</span> Data processing</h2>
+<p>We are going to use the <code>cptac_a_b_peptides.txt</code> tab-separated file from the <code>msdata</code> package. These data are the 6th study of the Clinical Proteomic Technology Assessment for Cancer (CPTAC). In this experiment, the authors spiked the Sigma Universal Protein Standard mixture 1 (UPS1) containing 48 different human proteins in a protein background of 60 ng/μL Saccharomyces cerevisiae strain BY4741 . Two different spike-in concentrations were used: 6A (0.25 fmol UPS1 proteins/μL) and 6B (0.74 fmol UPS1 proteins/μL). We limited ourselves to the data of LTQ-Orbitrap W at site 56. The data were searched with MaxQuant version 1.5.2.8, and detailed search settings were described in <a href="https://www.ncbi.nlm.nih.gov/pubmed/26566788">Goeminne <em>et al.</em> (2016)</a>. Three replicates are available for each concentration. The study is a spike-in study for which we know the ground truth so we have the ability to evaluate the quality of the fold change estimates and the list of DE genes that we return with a method.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">basename</span>(f &lt;-<span class="st"> </span>msdata<span class="op">::</span><span class="kw">quant</span>(<span class="dt">full.names =</span> <span class="ot">TRUE</span>))</code></pre></div>
+<pre><code>## [1] "cptac_a_b_peptides.txt"</code></pre>
+<p>Before reading the spreadsheet, we need to identify which columns contain quantitation data (that will be used to populate the <code>exprs</code> slot) and the feature data (that will be put into the <code>fData</code> slot).</p>
+<p>The <code>getEcols</code> function lists the column names in the expression data spreadsheet. The quantitative values we want to used are those in the columns starting with<code>Intensity 6A_7</code>, <code>Intensity 6A_8</code>, ... <code>Intensity 6B_9</code>, that we refer to with <code>Intensity</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">getEcols</span>(f, <span class="dt">split =</span> <span class="st">"</span><span class="ch">\t</span><span class="st">"</span>)</code></pre></div>
+<pre><code>##  [1] "Sequence"                 "N-term cleavage window"  
+##  [3] "C-term cleavage window"   "Amino acid before"       
+##  [5] "First amino acid"         "Second amino acid"       
+##  [7] "Second last amino acid"   "Last amino acid"         
+##  [9] "Amino acid after"         "A Count"                 
+## [11] "R Count"                  "N Count"                 
+## [13] "D Count"                  "C Count"                 
+## [15] "Q Count"                  "E Count"                 
+## [17] "G Count"                  "H Count"                 
+## [19] "I Count"                  "L Count"                 
+## [21] "K Count"                  "M Count"                 
+## [23] "F Count"                  "P Count"                 
+## [25] "S Count"                  "T Count"                 
+## [27] "W Count"                  "Y Count"                 
+## [29] "V Count"                  "U Count"                 
+## [31] "Length"                   "Missed cleavages"        
+## [33] "Mass"                     "Proteins"                
+## [35] "Leading razor protein"    "Start position"          
+## [37] "End position"             "Unique (Groups)"         
+## [39] "Unique (Proteins)"        "Charges"                 
+## [41] "PEP"                      "Score"                   
+## [43] "Identification type 6A_7" "Identification type 6A_8"
+## [45] "Identification type 6A_9" "Identification type 6B_7"
+## [47] "Identification type 6B_8" "Identification type 6B_9"
+## [49] "Experiment 6A_7"          "Experiment 6A_8"         
+## [51] "Experiment 6A_9"          "Experiment 6B_7"         
+## [53] "Experiment 6B_8"          "Experiment 6B_9"         
+## [55] "Intensity"                "Intensity 6A_7"          
+## [57] "Intensity 6A_8"           "Intensity 6A_9"          
+## [59] "Intensity 6B_7"           "Intensity 6B_8"          
+## [61] "Intensity 6B_9"           "Reverse"                 
+## [63] "Potential contaminant"    "id"                      
+## [65] "Protein group IDs"        "Mod. peptide IDs"        
+## [67] "Evidence IDs"             "MS/MS IDs"               
+## [69] "Best MS/MS"               "Oxidation (M) site IDs"  
+## [71] "MS/MS Count"</code></pre>
+<p>Using a pattern, we can set the columns to be used to populate the quantitation slot.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(e &lt;-<span class="st"> </span><span class="kw">grepEcols</span>(f, <span class="st">"Intensity "</span>, <span class="dt">split =</span> <span class="st">"</span><span class="ch">\t</span><span class="st">"</span>)) ## careful at the space!</code></pre></div>
+<pre><code>## [1] 56 57 58 59 60 61</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(cptac &lt;-<span class="st"> </span><span class="kw">readMSnSet2</span>(f, <span class="dt">ecol =</span> e,
+                      <span class="dt">fnames =</span> <span class="st">"Sequence"</span>,
+                      <span class="dt">sep =</span> <span class="st">"</span><span class="ch">\t</span><span class="st">"</span>))</code></pre></div>
+<pre><code>## MSnSet (storageMode: lockedEnvironment)
+## assayData: 11466 features, 6 samples 
+##   element names: exprs 
+## protocolData: none
+## phenoData: none
+## featureData
+##   featureNames: AAAAGAGGAGDSGDAVTK AAAALAGGK ... YYTVFDRDNNRVGFAEAAR
+##     (11466 total)
+##   fvarLabels: Sequence N.term.cleavage.window ... MS.MS.Count (65
+##     total)
+##   fvarMetadata: labelDescription
+## experimentData: use 'experimentData(object)'
+## Annotation:  
+## - - - Processing information - - -
+##  MSnbase version: 2.17.4</code></pre>
+<p>We can access the peptide-level expression data with <code>exprs</code> and the feature meta-data with <code>fData</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw">exprs</span>(cptac))</code></pre></div>
+<pre><code>##                    Intensity.6A_7 Intensity.6A_8 Intensity.6A_9 Intensity.6B_7
+## AAAAGAGGAGDSGDAVTK              0              0          66760              0
+## AAAALAGGK                 2441300        1220000        1337600        2850900
+## AAAALAGGKK                1029200         668040         638990         777030
+## AAADALSDLEIK               515460         670780         712140         426580
+## AAADALSDLEIKDSK            331130         420900         365560         329250
+## AAAEEFQR                        0              0          51558              0
+##                    Intensity.6B_8 Intensity.6B_9
+## AAAAGAGGAGDSGDAVTK          37436              0
+## AAAALAGGK                  935580        1606200
+## AAAALAGGKK                 641270         562840
+## AAADALSDLEIK               620510         737780
+## AAADALSDLEIKDSK            380820         414490
+## AAAEEFQR                        0          76970</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">tail</span>(<span class="kw">exprs</span>(cptac))</code></pre></div>
+<pre><code>##                     Intensity.6A_7 Intensity.6A_8 Intensity.6A_9 Intensity.6B_7
+## YYSISSSSLSEK                309270         357640         337930         387870
+## YYSIYDLGNNAVGLAK                 0              0              0              0
+## YYTFNGPNYNENETIR             88629              0          55584          63071
+## YYTITEVATR                  298360              0              0              0
+## YYTVFDRDNNR                      0              0              0              0
+## YYTVFDRDNNRVGFAEAAR              0              0              0              0
+##                     Intensity.6B_8 Intensity.6B_9
+## YYSISSSSLSEK                361990         432020
+## YYSIYDLGNNAVGLAK                 0              0
+## YYTFNGPNYNENETIR                 0              0
+## YYTITEVATR                  366000              0
+## YYTVFDRDNNR                      0              0
+## YYTVFDRDNNRVGFAEAAR              0              0</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">fvarLabels</span>(cptac)</code></pre></div>
+<pre><code>##  [1] "Sequence"                 "N.term.cleavage.window"  
+##  [3] "C.term.cleavage.window"   "Amino.acid.before"       
+##  [5] "First.amino.acid"         "Second.amino.acid"       
+##  [7] "Second.last.amino.acid"   "Last.amino.acid"         
+##  [9] "Amino.acid.after"         "A.Count"                 
+## [11] "R.Count"                  "N.Count"                 
+## [13] "D.Count"                  "C.Count"                 
+## [15] "Q.Count"                  "E.Count"                 
+## [17] "G.Count"                  "H.Count"                 
+## [19] "I.Count"                  "L.Count"                 
+## [21] "K.Count"                  "M.Count"                 
+## [23] "F.Count"                  "P.Count"                 
+## [25] "S.Count"                  "T.Count"                 
+## [27] "W.Count"                  "Y.Count"                 
+## [29] "V.Count"                  "U.Count"                 
+## [31] "Length"                   "Missed.cleavages"        
+## [33] "Mass"                     "Proteins"                
+## [35] "Leading.razor.protein"    "Start.position"          
+## [37] "End.position"             "Unique..Groups."         
+## [39] "Unique..Proteins."        "Charges"                 
+## [41] "PEP"                      "Score"                   
+## [43] "Identification.type.6A_7" "Identification.type.6A_8"
+## [45] "Identification.type.6A_9" "Identification.type.6B_7"
+## [47] "Identification.type.6B_8" "Identification.type.6B_9"
+## [49] "Experiment.6A_7"          "Experiment.6A_8"         
+## [51] "Experiment.6A_9"          "Experiment.6B_7"         
+## [53] "Experiment.6B_8"          "Experiment.6B_9"         
+## [55] "Intensity"                "Reverse"                 
+## [57] "Potential.contaminant"    "id"                      
+## [59] "Protein.group.IDs"        "Mod..peptide.IDs"        
+## [61] "Evidence.IDs"             "MS.MS.IDs"               
+## [63] "Best.MS.MS"               "Oxidation..M..site.IDs"  
+## [65] "MS.MS.Count"</code></pre>
+<p>For the sake of simplicity, we can clean up the feature variables and only keep those of interest. It is possible to do this interactively with</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cptac &lt;-<span class="st"> </span><span class="kw">selectFeatureData</span>(cptac)</code></pre></div>
+<p>or by setting the feature variables of interest.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cptac &lt;-<span class="st"> </span><span class="kw">selectFeatureData</span>(cptac,
+                           <span class="dt">fcol =</span> <span class="kw">c</span>(<span class="st">"Proteins"</span>,
+                                    <span class="st">"Potential.contaminant"</span>,
+                                    <span class="st">"Reverse"</span>,
+                                    <span class="st">"Sequence"</span>))
+<span class="kw">fvarLabels</span>(cptac)</code></pre></div>
+<pre><code>## [1] "Proteins"              "Potential.contaminant" "Reverse"              
+## [4] "Sequence"</code></pre>
+<p>Let's also add sample annotations:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cptac<span class="op">$</span>condition &lt;-<span class="st"> </span><span class="kw">factor</span>(<span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>), <span class="dt">each =</span> <span class="dv">3</span>))
+cptac<span class="op">$</span>sample &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">7</span><span class="op">:</span><span class="dv">9</span>, <span class="dv">2</span>)
+<span class="kw">pData</span>(cptac)</code></pre></div>
+<pre><code>##                condition sample
+## Intensity.6A_7         A      7
+## Intensity.6A_8         A      8
+## Intensity.6A_9         A      9
+## Intensity.6B_7         B      7
+## Intensity.6B_8         B      8
+## Intensity.6B_9         B      9</code></pre>
+<p>This could also be done by reading a spreadsheet into R as a <code>data.frame</code>, making sure that the rownames match the sample names exactly, and then adding it with <code>pData(cptac) &lt;- myDf</code>.</p>
+<p>The sample names are rather long and contain information on the spike-in concentration and the repeat. We this remove <code>Intensity.6</code> from the sample names:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sampleNames</span>(cptac) &lt;-<span class="st"> </span><span class="kw">sub</span>(<span class="st">"Intensity</span><span class="ch">\\</span><span class="st">.6"</span>, <span class="st">""</span>, <span class="kw">sampleNames</span>(cptac))
+<span class="kw">sampleNames</span>(cptac) </code></pre></div>
+<pre><code>## [1] "A_7" "A_8" "A_9" "B_7" "B_8" "B_9"</code></pre>
+</div>
+<div id="handling-overlapping-protein-groups" class="section level2">
+<h2>
+<span class="header-section-number">5.6</span> Handling overlapping protein groups</h2>
+<p>In our approach a peptide can map to multiple proteins, as long as there is none of these proteins present in a smaller subgroup.</p>
+<p>The <code>smallestUniqueGroups</code> function stems from the <code>MSqRob</code> package, that can be installed with:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">BiocManager<span class="op">::</span><span class="kw">install</span>(<span class="st">"statOmics/MSqRob"</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(keep &lt;-<span class="st"> </span>MSqRob<span class="op">::</span><span class="kw">smallestUniqueGroups</span>(<span class="kw">fData</span>(cptac)<span class="op">$</span>Proteins))</code></pre></div>
+<pre><code>## [1] "sp|P38915|SPT8_YEAST"  "sp|P09938|RIR2_YEAST"  "sp|P53075|SHE10_YEAST"
+## [4] "sp|P00360|G3P1_YEAST"  "sp|P15180|SYKC_YEAST"  "sp|P15705|STI1_YEAST"</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">length</span>(keep)</code></pre></div>
+<pre><code>## [1] 1546</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">length</span>(<span class="kw">unique</span>(<span class="kw">fData</span>(cptac)<span class="op">$</span>Proteins))</code></pre></div>
+<pre><code>## [1] 1722</code></pre>
+<p>As shown above, we will keep 1546 protein groups from the 1722 protein groups recorded in the data. This vector of protein names is used to filter the peptide-level data.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(cptac &lt;-<span class="st"> </span>cptac[<span class="kw">fData</span>(cptac)<span class="op">$</span>Proteins <span class="op">%in%</span><span class="st"> </span>keep, ])</code></pre></div>
+<pre><code>## MSnSet (storageMode: lockedEnvironment)
+## assayData: 10740 features, 6 samples 
+##   element names: exprs 
+## protocolData: none
+## phenoData
+##   sampleNames: A_7 A_8 ... B_9 (6 total)
+##   varLabels: condition sample
+##   varMetadata: labelDescription
+## featureData
+##   featureNames: AAAAGAGGAGDSGDAVTK AAAALAGGK ... YYTVFDRDNNRVGFAEAAR
+##     (10740 total)
+##   fvarLabels: Proteins Potential.contaminant Reverse Sequence
+##   fvarMetadata: labelDescription
+## experimentData: use 'experimentData(object)'
+## Annotation:  
+## - - - Processing information - - -
+## Subset [11466,6][10740,6] Tue Jan 12 08:46:49 2021 
+##  MSnbase version: 2.17.4</code></pre>
+<div id="exercise-10" class="section level3 unnumbered">
+<h3>Exercise</h3>
+<p>How many peptides have we lost by removing the proteins above?</p>
+</div>
+</div>
+<div id="filtering-out-contaminants-and-reverse-hits" class="section level2">
+<h2>
+<span class="header-section-number">5.7</span> Filtering out contaminants and reverse hits</h2>
+<p>Below, we create vector of logicals (and count) recording peptides that are assigned to contaminant (such as keratine, trypsine, ...) and reverse proteins (from the decoy database). These are annotated with a <code>"+"</code> in the respective <code>"Potential.contaminant"</code> and <code>"Reverse"</code> feature variables.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(sel_conts &lt;-<span class="st"> </span><span class="kw">fData</span>(cptac)<span class="op">$</span>Potential.contaminant <span class="op">!=</span><span class="st"> "+"</span>)</code></pre></div>
+<pre><code>## 
+## FALSE  TRUE 
+##    62 10678</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(sel_rev &lt;-<span class="st"> </span><span class="kw">fData</span>(cptac)<span class="op">$</span>Reverse <span class="op">!=</span><span class="st"> "+"</span>)</code></pre></div>
+<pre><code>## 
+##  TRUE 
+## 10740</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(cptac &lt;-<span class="st"> </span>cptac[sel_conts <span class="op">&amp;</span><span class="st"> </span>sel_rev, ])</code></pre></div>
+<pre><code>## MSnSet (storageMode: lockedEnvironment)
+## assayData: 10678 features, 6 samples 
+##   element names: exprs 
+## protocolData: none
+## phenoData
+##   sampleNames: A_7 A_8 ... B_9 (6 total)
+##   varLabels: condition sample
+##   varMetadata: labelDescription
+## featureData
+##   featureNames: AAAAGAGGAGDSGDAVTK AAAALAGGK ... YYTVFDRDNNRVGFAEAAR
+##     (10678 total)
+##   fvarLabels: Proteins Potential.contaminant Reverse Sequence
+##   fvarMetadata: labelDescription
+## experimentData: use 'experimentData(object)'
+## Annotation:  
+## - - - Processing information - - -
+## Subset [11466,6][10740,6] Tue Jan 12 08:46:49 2021 
+## Subset [10740,6][10678,6] Tue Jan 12 08:46:49 2021 
+##  MSnbase version: 2.17.4</code></pre>
+<p>You can keep track of the data processing steps in the object's processing log.</p>
+</div>
+<div id="removing-ptm-only-proteins" class="section level2">
+<h2>
+<span class="header-section-number">5.8</span> Removing PTM-only proteins</h2>
+<p>Proteins for which all peptides are carrying modifications (PTMs) can be considered as unreliable. We will filter out these proteins. This information is included in the <code>Only.identified.by.site</code> column of the <code>proteinGroups.txt</code> MaxQuant file. The code chunk below provides this list of proteins.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ptm_only &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"REV__CON__Q3T052"</span>, <span class="st">"REV__sp|P01120|RAS2_YEAST"</span>,
+              <span class="st">"REV__sp|P32849|RAD5_YEAST"</span>,
+              <span class="st">"REV__sp|Q03723|OST6_YEAST"</span>, <span class="st">"sp|P04051|RPC1_YEAST"</span>,
+              <span class="st">"sp|P06367|RS14A_YEAST"</span>,
+              <span class="st">"sp|P0CX73|YP11A_YEAST;sp|P0CX72|YL12A_YEAST;sp|P0CX71|YE11A_YEAST;sp|P0CX70|YD15A_YEAST;sp|Q6Q5H1|YP14A_YEAST;sp|P0C2I8|YL14A_YEAST"</span>,
+              <span class="st">"sp|P19657|PMA2_YEAST"</span>, <span class="st">"sp|P32465|HXT1_YEAST"</span>,
+              <span class="st">"sp|P39567|IMDH1_YEAST"</span>, <span class="st">"sp|P40527|ATC7_YEAST"</span>,
+              <span class="st">"sp|P40530|PDK1_YEAST"</span>, <span class="st">"sp|P40989|FKS2_YEAST"</span>,
+              <span class="st">"sp|P49955|SF3B1_YEAST"</span>, <span class="st">"sp|P51401|RL9B_YEAST"</span>,
+              <span class="st">"sp|P53072|TAN1_YEAST"</span>, <span class="st">"sp|Q03964|YD17A_YEAST"</span>,
+              <span class="st">"sp|Q04670|YM14B_YEAST;sp|Q12088|YL11B_YEAST;sp|Q03619|YE12B_YEAST"</span>,
+              <span class="st">"sp|Q08649|ESA1_YEAST"</span>, <span class="st">"sp|Q12112|YN11B_YEAST"</span>,
+              <span class="st">"sp|Q12479|IRC11_YEAST"</span>, <span class="st">"sp|Q3E7B7|YD85C_YEAST"</span>)</code></pre></div>
+<p>We now remove the peptides matched to these proteins:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(cptac &lt;-<span class="st"> </span>cptac[<span class="op">!</span><span class="kw">fData</span>(cptac)<span class="op">$</span>Proteins <span class="op">%in%</span><span class="st"> </span>ptm_only, ])</code></pre></div>
+<pre><code>## MSnSet (storageMode: lockedEnvironment)
+## assayData: 10659 features, 6 samples 
+##   element names: exprs 
+## protocolData: none
+## phenoData
+##   sampleNames: A_7 A_8 ... B_9 (6 total)
+##   varLabels: condition sample
+##   varMetadata: labelDescription
+## featureData
+##   featureNames: AAAAGAGGAGDSGDAVTK AAAALAGGK ... YYTVFDRDNNRVGFAEAAR
+##     (10659 total)
+##   fvarLabels: Proteins Potential.contaminant Reverse Sequence
+##   fvarMetadata: labelDescription
+## experimentData: use 'experimentData(object)'
+## Annotation:  
+## - - - Processing information - - -
+## Subset [11466,6][10740,6] Tue Jan 12 08:46:49 2021 
+## Subset [10740,6][10678,6] Tue Jan 12 08:46:49 2021 
+## Subset [10678,6][10659,6] Tue Jan 12 08:46:49 2021 
+##  MSnbase version: 2.17.4</code></pre>
+</div>
+<div id="missing-values" class="section level2">
+<h2>
+<span class="header-section-number">5.9</span> Missing values</h2>
+<p>Unfortunately, some software use 0 irrespective whether the data has intensity zero and when the data haven't been observer. Below we fix this by setting all 0 values to <code>NA</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">exprs</span>(cptac)[<span class="kw">exprs</span>(cptac) <span class="op">==</span><span class="st"> </span><span class="dv">0</span>] &lt;-<span class="st"> </span><span class="ot">NA</span>
+<span class="kw">table</span>(<span class="kw">is.na</span>(<span class="kw">exprs</span>(cptac)))</code></pre></div>
+<pre><code>## 
+## FALSE  TRUE 
+## 34637 29317</code></pre>
+<p>The following figure shows the distribution of missing values for samples (columns) and rows (peptides). The cells have been reporder to emphasis the presence of missing values in the proteins shown at the top and the samples shown towards the right.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">naplot</span>(cptac, <span class="dt">col =</span> <span class="kw">c</span>(<span class="st">"black"</span>, <span class="st">"white"</span>))</code></pre></div>
+<div class="figure">
+<span id="fig:napac"></span>
+<p class="caption marginnote shownote">
+Figure 5.2: Overview of missing data
+</p>
+<img src="berlin_files/figure-html/napac-1.png" alt="Overview of missing data" width="672">
+</div>
+<p>The following figure the proportions of features (peptides in this case) with respect to their completeness (blue) and the percentage of missing data in the full dataset (red).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plotNA</span>(cptac)</code></pre></div>
+<div class="figure">
+<span id="fig:plotNA"></span>
+<p class="caption marginnote shownote">
+Figure 5.3: Data completeness.
+</p>
+<img src="berlin_files/figure-html/plotNA-1.png" alt="Data completeness." width="672">
+</div>
+<p>Below, we count the number of missing values in each</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">fData</span>(cptac)<span class="op">$</span>nNA &lt;-<span class="st"> </span><span class="kw">apply</span>(<span class="kw">exprs</span>(cptac), <span class="dv">1</span>, <span class="cf">function</span>(x) <span class="kw">sum</span>(<span class="kw">is.na</span>(x)))
+<span class="kw">table</span>(<span class="kw">fData</span>(cptac)<span class="op">$</span>nNA)</code></pre></div>
+<pre><code>## 
+##    0    1    2    3    4    5    6 
+## 3675  939  830  686  876  762 2891</code></pre>
+<p>Note that some peptides aren't seen at all because these 6 samples are a subset of a larger dataset, and these features are present in the other acquisitions only.</p>
+<p>From here on one could:</p>
+<ul>
+<li>
+<strong>filter</strong> data with missing values, which however sacrifices a lot of data.</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">filterNA</span>(cptac)</code></pre></div>
+<pre><code>## MSnSet (storageMode: lockedEnvironment)
+## assayData: 3675 features, 6 samples 
+##   element names: exprs 
+## protocolData: none
+## phenoData
+##   sampleNames: A_7 A_8 ... B_9 (6 total)
+##   varLabels: condition sample
+##   varMetadata: labelDescription
+## featureData
+##   featureNames: AAAALAGGK AAAALAGGKK ... YYSISSSSLSEK (3675 total)
+##   fvarLabels: Proteins Potential.contaminant ... nNA (5 total)
+##   fvarMetadata: labelDescription
+## experimentData: use 'experimentData(object)'
+## Annotation:  
+## - - - Processing information - - -
+## Subset [11466,6][10740,6] Tue Jan 12 08:46:49 2021 
+## Subset [10740,6][10678,6] Tue Jan 12 08:46:49 2021 
+## Subset [10678,6][10659,6] Tue Jan 12 08:46:49 2021 
+## Subset [10659,6][3675,6] Tue Jan 12 08:46:50 2021 
+## Removed features with more than 0 NAs: Tue Jan 12 08:46:50 2021 
+## Dropped featureData's levels Tue Jan 12 08:46:50 2021 
+##  MSnbase version: 2.17.4</code></pre>
+<ul>
+<li><p>perform <strong>imputation</strong>, considering the underlying nature of missingness, i.e missing not at random (left-censored) or at random. See below.</p></li>
+<li><p>The best solution is arguably to handle missing values at <strong>the statistical test level</strong>, which is the approach we are going to use.</p></li>
+</ul>
+<p>We are going to keep peptides that had a least two observations. This can be done with the <code>nNA</code> variable that we compute above</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(cptac &lt;-<span class="st"> </span>cptac[<span class="kw">fData</span>(cptac)<span class="op">$</span>nNA <span class="op">&lt;=</span><span class="st"> </span><span class="dv">4</span>, ])</code></pre></div>
+<pre><code>## MSnSet (storageMode: lockedEnvironment)
+## assayData: 7006 features, 6 samples 
+##   element names: exprs 
+## protocolData: none
+## phenoData
+##   sampleNames: A_7 A_8 ... B_9 (6 total)
+##   varLabels: condition sample
+##   varMetadata: labelDescription
+## featureData
+##   featureNames: AAAAGAGGAGDSGDAVTK AAAALAGGK ... YYTITEVATR (7006
+##     total)
+##   fvarLabels: Proteins Potential.contaminant ... nNA (5 total)
+##   fvarMetadata: labelDescription
+## experimentData: use 'experimentData(object)'
+## Annotation:  
+## - - - Processing information - - -
+## Subset [11466,6][10740,6] Tue Jan 12 08:46:49 2021 
+## Subset [10740,6][10678,6] Tue Jan 12 08:46:49 2021 
+## Subset [10678,6][10659,6] Tue Jan 12 08:46:49 2021 
+## Subset [10659,6][7006,6] Tue Jan 12 08:46:50 2021 
+##  MSnbase version: 2.17.4</code></pre>
+</div>
+<div id="log-transformation" class="section level2">
+<h2>
+<span class="header-section-number">5.10</span> Log transformation</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(cptac &lt;-<span class="st"> </span><span class="kw">log</span>(cptac, <span class="dt">base =</span> <span class="dv">2</span>))</code></pre></div>
+<pre><code>## MSnSet (storageMode: lockedEnvironment)
+## assayData: 7006 features, 6 samples 
+##   element names: exprs 
+## protocolData: none
+## phenoData
+##   sampleNames: A_7 A_8 ... B_9 (6 total)
+##   varLabels: condition sample
+##   varMetadata: labelDescription
+## featureData
+##   featureNames: AAAAGAGGAGDSGDAVTK AAAALAGGK ... YYTITEVATR (7006
+##     total)
+##   fvarLabels: Proteins Potential.contaminant ... nNA (5 total)
+##   fvarMetadata: labelDescription
+## experimentData: use 'experimentData(object)'
+## Annotation:  
+## - - - Processing information - - -
+## Subset [11466,6][10740,6] Tue Jan 12 08:46:49 2021 
+## Subset [10740,6][10678,6] Tue Jan 12 08:46:49 2021 
+## Subset [10678,6][10659,6] Tue Jan 12 08:46:49 2021 
+## Subset [10659,6][7006,6] Tue Jan 12 08:46:50 2021 
+## Log transformed (base 2) Tue Jan 12 08:46:50 2021 
+##  MSnbase version: 2.17.4</code></pre>
+</div>
+<div id="normalisation" class="section level2">
+<h2>
+<span class="header-section-number">5.11</span> Normalisation</h2>
+<p>Normalisation is handled by the <code>normalise</code> (or <code>normalize</code>) function.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">"limma"</span>)
+<span class="kw">plotDensities</span>(<span class="kw">exprs</span>(cptac))</code></pre></div>
+<p><img src="berlin_files/figure-html/norm-1.png" width="672"></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(cptac &lt;-<span class="st"> </span><span class="kw">normalise</span>(cptac, <span class="dt">method =</span> <span class="st">"quantiles"</span>))</code></pre></div>
+<pre><code>## MSnSet (storageMode: lockedEnvironment)
+## assayData: 7006 features, 6 samples 
+##   element names: exprs 
+## protocolData: none
+## phenoData
+##   sampleNames: A_7 A_8 ... B_9 (6 total)
+##   varLabels: condition sample
+##   varMetadata: labelDescription
+## featureData
+##   featureNames: AAAAGAGGAGDSGDAVTK AAAALAGGK ... YYTITEVATR (7006
+##     total)
+##   fvarLabels: Proteins Potential.contaminant ... nNA (5 total)
+##   fvarMetadata: labelDescription
+## experimentData: use 'experimentData(object)'
+## Annotation:  
+## - - - Processing information - - -
+## Subset [11466,6][10740,6] Tue Jan 12 08:46:49 2021 
+## Subset [10740,6][10678,6] Tue Jan 12 08:46:49 2021 
+## Subset [10678,6][10659,6] Tue Jan 12 08:46:49 2021 
+## Subset [10659,6][7006,6] Tue Jan 12 08:46:50 2021 
+## Log transformed (base 2) Tue Jan 12 08:46:50 2021 
+## Normalised (quantiles): Tue Jan 12 08:46:50 2021 
+##  MSnbase version: 2.17.4</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plotDensities</span>(<span class="kw">exprs</span>(cptac))</code></pre></div>
+<p><img src="berlin_files/figure-html/norm-2.png" width="672"></p>
+<p>We can visualise our peptide-level data using a Multi Dimensional Scaling (MDS) plot, using the <code>plotMDS</code> function from the <code>limma</code> package. We use the condition sample variable to colour-code the samples.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plotMDS</span>(<span class="kw">exprs</span>(cptac), <span class="dt">col =</span> <span class="kw">as.numeric</span>(cptac<span class="op">$</span>condition))</code></pre></div>
+<p><img src="berlin_files/figure-html/mds0-1.png" width="672"></p>
+<p>The first axis in the plot is showing the leading log fold changes (differences on the log scale) between the samples. We notice that the leading differences in the peptide data seems to be driven by technical variability. Indeed the samples do not seem to be clearly separated according to the spike in condition.</p>
+</div>
+<div id="summarisation" class="section level2">
+<h2>
+<span class="header-section-number">5.12</span> Summarisation</h2>
+<p>So far we have used quantitation values at the peptide level, while the data of interest are proteins. We can take all peptides that are associated with a protein group, as defined by the <code>Proteins</code> feature variable, and aggregate them using an summary function of choice.</p>
+<div class="figure">
+<span id="fig:featsfig2"></span>
+<p class="caption marginnote shownote">
+Figure 5.4: Multiple levels of summarisation. Examples of aggregation from PSMs, peptides to proteins using median aggregation (from the <a href="https://rformassspectrometry.github.io/Features/articles/Features.html"><code>Features</code></a> package).
+</p>
+<img src="img/features.png" alt="Multiple levels of summarisation. Examples of aggregation from PSMs, peptides to proteins using median aggregation (from the [`Features`](https://rformassspectrometry.github.io/Features/articles/Features.html) package)." width="1892">
+</div>
+<p>Below, we combine the peptides into proteins using the median, passing <code>na.rm = TRUE</code> to account for the missing values in the data.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(cptac_prot &lt;-<span class="st"> </span><span class="kw">combineFeatures</span>(cptac, <span class="dt">fcol =</span> <span class="st">"Proteins"</span>,
+                               <span class="dt">method =</span> <span class="st">"median"</span>, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>))</code></pre></div>
+<pre><code>## Your data contains missing values. Please read the relevant section in
+## the combineFeatures manual page for details on the effects of missing
+## values on data aggregation.</code></pre>
+<pre><code>## MSnSet (storageMode: lockedEnvironment)
+## assayData: 1384 features, 6 samples 
+##   element names: exprs 
+## protocolData: none
+## phenoData
+##   sampleNames: A_7 A_8 ... B_9 (6 total)
+##   varLabels: condition sample
+##   varMetadata: labelDescription
+## featureData
+##   featureNames: O00762ups|UBE2C_HUMAN_UPS P00167ups|CYB5_HUMAN_UPS ...
+##     sp|Q99385|VCX1_YEAST (1384 total)
+##   fvarLabels: Proteins Potential.contaminant ... CV.B_9 (11 total)
+##   fvarMetadata: labelDescription
+## experimentData: use 'experimentData(object)'
+## Annotation:  
+## - - - Processing information - - -
+## Subset [11466,6][10740,6] Tue Jan 12 08:46:49 2021 
+## Subset [10740,6][10678,6] Tue Jan 12 08:46:49 2021 
+## Subset [10678,6][10659,6] Tue Jan 12 08:46:49 2021 
+## Subset [10659,6][7006,6] Tue Jan 12 08:46:50 2021 
+## Log transformed (base 2) Tue Jan 12 08:46:50 2021 
+## Normalised (quantiles): Tue Jan 12 08:46:50 2021 
+## Combined 7006 features into 1384 using median: Tue Jan 12 08:46:51 2021 
+##  MSnbase version: 2.17.4</code></pre>
+<p>We obtain 1384 proteins. Note how the processing steps are recorded. Below, we visualise the protein-level data on an MDS plot.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plotMDS</span>(<span class="kw">exprs</span>(cptac_prot), <span class="dt">col =</span> <span class="kw">as.numeric</span>(cptac_prot<span class="op">$</span>condition))</code></pre></div>
+<p><img src="berlin_files/figure-html/mds1-1.png" width="672"></p>
+<div id="exercise-11" class="section level3 unnumbered">
+<h3>Exercise</h3>
+<p>Repeat the summarisation using a the robust normalisation by setting <code>method = "robust"</code>, as described in <a href="https://www.biorxiv.org/content/10.1101/668863v1">Sticker <em>et al</em>. (2019)</a> and visualise the data on an MDS plot. Which one do you anticipate to provide better results?</p>
+<p><details></details></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cptac_rob &lt;-<span class="st"> </span><span class="kw">combineFeatures</span>(cptac, <span class="dt">fcol =</span> <span class="st">"Proteins"</span>,
+                             <span class="dt">method =</span> <span class="st">"robust"</span>, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<pre><code>## Your data contains missing values. Please read the relevant section in
+## the combineFeatures manual page for details on the effects of missing
+## values on data aggregation.</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plotMDS</span>(<span class="kw">exprs</span>(cptac_rob), <span class="dt">col =</span> <span class="kw">as.numeric</span>(cptac_rob<span class="op">$</span>condition))</code></pre></div>
+<p><img src="berlin_files/figure-html/combine_rob-1.png" width="672"></p>
+</div>
+</div>
+<div id="more-on-missing-values" class="section level2">
+<h2>
+<span class="header-section-number">5.13</span> More on missing values</h2>
+<p>Finally, proteomics data analysis is generally hampered by missing values. Missing data imputation is a sensitive operation whose success will be guided by many factors, such as degree and (non-)random nature of the missingness.</p>
+<p>Below, we load an <code>MSnSet</code> with missing values, count the number missing and non-missing values.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(naset)
+<span class="kw">table</span>(<span class="kw">is.na</span>(naset))</code></pre></div>
+<pre><code>## 
+## FALSE  TRUE 
+## 10254   770</code></pre>
+<p>The <code>naplot</code> figure will reorder cells within the data matrix so that the experiments and features with many missing values will be grouped towards the top and right of the heatmap, and barplots at the top and right summarise the number of missing values in the respective samples (column) and rows (rows).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">naplot</span>(naset)</code></pre></div>
+<div class="figure">
+<span id="fig:naplot"></span>
+<p class="caption marginnote shownote">
+Figure 5.5: Overview of missing values.
+</p>
+<img src="berlin_files/figure-html/naplot-1.png" alt="Overview of missing values." width="672">
+</div>
+<p>The importance of missing values in a dataset will depend on the quantitation technology employed. Label-free quantitation in particular can suffer from a very high number of missing values.</p>
+<p>Missing value in <code>MSnSet</code> instances can be filtered out with the <code>filterNA</code> functions. By default, it removes features that contain at least <code>NA</code> value.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## remove features with missing values
+tmp &lt;-<span class="st"> </span><span class="kw">filterNA</span>(naset)
+<span class="kw">processingData</span>(tmp)</code></pre></div>
+<pre><code>## - - - Processing information - - -
+## Subset [689,16][301,16] Tue Jan 12 08:46:55 2021 
+## Removed features with more than 0 NAs: Tue Jan 12 08:46:55 2021 
+## Dropped featureData's levels Tue Jan 12 08:46:55 2021 
+##  MSnbase version: 1.15.6</code></pre>
+<p>It is of course possible to impute missing values (<code>?impute</code>). This is however not a straightforward thing, as is likely to dramatically fail when a high proportion of data is missing (10s of %)<label for="tufte-sn-6" class="margin-toggle sidenote-number">6</label><input type="checkbox" id="tufte-sn-6" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">6</span> Note that when using <em><a href="https://bioconductor.org/packages/3.12/limma">limma</a></em> for instance, downstream analyses can handle missing values. Still, it is recommended to explore missingness as part of the exploratory data analysis.</span>. But also, there are two types of mechanisms resulting in missing values in LC/MSMS experiments.</p>
+<ul>
+<li><p>Missing values resulting from absence of detection of a feature, despite ions being present at detectable concentrations. For example in the case of ion suppression or as a result from the stochastic, data-dependent nature of the MS acquisition method. These missing value are expected to be randomly distributed in the data and are defined as <strong>missing at random</strong> (MAR) or <strong>missing completely at random</strong> (MCAR).</p></li>
+<li><p>Biologically relevant missing values, resulting from the <em>absence</em> or the low abundance of ions (below the limit of detection of the instrument). These missing values are not expected to be randomly distributed in the data and are defined as <strong>missing not at random</strong> (MNAR).</p></li>
+</ul>
+<div class="figure">
+<span id="fig:naheatmap"></span>
+<p class="caption marginnote shownote">
+Figure 5.6: Random and non-random missing values.
+</p>
+<img src="berlin_files/figure-html/naheatmap-1.png" alt="Random and non-random missing values." width="672">
+</div>
+<p>Different imputation methods are more appropriate to different classes of missing values (as documented in this <a href="http://pubs.acs.org/doi/abs/10.1021/acs.jproteome.5b00981">paper</a>). Values missing at random, and those missing not at random should be imputed with different methods.</p>
+<div class="figure">
+<span id="fig:lazar"></span>
+<p class="caption marginnote shownote">
+Figure 5.7: Effect of the nature of missing values on their imputation. Root-mean-square error (RMSE) observations standard deviation ratio (RSR), KNN and MinDet imputation. Lower (blue) is better.
+</p>
+<img src="img/imp-sim.png" alt="Effect of the nature of missing values on their imputation. Root-mean-square error (RMSE) observations standard deviation ratio (RSR), KNN and MinDet imputation. Lower (blue) is better." width="100%">
+</div>
+<p>See Lazar <em>et al.</em> <a href="http://dx.doi.org/10.1021/acs.jproteome.5b00981">Accounting for the Multiple Natures of Missing Values in Label-Free Quantitative Proteomics Data Sets to Compare Imputation Strategies</a>.</p>
+<p>Generally, it is recommended to use <strong>hot deck</strong> methods (nearest neighbour (<strong>left</strong>), maximum likelihood, ...) when data are missing at random.Conversely, MNAR features should ideally be imputed with a <strong>left-censor</strong> (minimum value (<strong>right</strong>), but not zero, ...) method.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## impute missing values using knn imputation
+tmp &lt;-<span class="st"> </span><span class="kw">impute</span>(naset, <span class="dt">method =</span> <span class="st">"knn"</span>)</code></pre></div>
+<pre><code>## Warning in knnimp(x, k, maxmiss = rowmax, maxp = maxp): 12 rows with more than 50 % entries missing;
+##  mean imputation used for these rows</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">processingData</span>(tmp)</code></pre></div>
+<pre><code>## - - - Processing information - - -
+## Data imputation using knn Tue Jan 12 08:46:56 2021 
+##  MSnbase version: 1.15.6</code></pre>
+<p>There are various methods to perform data imputation, as described in <code>?impute</code>. The <em><a href="https://CRAN.R-project.org/package=imp4p">imp4p</a></em> package contains additional functionality, including some to estimate the randomness of missing data.</p>
+<div id="exercise-12" class="section level3 unnumbered">
+<h3>Exercise</h3>
+<p>Following the example above, apply a mixed imputation, using knn for data missing at random and the deterministic minumum left-cencored imputation for data missing no at random.</p>
+<p><details></details></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">impute</span>(naset, <span class="st">"mixed"</span>,
+       <span class="dt">randna =</span> <span class="kw">fData</span>(naset)<span class="op">$</span>randna,
+       <span class="dt">mar =</span> <span class="st">"knn"</span>, <span class="dt">mnar =</span> <span class="st">"MinDet"</span>)</code></pre></div>
+<pre><code>## MSnSet (storageMode: lockedEnvironment)
+## assayData: 689 features, 16 samples 
+##   element names: exprs 
+## protocolData: none
+## phenoData
+##   sampleNames: M1F1A M1F4A ... M2F11B (16 total)
+##   varLabels: nNA
+##   varMetadata: labelDescription
+## featureData
+##   featureNames: AT1G09210 AT1G21750 ... AT4G39080 (689 total)
+##   fvarLabels: nNA randna
+##   fvarMetadata: labelDescription
+## experimentData: use 'experimentData(object)'
+## Annotation:  
+## - - - Processing information - - -
+## Data imputation using mixed Tue Jan 12 08:46:56 2021 
+##  MSnbase version: 1.15.6</code></pre>
+<p></p>
+</div>
+<div id="exercise-13" class="section level3 unnumbered">
+<h3>Exercise</h3>
+<p>When assessing missing data imputation methods, such as in <a href="https://pubs.acs.org/doi/abs/10.1021/acs.jproteome.5b00981">Lazar et al. (2016)</a>, one often replaces values with missing data, imputes these with a method of choice, then quantifies the difference between original (expected) and observed (imputed) values. Here, using the <code>naset</code> data, use this strategy to assess the difference between knn and Bayesian PCA imputation.</p>
+<p><details></details></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">imp1 &lt;-<span class="st"> </span><span class="kw">impute</span>(naset, <span class="dt">method =</span> <span class="st">"knn"</span>)</code></pre></div>
+<pre><code>## Warning in knnimp(x, k, maxmiss = rowmax, maxp = maxp): 12 rows with more than 50 % entries missing;
+##  mean imputation used for these rows</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">imp2 &lt;-<span class="st"> </span><span class="kw">impute</span>(naset, <span class="dt">method =</span> <span class="st">"bpca"</span>)
+<span class="kw">summary</span>(<span class="kw">abs</span>(<span class="kw">exprs</span>(imp1)[<span class="kw">is.na</span>(naset)] <span class="op">-</span><span class="st"> </span><span class="kw">exprs</span>(imp2)[<span class="kw">is.na</span>(naset)]))</code></pre></div>
+<pre><code>##      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+## 5.332e-05 6.594e-03 1.535e-02 2.315e-02 2.855e-02 2.579e-01</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(<span class="kw">as.numeric</span>(<span class="kw">na.omit</span>(<span class="kw">exprs</span>(naset))))</code></pre></div>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##  0.0170  0.1865  0.2440  0.2500  0.3080  0.6587</code></pre>
+<p></p>
+</div>
+<div id="exercise-14" class="section level3 unnumbered">
+<h3>Exercise</h3>
+<p>When assessing the impact of missing value imputation on real data, one can't use the strategy above. Another useful approach is to assess the impact of the imputation method on the distribution of the quantitative data. For instance, here is the intensity distribution of the <code>naset</code> data. Verify the effect of applying <code>knn</code>, <code>zero</code>, <code>MinDet</code> and <code>bpca</code> on this distribution.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(<span class="kw">density</span>(<span class="kw">na.omit</span>(<span class="kw">exprs</span>(naset))))</code></pre></div>
+<div class="figure">
+<span id="fig:nasetdist"></span>
+<p class="caption marginnote shownote">
+Figure 5.8: Intensity disctribution of the <code>naset</code> data.
+</p>
+<img src="berlin_files/figure-html/nasetdist-1.png" alt="Intensity disctribution of the `naset` data." width="672">
+</div>
+<p><details></details></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cls &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"black"</span>, <span class="st">"red"</span>, <span class="st">"blue"</span>, <span class="st">"steelblue"</span>, <span class="st">"orange"</span>)
+<span class="kw">plot</span>(<span class="kw">density</span>(<span class="kw">na.omit</span>(<span class="kw">exprs</span>(naset))), <span class="dt">col =</span> cls[<span class="dv">1</span>])
+<span class="kw">lines</span>(<span class="kw">density</span>(<span class="kw">exprs</span>(<span class="kw">impute</span>(naset, <span class="dt">method =</span> <span class="st">"knn"</span>))), <span class="dt">col =</span> cls[<span class="dv">2</span>])</code></pre></div>
+<pre><code>## Warning in knnimp(x, k, maxmiss = rowmax, maxp = maxp): 12 rows with more than 50 % entries missing;
+##  mean imputation used for these rows</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">lines</span>(<span class="kw">density</span>(<span class="kw">exprs</span>(<span class="kw">impute</span>(naset, <span class="dt">method =</span> <span class="st">"zero"</span>))), <span class="dt">col =</span> cls[<span class="dv">3</span>])
+<span class="kw">lines</span>(<span class="kw">density</span>(<span class="kw">exprs</span>(<span class="kw">impute</span>(naset, <span class="dt">method =</span> <span class="st">"MinDet"</span>))), <span class="dt">col =</span> cls[<span class="dv">4</span>])
+<span class="kw">lines</span>(<span class="kw">density</span>(<span class="kw">exprs</span>(<span class="kw">impute</span>(naset, <span class="dt">method =</span> <span class="st">"bpca"</span>))), <span class="dt">col =</span> cls[<span class="dv">5</span>])
+<span class="kw">legend</span>(<span class="st">"topright"</span>, <span class="dt">legend =</span> <span class="kw">c</span>(<span class="st">"orig"</span>, <span class="st">"knn"</span>, <span class="st">"zero"</span>, <span class="st">"MinDet"</span>, <span class="st">"bpca"</span>),
+       <span class="dt">col =</span> cls, <span class="dt">lwd =</span> <span class="dv">2</span>, <span class="dt">bty =</span> <span class="st">"n"</span>)</code></pre></div>
+<p><img src="berlin_files/figure-html/naex3-1.png" width="672"></p>
+</div>
+</div>
+<div id="differential-expression" class="section level2">
+<h2>
+<span class="header-section-number">5.14</span> Differential expression</h2>
+<p>R in general and Bioconductor in particular are well suited for the statistical analysis of data of quantitative proteomics data. Several packages provide dedicated resources for proteomics data:</p>
+<ul>
+<li><p><em><a href="https://bioconductor.org/packages/3.12/MSstats">MSstats</a></em> and <em><a href="https://bioconductor.org/packages/3.12/MSstatsTMT">MSstatsTMT</a></em>: A set of tools for statistical relative protein significanceanalysis in Data dependent (DDA), SRM, Data independent acquisition (DIA) and TMT experiments.</p></li>
+<li><p><em><a href="https://bioconductor.org/packages/3.12/msmsTests">msmsTests</a></em>: Statistical tests for label-free LC-MS/MS data by spectral counts, to discover differentially expressed proteins between two biological conditions. Three tests are available: Poisson GLM regression, quasi-likelihood GLM regression, and the negative binomial of the <em><a href="https://bioconductor.org/packages/3.12/edgeR">edgeR</a></em> package. All can be readily applied on <code>MSnSet</code> instances produced, for example by <code>MSnID</code>.</p></li>
+<li><p><em><a href="https://bioconductor.org/packages/3.12/DEP">DEP</a></em> provides an integrated analysis workflow for the analysis of mass spectrometry proteomics data for differential protein expression or differential enrichment.</p></li>
+<li><p><em><a href="https://github.com/statOmics/MSqRob">MSqRob</a></em>: The <code>MSqRob</code> package allows a user to do quantitative protein-level statistical inference on LC-MS proteomics data. More specifically, our package makes use of peptide-level input data, thus correcting for unbalancedness and peptide-specific biases. As previously shown (<a href="https://pubs.acs.org/doi/abs/10.1021/pr501223t">Goeminne et al. (2015)</a>), this approach is both more sensitive and specific than summarizing peptide-level input to protein-level values. Model estimates are stabilized by ridge regression, empirical Bayes variance estimation and downweighing of outliers. Currently, only label-free proteomics data types are supported.</p></li>
+</ul>
+<p>Others, while not specfic to proteomics, are also recommended, such as the <em><a href="https://bioconductor.org/packages/3.12/limma">limma</a></em> package. When analysing spectral counting data, methods for high throughput sequencing data are applicable. Below, we illustrate how to apply a typical <code>edgeR</code> test to count data using the <code>msms.edgeR</code> function from the <code>msmsTests</code> package.</p>
+<div id="t.test" class="section level3">
+<h3>
+<span class="header-section-number">5.14.1</span> <code>t.test</code>
+</h3>
+<p>We can start with a simpe t-test comparing the expression of the first protein for groups A and B.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">pData</span>(cptac_rob)</code></pre></div>
+<pre><code>##     condition sample
+## A_7         A      7
+## A_8         A      8
+## A_9         A      9
+## B_7         B      7
+## B_8         B      8
+## B_9         B      9</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tt1 &lt;-<span class="st"> </span><span class="kw">t.test</span>(<span class="kw">exprs</span>(cptac_rob)[<span class="dv">1</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>],
+              <span class="kw">exprs</span>(cptac_rob)[<span class="dv">1</span>, <span class="dv">4</span><span class="op">:</span><span class="dv">6</span>])
+tt1<span class="op">$</span>p.value</code></pre></div>
+<pre><code>## [1] 0.01370111</code></pre>
+<p>This approach can be applied on each protein (row) of our dataset by writing a simple helper function. This will however fail if we don't have at least 2 expression values per group. We thus also apply an additional filter to remove features with <code>NA</code> values (this could be refined, but see below).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my_t_test &lt;-<span class="st"> </span><span class="cf">function</span>(prot_i) 
+    <span class="kw">t.test</span>(prot_i[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>], prot_i[<span class="dv">4</span><span class="op">:</span><span class="dv">6</span>])<span class="op">$</span>p.value
+
+
+cptac_rob_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw">filterNA</span>(cptac_rob)                     
+pv &lt;-<span class="st"> </span><span class="kw">apply</span>(<span class="kw">exprs</span>(cptac_rob_<span class="dv">2</span>), <span class="dv">1</span>, my_t_test)</code></pre></div>
+</div>
+<div id="exercise-15" class="section level3 unnumbered">
+<h3>Exercise</h3>
+<p>Do you think we have any statistically differentially expressed proteins?</p>
+<p><details></details></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw">sort</span>(pv))</code></pre></div>
+<pre><code>##  P63279ups|UBC9_HUMAN_UPS   P99999ups|CYC_HUMAN_UPS P10636-8ups|TAU_HUMAN_UPS 
+##              5.571678e-05              8.461009e-05              2.612725e-04 
+##  P08311ups|CATG_HUMAN_UPS Q06830ups|PRDX1_HUMAN_UPS      sp|P31787|ACBP_YEAST 
+##              6.063902e-04              7.002872e-04              1.214933e-03</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">hist</span>(pv)</code></pre></div>
+<p><img src="berlin_files/figure-html/unnamed-chunk-21-1.png" width="672"></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">adjp &lt;-<span class="st"> </span><span class="kw">p.adjust</span>(pv, <span class="dt">method =</span> <span class="st">"BH"</span>)
+<span class="kw">sum</span>(adjp <span class="op">&lt;</span><span class="st"> </span><span class="fl">0.05</span>)</code></pre></div>
+<pre><code>## [1] 2</code></pre>
+<p></p>
+<p>See also <a href="https://uclouvain-cbio.github.io/WSBIM1322/sec-testing.html">this chapter</a> for a longer discussion of hypothesis testing.</p>
+</div>
+<div id="limma" class="section level3">
+<h3>
+<span class="header-section-number">5.14.2</span> <code>limma</code>
+</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">"limma"</span>)
+design &lt;-<span class="st"> </span><span class="kw">model.matrix</span>(<span class="op">~</span><span class="st"> </span>cptac_rob<span class="op">$</span>condition)
+fit &lt;-<span class="st"> </span><span class="kw">lmFit</span>(<span class="kw">exprs</span>(cptac_rob), design)</code></pre></div>
+<pre><code>## Warning: Partial NA coefficients for 23 probe(s)</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit &lt;-<span class="st"> </span><span class="kw">eBayes</span>(fit)
+res &lt;-<span class="st"> </span><span class="kw">topTable</span>(fit, <span class="dt">coef =</span> <span class="st">"cptac_rob$conditionB"</span>, <span class="dt">number =</span> <span class="ot">Inf</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">"tidyverse"</span>)
+res <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(adj.P.Val <span class="op">&lt;</span><span class="st"> </span><span class="fl">0.05</span>)</code></pre></div>
+<pre><code>##                              logFC  AveExpr         t      P.Value   adj.P.Val
+## P99999ups|CYC_HUMAN_UPS   2.050636 16.75273 15.857724 1.377091e-06 0.001103142
+## P63279ups|UBC9_HUMAN_UPS  1.821672 17.43785 15.438383 1.642745e-06 0.001103142
+## P08311ups|CATG_HUMAN_UPS  1.627333 17.12281 14.543489 2.431613e-06 0.001103142
+## P10636-8ups|TAU_HUMAN_UPS 1.351690 16.90867 12.093822 8.094827e-06 0.002754265
+## P02787ups|TRFE_HUMAN_UPS  1.493514 16.67237 10.689686 1.793326e-05 0.004135995
+## P06732ups|KCRM_HUMAN_UPS  1.654896 16.13980 10.662013 1.823363e-05 0.004135995
+## Q06830ups|PRDX1_HUMAN_UPS 1.558904 16.49875  9.848004 3.026639e-05 0.005884651
+## P51965ups|UB2E1_HUMAN_UPS 1.699576 16.46460  9.594718 3.570647e-05 0.006074563
+## P01344ups|IGF2_HUMAN_UPS  1.375413 16.32279 10.352723 6.275915e-05 0.009490578
+## O00762ups|UBE2C_HUMAN_UPS 1.564630 15.99990  9.717162 8.876192e-05 0.012080497
+## P01127ups|PDGFB_HUMAN_UPS 1.416732 16.93450  8.142120 9.986723e-05 0.012356300
+## P07339ups|CATD_HUMAN_UPS  1.984265 16.29477  9.186398 1.204793e-04 0.012975873
+## P01031ups|CO5_HUMAN_UPS   1.784246 17.03700  9.014296 1.334770e-04 0.012975873
+## P63165ups|SUMO1_HUMAN_UPS 1.286627 16.14918  7.823647 1.277396e-04 0.012975873
+## P00918ups|CAH2_HUMAN_UPS  1.481828 16.57939  7.650046 1.465964e-04 0.013301184
+## P12081ups|SYHC_HUMAN_UPS  1.460529 16.45486  8.330157 2.041862e-04 0.017368593
+## sp|Q05881|YL287_YEAST     2.736884 18.19837 12.132973 3.853562e-04 0.030851164
+## P01375ups|TNFA_HUMAN_UPS  1.858506 16.00387  7.108659 4.729828e-04 0.033880505
+## P02144ups|MYG_HUMAN_UPS   1.434464 16.87585  6.419197 4.212124e-04 0.031848339
+## P00915ups|CAH1_HUMAN_UPS  1.813716 16.98311  7.783811 7.107145e-04 0.046061069
+## P61769ups|B2MG_HUMAN_UPS  2.013064 18.37888  5.883578 7.002362e-04 0.046061069
+##                                     B
+## P99999ups|CYC_HUMAN_UPS    5.99730657
+## P63279ups|UBC9_HUMAN_UPS   5.84987099
+## P08311ups|CATG_HUMAN_UPS   5.51489605
+## P10636-8ups|TAU_HUMAN_UPS  4.43157335
+## P02787ups|TRFE_HUMAN_UPS   3.67501078
+## P06732ups|KCRM_HUMAN_UPS   3.65891735
+## Q06830ups|PRDX1_HUMAN_UPS  3.16270996
+## P51965ups|UB2E1_HUMAN_UPS  2.99879727
+## P01344ups|IGF2_HUMAN_UPS   2.55169625
+## O00762ups|UBE2C_HUMAN_UPS  2.22302058
+## P01127ups|PDGFB_HUMAN_UPS  1.95927528
+## P07339ups|CATD_HUMAN_UPS   1.92773181
+## P01031ups|CO5_HUMAN_UPS    1.82761027
+## P63165ups|SUMO1_HUMAN_UPS  1.70614147
+## P00918ups|CAH2_HUMAN_UPS   1.56391994
+## P12081ups|SYHC_HUMAN_UPS   1.40671389
+## sp|Q05881|YL287_YEAST      0.79011090
+## P01375ups|TNFA_HUMAN_UPS   0.55250794
+## P02144ups|MYG_HUMAN_UPS    0.46124872
+## P00915ups|CAH1_HUMAN_UPS   0.32845653
+## P61769ups|B2MG_HUMAN_UPS  -0.07588204</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">fData</span>(cptac_rob) &lt;-
+<span class="st">    </span><span class="kw">full_join</span>(<span class="kw">rownames_to_column</span>(<span class="kw">fData</span>(cptac_rob)),
+              <span class="kw">rownames_to_column</span>(res)) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">column_to_rownames</span>()</code></pre></div>
+<pre><code>## Joining, by = "rowname"</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">"ggrepel"</span>)
+<span class="kw">ggplot</span>(<span class="kw">fData</span>(cptac_rob),
+       <span class="kw">aes</span>(<span class="dt">x =</span> logFC,
+           <span class="dt">y =</span> <span class="op">-</span><span class="kw">log10</span>(adj.P.Val))) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_point</span>()</code></pre></div>
+<pre><code>## Warning: Removed 23 rows containing missing values (geom_point).</code></pre>
+<p><img src="berlin_files/figure-html/limmatomsnset-1.png" width="672"></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="kw">fData</span>(cptac_rob),
+       <span class="kw">aes</span>(<span class="dt">x =</span> logFC,
+           <span class="dt">y =</span> <span class="op">-</span><span class="kw">log10</span>(adj.P.Val),
+           <span class="dt">label =</span> <span class="kw">sub</span>(<span class="st">"</span><span class="ch">\\</span><span class="st">[OS.+</span><span class="ch">\\</span><span class="st">]"</span>, <span class="st">""</span>, Proteins))) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_point</span>() <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_text_repel</span>(
+        <span class="dt">data =</span> <span class="kw">subset</span>(<span class="kw">fData</span>(cptac_rob), adj.P.Val <span class="op">&lt;</span><span class="st"> </span><span class="fl">0.05</span>),
+        <span class="dt">nudge_x =</span> <span class="fl">0.05</span>,
+        <span class="dt">nudge_y =</span> <span class="fl">-0.05</span>,
+        <span class="dt">segment.size =</span> <span class="fl">0.5</span>,
+    )</code></pre></div>
+<pre><code>## Warning: Removed 23 rows containing missing values (geom_point).</code></pre>
+<pre><code>## Warning: ggrepel: 7 unlabeled data points (too many overlaps). Consider
+## increasing max.overlaps</code></pre>
+<p><img src="berlin_files/figure-html/limmatomsnset-2.png" width="672"></p>
+</div>
+<div id="differential-expression-with-msqrob" class="section level3">
+<h3>
+<span class="header-section-number">5.14.3</span> Differential expression with <code>MSqRob</code>
+</h3>
+<p><strong>Exercise</strong>: In this section, the median-summarised protein data will be used. As an exercice, you are advised to use the best of the median- or robust-summerised data and compare your results with those shown below.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">"MSqRob"</span>)</code></pre></div>
+<div id="estimation" class="section level4 unnumbered">
+<h4>Estimation</h4>
+<p><code>MSqRob</code> is currently working with a format where we have one dataframe for each protein. This will be changed in the next release to use the <code>MSnSet</code> directly. Therefore we first have to reorganise the data.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">protMSqRob &lt;-<span class="st"> </span><span class="kw">MSnSet2protdata</span>(cptac_prot, <span class="st">"Proteins"</span>)</code></pre></div>
+<p>Next the models are fitted. This is done using the <code>fit.model</code> function. We only have to model the data using the factor condition from the sample metadata (the <code>pData</code> slot) of the protein level <code>MSnSet</code>. The name of the factor variable is specified in the fixed argument (if multiple predictors have to be incorporated in the model, a vector of variable names has to be provided in this argument). The argument shrinkage is used to specify if ridge regression has to be adopted. For the sake of speed we do not do this in the tutorial. The shrinkage has to be specified for each variable in the fixed effects. We also have to indicate this for the intercept (which we never shrink). So we specify it at <code>c(0, 0)</code> to indicate that the intercept (first 0) and the parameters for the factor condition (second 0) are not penalized. We set the <code>robust_var</code> function equal to <code>FALSE</code> - this functionality will be removed from the package in the next release.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">models &lt;-<span class="st"> </span><span class="kw">fit.model</span>(<span class="dt">protdata =</span> protMSqRob,
+                    <span class="dt">response =</span> <span class="st">"quant_value"</span>,
+                    <span class="dt">fixed =</span> <span class="st">"condition"</span>,
+                    <span class="dt">shrinkage.fixed =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>),
+                    <span class="dt">robust_var =</span> <span class="ot">FALSE</span>)</code></pre></div>
+</div>
+<div id="inference" class="section level4 unnumbered">
+<h4>Inference</h4>
+<p>Often, biologists have problems with the reference coding. In MSqRob we have opted to formulate contrasts using all levels of a factor. Internally, the contrasts are than recasted according to the factor level that is the reference class.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">L &lt;-<span class="st"> </span><span class="kw">makeContrast</span>(<span class="st">"conditionB - conditionA"</span>,
+                  <span class="dt">levels =</span> <span class="kw">c</span>(<span class="st">"conditionA"</span>, <span class="st">"conditionB"</span>))
+res &lt;-<span class="st"> </span><span class="kw">test.contrast_adjust</span>(models, L)
+<span class="kw">head</span>(res)</code></pre></div>
+<pre><code>##                            estimate        se       df      Tval         pval
+## P99999ups|CYC_HUMAN_UPS    2.152716 0.1663700 7.230582 12.939331 2.914470e-06
+## P63279ups|UBC9_HUMAN_UPS   1.822164 0.1531925 7.230582 11.894609 5.227860e-06
+## P08311ups|CATG_HUMAN_UPS   1.316092 0.1817428 7.230582  7.241510 1.463569e-04
+## P06732ups|KCRM_HUMAN_UPS   1.274376 0.1986088 7.230582  6.416512 3.158129e-04
+## sp|P12688|YPK1_YEAST      -1.655782 0.2398832 6.230582 -6.902449 3.879161e-04
+## O00762ups|UBE2C_HUMAN_UPS  1.604233 0.2339066 6.230582  6.858435 4.020442e-04
+##                                  qval signif
+## P99999ups|CYC_HUMAN_UPS   0.003419021   TRUE
+## P63279ups|UBC9_HUMAN_UPS  0.003419021   TRUE
+## P08311ups|CATG_HUMAN_UPS  0.063811592  FALSE
+## P06732ups|KCRM_HUMAN_UPS  0.083831332  FALSE
+## sp|P12688|YPK1_YEAST      0.083831332  FALSE
+## O00762ups|UBE2C_HUMAN_UPS 0.083831332  FALSE</code></pre>
+<p>Below, we put the results of the statistical analysis back into the <code>MSnSet</code> feature data, to keep the data and their analysis together. We need however to rearrange the proteins in the result dataframe (ordered by adjusted p-value) to match the order in the <code>MSnSet</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">fData</span>(cptac_prot)<span class="op">$</span>res &lt;-<span class="st"> </span>res[<span class="kw">featureNames</span>(cptac_prot), ]</code></pre></div>
+<p>There are 2 protein groups identified as differentially expressed at a significant effect at the 5% FDR level.</p>
+</div>
+</div>
+</div>
+<div id="visualising-de-results" class="section level2">
+<h2>
+<span class="header-section-number">5.15</span> Visualising DE results</h2>
+<div id="volcano-plot" class="section level3">
+<h3>
+<span class="header-section-number">5.15.1</span> Volcano plot</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">"ggplot2"</span>)
+volc &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="kw">fData</span>(cptac_prot)<span class="op">$</span>res,
+               <span class="kw">aes</span>(<span class="dt">x =</span> estimate,
+                   <span class="dt">y =</span> <span class="op">-</span><span class="kw">log10</span>(pval),
+                   <span class="dt">color =</span> signif)) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_point</span>() <span class="op">+</span>
+<span class="st">    </span><span class="kw">scale_color_manual</span>(<span class="dt">values =</span> <span class="kw">c</span>(<span class="st">"black"</span>, <span class="st">"red"</span>))
+volc</code></pre></div>
+<pre><code>## Warning: Removed 76 rows containing missing values (geom_point).</code></pre>
+<p><img src="berlin_files/figure-html/volc-1.png" width="672"></p>
+<p>It is easy to generate an interactive graph to explore the results using the <code>plotly</code> package and passing the ggplot-object to the <code>ggplotly</code> function:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">plotly<span class="op">::</span><span class="kw">ggplotly</span>(volc)</code></pre></div>
+</div>
+<div id="heatmap" class="section level3">
+<h3>
+<span class="header-section-number">5.15.2</span> Heatmap</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sign &lt;-<span class="st"> </span><span class="kw">which</span>(<span class="kw">fData</span>(cptac_prot)<span class="op">$</span>res<span class="op">$</span>sig)
+<span class="kw">heatmap</span>(<span class="kw">exprs</span>(cptac_prot)[sign,])</code></pre></div>
+<p><img src="berlin_files/figure-html/hmap-1.png" width="672"></p>
+</div>
+<div id="expression-data-for-proteins-of-interest" class="section level3">
+<h3>
+<span class="header-section-number">5.15.3</span> Expression data for proteins of interest</h3>
+<p>Below, we extract the peptide data matching the differentially expressed proteins.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sign_prots &lt;-<span class="st"> </span><span class="kw">featureNames</span>(cptac_prot)[sign]
+(cptac_sign &lt;-<span class="st"> </span>cptac[<span class="kw">fData</span>(cptac)<span class="op">$</span>Proteins <span class="op">%in%</span><span class="st"> </span>sign_prots, ])</code></pre></div>
+<pre><code>## MSnSet (storageMode: lockedEnvironment)
+## assayData: 4 features, 6 samples 
+##   element names: exprs 
+## protocolData: none
+## phenoData
+##   sampleNames: A_7 A_8 ... B_9 (6 total)
+##   varLabels: condition sample
+##   varMetadata: labelDescription
+## featureData
+##   featureNames: ADLIAYLK ADLIAYLKK GTPWEGGLFK TGQAPGYSYTAANK
+##   fvarLabels: Proteins Potential.contaminant ... nNA (5 total)
+##   fvarMetadata: labelDescription
+## experimentData: use 'experimentData(object)'
+## Annotation:  
+## - - - Processing information - - -
+## Subset [11466,6][10740,6] Tue Jan 12 08:46:49 2021 
+## Subset [10740,6][10678,6] Tue Jan 12 08:46:49 2021 
+## Subset [10678,6][10659,6] Tue Jan 12 08:46:49 2021 
+## Subset [10659,6][7006,6] Tue Jan 12 08:46:50 2021 
+## Log transformed (base 2) Tue Jan 12 08:46:50 2021 
+## Normalised (quantiles): Tue Jan 12 08:46:50 2021 
+## Subset [7006,6][4,6] Tue Jan 12 08:47:00 2021 
+##  MSnbase version: 2.17.4</code></pre>
+<p>In the following code chunk, we convert the peptide-level <code>MSnSet</code> containing the significant peptides using the <code>ms2df</code> helper function, convert that wide format dataframe to a long format and visualise the expression distributions in each group.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">"magrittr"</span>)
+<span class="kw">ms2df</span>(cptac_sign) <span class="op">%&gt;%</span>
+<span class="st">    </span>tidyr<span class="op">::</span><span class="kw">gather</span>(<span class="dt">key =</span> sample, <span class="dt">value =</span> expression, <span class="dv">1</span><span class="op">:</span><span class="dv">6</span>) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> sample, <span class="dt">y =</span> expression)) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_boxplot</span>() <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_jitter</span>(<span class="kw">aes</span>(<span class="dt">colour =</span> Sequence)) <span class="op">+</span>
+<span class="st">    </span><span class="kw">facet_grid</span>(Proteins <span class="op">~</span><span class="st"> </span>.)</code></pre></div>
+<p><img src="berlin_files/figure-html/de_peps_ggplot-1.png" width="672"></p>
+</div>
+<div id="global-fold-changes" class="section level3">
+<h3>
+<span class="header-section-number">5.15.4</span> Global fold-changes</h3>
+<p>Because we know the ground truth for the cptac study, i.e. we know that only the spike-in proteins (UPS) are differentially expressed, we can evalute the fold changes. Yeast proteins should be not differentially expressed and their log fold changes should be centered around 0. These of UPS proteins are spiked at differt concentrations and their log2 fold changes should be centered around <span class="math inline">\(log2(concB/concA)\)</span>, i.e <span class="math inline">\(log2(0.74/0.25) = 1.56\)</span>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">fData</span>(cptac_prot)<span class="op">$</span>res<span class="op">$</span>spike &lt;-<span class="st"> </span><span class="kw">grepl</span>(<span class="st">"UPS"</span>, <span class="kw">fData</span>(cptac_prot)<span class="op">$</span>Proteins)
+
+<span class="kw">ggplot</span>(<span class="kw">fData</span>(cptac_prot)<span class="op">$</span>res,
+       <span class="kw">aes</span>(<span class="dt">x =</span> spike, <span class="dt">y =</span> estimate)) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_boxplot</span>() <span class="op">+</span>
+<span class="st">    </span><span class="kw">ylab</span>(<span class="st">"log2 FC"</span>) <span class="op">+</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="kw">log</span>(<span class="fl">0.74</span><span class="op">/</span><span class="fl">0.25</span>, <span class="dt">base =</span> <span class="dv">2</span>)),
+               <span class="dt">color =</span> <span class="st">"red"</span>)</code></pre></div>
+<pre><code>## Warning: Removed 23 rows containing non-finite values (stat_boxplot).</code></pre>
+<p><img src="berlin_files/figure-html/lfc-1.png" width="672"></p>
+</div>
+<div id="sensitivity-fdp-plot" class="section level3">
+<h3>
+<span class="header-section-number">5.15.5</span> Sensitivity FDP plot</h3>
+<p>Because we know the ground truth for the cptac study, i.e. we know that only the spike-in proteins (UPS) are differentially expressed, we can calculate</p>
+<ul>
+<li>the sensitivity or true positive rate (TPR), the proportion of actual positives that are correctly identified, in the protein list that we return</li>
+</ul>
+<p><span class="math display">\[TPR=\frac{TP}{\text{#actual positives}},\]</span></p>
+<p>here TP are the true positives in the list. The TPR is thus the fraction of ups proteins that we can recall.</p>
+<ul>
+<li>false discovery proportion (FPD): fraction of false positives in the protein list that we return:</li>
+</ul>
+<p><span class="math display">\[FPD=\frac{FP}{FP+TP},\]</span></p>
+<p>with FP the false positives. In our case the yeast proteins that are in our list.</p>
+<p>Instead of only calculating that for the protein list that is returned for the chosen FDR level, we can do this for all possible FDR cutoffs so that we get an overview of the quality of the ranking of the proteins in the protein list.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">fData</span>(cptac_prot)<span class="op">$</span>res <span class="op">%&gt;%</span>
+<span class="st">                    </span>dplyr<span class="op">::</span><span class="kw">arrange</span>(qval) <span class="op">%&gt;%</span>
+<span class="st">                    </span>dplyr<span class="op">::</span><span class="kw">mutate</span>(<span class="dt">FDP =</span> <span class="kw">cumsum</span>(<span class="op">!</span>spike)<span class="op">/</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(spike)),
+                                  <span class="dt">TPR =</span> <span class="kw">cumsum</span>(spike)<span class="op">/</span><span class="kw">sum</span>(spike)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">                    </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> FDP, <span class="dt">y =</span> TPR)) <span class="op">+</span>
+<span class="st">                    </span><span class="kw">geom_path</span>() <span class="op">+</span>
+<span class="st">                    </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span>
+<span class="st">                    </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="fl">0.05</span>, <span class="dt">lty =</span> <span class="dv">2</span>)</code></pre></div>
+<p><img src="berlin_files/figure-html/sens-1.png" width="672"></p>
+
+</div>
+</div>
+</div></body></html>
+
+<p style="text-align: center;">
+<a href="identification-data.html"><button class="btn btn-default">Previous</button></a>
+<a href="optional-material.html"><button class="btn btn-default">Next</button></a>
+</p>
+<p class="build-date">Page built: 
+2021-01-12
+</p>
+</div>
+</div>
+
+
+
+</body>
+</html>
