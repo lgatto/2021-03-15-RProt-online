@@ -11,41 +11,171 @@ basename(idf)
 ```
 
 The easiest way to read identification data in `mzIdentML` (often
-abbreviated with `mzid`) into R is to read it with `readMzIdData`,
-that will parse it, process it, and return a `data.frame`:
+abbreviated with `mzid`) into R is to read it with `readPSMs()`
+function from the [`PSM`](https://rformassspectrometry.github.io/PSM/)
+package. The function will parse the file and return a `DataFrame`.
 
-```{r readid}
-iddf <- readMzIdData(idf)
-head(iddf)
+```{r readid, message = FALSE}
+library(PSM)
+id <- readPSMs(idf)
+dim(id)
+names(id)
 ```
 
-When adding identification data with the `addIdentificationData`
-function (as shown below), the data is first read with `readMzIdData`,
-and is then cleaned up:
+```{r, echo = FALSE}
+n_matches <- nrow(id)
+n_scans <- length(unique(id$spectrumID))
+n_seqs <- length(unique(id$sequence))
+```
 
-- only PSMs matching the regular (non-decoy) database are retained;
-- PSMs or rank greater than 1 are discarded;
-- only proteotypic peptides are kept, i.e. those that match to a
-  unique peptide.
+This table contains `r n_matches` matches for `r n_scans` scans and
+`r n_seqs` peptides sequences.
 
-```{r idfilt}
-## at this stage, we still have all the PSMs
-table(iddf$isDecoy)
-table(iddf$rank)
+```{r}
+nrow(id) ## number of matches
+length(unique(id$spectrumID)) ## number of scans
+length(unique(id$sequence))   ## number of peptide sequences
+```
+
+The PSM data are read as is, without and filtering. As we can see
+below, we still have all the hits from the forward and reverse (decoy)
+databases.
+
+```{r}
+table(id$isDecoy)
+```
+
+## Keeping all matches
+
+The data contains also contains multiple matches for several
+spectra. The table below shows the number of number of spectra that
+have 1, 2, ... up to 5 matches.
+
+```{r}
+table(table(id$spectrumID))
+```
+
+Below, we can see how scan 1774 has 4 matches, all to sequence
+`RTRYQAEVR`, which itself matches to 4 different proteins:
+
+
+```{r}
+i <- which(id$spectrumID == "controllerType=0 controllerNumber=1 scan=1774")
+id[i, 1:5]
+```
+
+If the goal is to keep all the matches, but arranged by scan/spectrum,
+one can *reduce* the `DataFrame` object by the `spectrumID` variable,
+so that each scan correponds to a single row that still stores all
+values[^rownames]:
+
+[^rownames]: The rownames aren't needed here are are removed to reduce
+    to output in the the next code chunk display parts of `id2`.
+
+```{r}
+id2 <- QFeatures::reduceDataFrame(id, id$spectrumID)
+rownames(id2) <- NULL ## rownames not needed here
+dim(id2)
+```
+
+The resulting object contains a single entrie for scan 1774 with
+information for the multiple matches stored as lists within the cells.
+
+```{r}
+j <- which(id2$spectrumID == "controllerType=0 controllerNumber=1 scan=1774")
+id2[j, ]
+```
+
+```{r}
+id2[j, "DatabaseAccess"]
+```
+
+The is the type of complete identification table that could be used to
+annotate an raw mass spectrometry `Spectra` object, as shown below.
+
+## Filtering data
+
+Often, the PSM data is filtered to only retain reliable matches. The
+`MSnID` package can be used to set thresholds to attain user-defined
+PSM, peptide or protein-level FDRs. Here, we will simply filter out
+wrong identification manually.
+
+Here, the `filter()` from the `dplyr` package comes very handy. We
+will thus start by convering the `DataFrame` to a `tibble`.
+
+```{r}
+library("dplyr")
+id_tbl <- tidyr::as_tibble(id)
+id_tbl
 ```
 
 ### Exercise {-}
 
-This behaviour can be replicates with the
-`filterIdentificationDataFrame` function. Try it out for yourself.
+- Remove decoy hits
 
 <details>
-```{r filtid}
-iddf2 <- filterIdentificationDataFrame(iddf)
-table(iddf2$isDecoy)
-table(iddf2$rank)
+```{r, message = FALSE}
+id_tbl <- id_tbl %>%
+    filter(!isDecoy)
+id_tbl
 ```
 </details>
+
+- Keep first rank matches
+
+<details>
+```{r}
+id_tbl <- id_tbl %>%
+    filter(rank == 1)
+id_tbl
+```
+</details>
+
+- Remove non-proteotypic peptides. Start by identifying scans that
+  match different proteins. For example scan 4884 matches proteins
+  `XXX_ECA3406` and `ECA3415`. Scan 4099 match `XXX_ECA4416_1`,
+  `XXX_ECA4416_2` and `XXX_ECA4416_3`. Then remove the scans that
+  match any of these proteins.
+
+
+<details>
+```{r}
+mltm <-
+    id_tbl %>%
+    group_by(spectrumID) %>%
+    mutate(nProts = length(unique(DatabaseAccess))) %>%
+    filter(nProts > 1) %>%
+    select(DatabaseAccess, nProts)
+mltm
+```
+```{r}
+id_tbl <-
+    id_tbl %>%
+    filter(!spectrumID %in% mltm$spectrumID)
+id_tbl
+```
+</details>
+
+Which leaves us with `r nrow(id_tbl)` PSMs.
+
+This can also be achieved with the `filterPSMs()` function:
+
+```{r}
+id_filtered <- filterPSMs(id)
+```
+
+### Exercise {-}
+
+Compare the distribution of raw idenfication scores of the decoy and
+non-decoy hits.
+
+```{r}
+library(ggplot2)
+as_tibble(id) %>%
+    ggplot(aes(x = MS.GF.RawScore,
+               colour = isDecoy)) +
+    geom_density()
+```
 
 ### Exercise {-}
 
@@ -55,30 +185,21 @@ above identification dataframe, calculate the length of each peptide
 (you can use `nchar` with the peptide sequence `sequence`) and the
 number of peptides for each protein (defined as
 `DatabaseDescription`). Plot the length of the proteins against their
-respective number of peptides. Optionally, stratify the plot by the
-peptide e-value score (`MS.GF.EValue`) using for example `cut` to
-define bins.
+respective number of peptides.
 
 
 <details>
-```{r answid1, fig.cap="Identifcation data wrangling 1"}
+```{r answid1, fig.cap = "Identifcation data wrangling."}
 suppressPackageStartupMessages(library("dplyr"))
-iddf2 <- as_tibble(iddf2) %>%
+iddf <- as_tibble(id_filtered) %>%
     mutate(peplen = nchar(sequence))
-npeps <- iddf2 %>%
-    group_by(DatabaseDescription) %>%
+npeps <- iddf %>%
+    group_by(DatabaseAccess) %>%
     tally
-iddf2 <- full_join(iddf2, npeps)
+iddf <- full_join(iddf, npeps)
 
 library("ggplot2")
-ggplot(iddf2, aes(x = n, y = DBseqLength)) + geom_point()
-```
-
-```{r answid2, fig.cap="Identifcation data wrangling 2"}
-iddf2$evalBins <- cut(iddf2$MS.GF.EValue, summary(iddf2$MS.GF.EValue))
-ggplot(iddf2, aes(x = n, y = DBseqLength, color = peplen)) +
-    geom_point() +
-    facet_wrap(~ evalBins)
+ggplot(iddf, aes(x = n, y = DBseqLength)) + geom_point()
 ```
 </details>
 
@@ -91,13 +212,20 @@ major difference is that the former leverages C++ code from
 `proteowizard` and is hence faster than the latter (which uses the
 `XML` R package). They both work in similar ways.
 
-```{r idpkgs, echo = FALSE}
+```{r idpkgs, echo = FALSE, eval = FALSE}
 x <- RforProteomics:::msDataTab()
 sel <- x[, 1] %in% c("Identification")
 knitr::kable(x[sel, ])
 ```
 
-### `mzID`
+```
+|   |Data type      |File format |Data structure |Package |
+|:--|:--------------|:-----------|:--------------|:-------|
+|4  |Identification |mzIdentML   |mzRident       |mzR     |
+|5  |Identification |mzIdentML   |mzID           |mzID    |
+```
+
+### `mzID` {-}
 
 The main functions are `mzID` to read the data into a dedicated data
 class and `flatten` to transform it into a `data.frame`.
@@ -118,7 +246,7 @@ accessor functions such as `database`, `software`, `scans`, `peptides`,
 head(flatten(id))
 ```
 
-### `mzR`
+### `mzR` {-}
 
 The `mzR` interface provides a similar interface. It is however much
 faster as it does not read all the data into memory and only extracts
@@ -138,35 +266,6 @@ The identification data can be accessed as a `data.frame` with the
 
 ```{r psmsmzr}
 head(psms(id2))
-```
-
-## Adding identification data to raw data
-
-Here are two matching raw and identification data files:
-
-```{r addid}
-library("MSnbase")
-## find path to a mzXML file
-rwf <- dir(system.file(package = "MSnbase", dir = "extdata"),
-           full.name = TRUE, pattern = "mzXML$")
-## find path to a mzIdentML file
-idf <- dir(system.file(package = "MSnbase", dir = "extdata"),
-           full.name = TRUE, pattern = "dummyiTRAQ.mzid")
-```
-
-We first create the raw data object:
-
-```{r}
-msexp <- readMSData(rwf, verbose = FALSE)
-head(fData(msexp))
-```
-
-The simply add identification data. The matching of spectra from the
-raw data and the PSMs from the identification data is done internally.
-
-```{r addid2}
-msexp <- addIdentificationData(msexp, idf)
-head(fData(msexp))
 ```
 
 ## MS/MS database search
@@ -225,65 +324,161 @@ MSGFgui()
 
 ![The `r Biocpkg("MSGFgui")` interface](./img/MSGFgui.png)
 
-## Visualising identification data
+## Adding identification data to raw data
 
-For this part, let's use a ready made `MSnExp` object that is
-distributed with the `MSnbase` package. Simply use the `data()`
-function with the name of the desired data.
+We are goind to use the `sp` object created in the previous chapter
+and the `id_filtered` variable generated above.
+
+Identification data (as a `DataFrame`) can be merged into raw data (as
+a `Spectra` object) by adding new spectra variables to the appropriate
+MS2 spectra. Scans and peptide-spectrum matches can be matched by
+their spectrum identifers.
+
+### Exercise {-}
+
+Identify the spectum identifier columns in the `sp` the `id_filtered`
+variables.
+
+<details>
+
+In the raw data, it is encoded as `spectrumId`, while in the
+identification data, we have `spectrumID`.
 
 ```{r}
-library("MSnbase")
-data(itraqdata)
+spectraVariables(sp)
+names(id_filtered)
+```
+</details>
+
+These two data can thus simply be joined using:
+
+```{r}
+sp <- joinSpectraData(sp, id_filtered,
+                      by.x = "spectrumId",
+                      by.y = "spectrumID")
+spectraVariables(sp)
 ```
 
-### Annotated spectra and spectra comparison
+### Exercise {-}
 
-```{r plotwithseq1, fig.width=10}
-itraqdata2 <- MSnbase::pickPeaks(itraqdata, verbose = FALSE)
-s <- "SIGFEGDSIGR"
-plot(itraqdata2[[14]], s, main = s)
+Verify that the identification data has been added to the correct
+spectra.
+
+<details>
+
+1. Let's first verify that no identification data has been added to
+   the MS1 scans.
+
+```{r}
+all(is.na(filterMsLevel(sp, 1)$sequence))
 ```
 
-```{r plotwithseq2, fig.width=10}
-plot(itraqdata2[[25]], itraqdata2[[28]], sequences = rep("IMIDLDGTENK", 2))
+2. They have indeed been added to 56% of the MS2 spectra.
+
+```{r}
+sp_2 <- filterMsLevel(sp, 2)
+table(is.na(sp_2$sequence))
 ```
+
+3. Let's compare the precursor/peptide mass to charges
+
+```{r}
+sp_2 <- sp_2[!is.na(sp_2$sequence)]
+summary(sp_2$precursorMz - sp_2$experimentalMassToCharge)
+```
+</details>
+
+
+## Visualising peptide-spectrum matches
+
+Let's choose a MS2 spectrum with a high identication score and plot
+it.
+
+```{r}
+i <- which(sp$MS.GF.RawScore > 100)[1]
+plotSpectra(sp[i])
+```
+
+We have seen above that we can add labels to each peak using the
+`labels` argument in `plotSpectra()`. The `addFragments()` function
+takes a spectrum as input (that is a `Spectra` object of length 1) and
+annotates its peaks.
+
+```{r}
+addFragments(sp[i])
+```
+
+It can be directly used with `plotSpectra()`:
+
+```{r}
+plotSpectra(sp[i], labels = addFragments,
+            labelPos = 3, labelCol = "steelblue")
+```
+
 
 The annotation of spectra is obtained by simulating fragmentation of a
 peptide and matching observed peaks to fragments:
 
 ```{r frag}
-calculateFragments("SIGFEGDSIGR")
+sp[i]$sequence
+calculateFragments(sp[i]$sequence)
 ```
 
-Visualising a pair of spectra means that we can access them, and that,
-in addition to plotting, we can manipulate them and perform
-computations. The two spectra corresponding to the `IMIDLDGTENK`
-peptide, for example have
-`r MSnbase::compareSpectra(itraqdata2[[25]], itraqdata2[[28]], fun = "common")`
-common peaks, a correlation of
-`r round(MSnbase::compareSpectra(itraqdata2[[25]], itraqdata2[[28]], fun = "cor"), 3)`
-and a dot product of
-`r round(MSnbase::compareSpectra(itraqdata2[[25]], itraqdata2[[28]], fun = "dotproduct"), 3)`
-(see `?compareSpectra` for details).
+## Comparing spectra
+
+The `compareSpectra()` can be used to compare spectra (by default,
+computing the normalised dot product).
 
 ### Exercise {-}
 
-Use the `compareSpectra` function to compare spectra 25 and 28 plotted
-above, calculating the metrics mentioned above. Don't forget to pick
-peaks from `itraqdata` first.
+1. Create a new `Spectra` object containing the MS2 spectra with
+   sequences `"SQILQQAGTSVLSQANQVPQTVLSLLR"` and
+   `"TKGLNVMQNLLTAHPDVQAVFAQNDEMALGALR"`.
+
 
 <details>
-```{r compspex}
-data(itraqdata)
-itraqdata2 <- MSnbase::pickPeaks(itraqdata, verbose = FALSE)
-MSnbase::compareSpectra(itraqdata2[[25]], itraqdata2[[28]], fun = "common")
-MSnbase::compareSpectra(itraqdata2[[25]], itraqdata2[[28]], fun = "cor")
-MSnbase::compareSpectra(itraqdata2[[25]], itraqdata2[[28]], fun = "dotproduct")
+```{r}
+k <- which(sp$sequence %in% c("SQILQQAGTSVLSQANQVPQTVLSLLR", "TKGLNVMQNLLTAHPDVQAVFAQNDEMALGALR"))
+sp_k <- sp[k]
+sp_k
+```
+</details>
+
+2. Calculate the `r length(sp_k)` by `r length(sp_k)` distance matrix
+   between all spectra using `compareSpectra`. See the `?Spectra` man
+   page for details. Draw a heatmap of that distance matrix
+
+
+<details>
+```{r}
+distmat <- compareSpectra(sp_k)
+rownames(distmat) <- colnames(distmat) <- strtrim(sp_k$sequence, 2)
+distmat
+pheatmap::pheatmap(distmat)
+```
+</details>
+
+3. Compare the spectra with the plotting function seen previously.
+
+<details>
+```{r}
+filterIntensity(sp_k, 1e3) %>% plotSpectra(main = sp_k$sequence)
+```
+
+```{r}
+par(mfrow = c(3, 1))
+plotSpectraMirror(sp_k[1], sp_k[2], main = "TK...")
+plotSpectraMirror(sp_k[3], sp_k[4], main = "SQ...")
+plotSpectraMirror(sp_k[3], sp_k[4], main = "SQ...")
 ```
 </details>
 
 
 ## Exploration and Assessment of Confidence of LC-MSn Proteomics Identifications using `MSnID`
+
+```{r}
+unloadNamespace("PSM")
+```
 
 The `MSnID` package extracts MS/MS ID data from mzIdentML (leveraging
 the `mzID` package) or text files. After collating the search results

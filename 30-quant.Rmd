@@ -56,6 +56,17 @@ manipulation.
 
 ## Isobaric tagging
 
+```{r}
+library(MSnbase)
+rwf <- dir(system.file(package = "MSnbase", dir = "extdata"),
+           full.name = TRUE, pattern = "mzXML$")
+## find path to a mzIdentML file
+idf <- dir(system.file(package = "MSnbase", dir = "extdata"),
+           full.name = TRUE, pattern = "dummyiTRAQ.mzid")
+msexp <- readMSData(rwf, verbose = FALSE)
+msexp <- addIdentificationData(msexp, idf)
+```
+
 An `MSnExp` is converted to an `MSnSet` by the `quantitation`
 method. Below, we use the iTRAQ 4-plex isobaric tagging strategy
 (defined by the `iTRAQ4` parameter; other tags are available: see

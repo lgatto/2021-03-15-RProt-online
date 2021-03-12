@@ -4,10 +4,19 @@
 In this section, we will learn how to read raw data in one of the
 commonly used open formats (`mzML`, `mzXML` and `netCDF`) into R.
 
-```{r rwpkgs, echo = FALSE}
-x <- RforProteomics:::msDataTab()
-sel <- x[, 1] %in% c("Raw", "Peak lists")
-knitr::kable(x[sel, ])
+```{r rwpkgs, echo = FALSE, message = FALSE, warning = FALSE}
+## x <- RforProteomics:::msDataTab()
+## sel <- x[, 1] %in% c("Raw", "Peak lists")
+## knitr::kable(x[sel, ])
+```
+
+```
+|   |Data type  |File format   |Data structure               |Package           |
+|:--|:----------|:-------------|:----------------------------|:-----------------|
+|1  |Raw        |mzXML or mzML |mzRpwiz or mzRramp           |mzR               |
+|2  |Raw        |mzXML or mzML |list of MassSpectrum objects |MALDIquantForeign |
+|3  |Raw        |mzXML or mzML |MSnExp                       |MSnbase           |
+|7  |Peak lists |mgf           |MSnExp                       |MSnbase           |
 ```
 
 ## What is raw data in R
@@ -29,7 +38,7 @@ We are going to use the
 as an abstraction to raw mass spectrometry data.
 
 
-```{r}
+```{r, message = FALSE}
 library(Spectra)
 ```
 
@@ -233,8 +242,7 @@ return the full file names for two raw data files. We will start by
 focusing on the second one.
 
 ```{r rwfiles}
-library("msdata")
-f <- proteomics(full.names = TRUE)
+f <- msdata::proteomics(full.names = TRUE)
 f
 (f2 <- grep("20141210", f, value = TRUE))
 ```
@@ -363,6 +371,7 @@ abline(v = rtime(sp)[2807], col = "red")
 <details>
 ```{r}
 ms_2 <- filterPrecursorScan(sp, 2807)
+ms_2
 ```
 </details>
 
@@ -523,8 +532,6 @@ pickPeaks(sp[2807]) %>%
 ```{r, results='markup', fig.cap="(a) Reading time (triplicates, in seconds) and (b) data size in memory (in MB) to read/store 1, 5, and 10 files containing 1431 MS1 (on-disk only) and 6103 MS2 (on-disk and in-memory) spectra. (c) Filtering benchmark assessed over 10 interactions on in-memory and on-disk data containing 6103 MS2 spectra. (d) Access time to spectra for the in-memory (left) and on-disk (right) backends for 1, 10, 100 1000, 5000, and all 6103 spectra. Benchmarks were performed on a Dell XPS laptop with an Intel i5-8250U processor 1.60 GHz (4 cores, 8 threads), 7.5 GB RAM running Ubuntu 18.04.4 LTS 64-bit, and an SSD drive. The data used for the benchmarking are a TMT 4-plex experiment acquired on a LTQ Orbitrap Velos (Thermo Fisher Scientific) available in the msdata package . (Figure taken from [@Gatto:2020].", echo=FALSE, purl=FALSE, out.width='70%', fig.align='center'}
 knitr::include_graphics("./img/pr0c00313_0002.gif")
 ```
-
-
 
 
 ### Parallel processing {-}

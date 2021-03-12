@@ -15,7 +15,13 @@ bibliography: refs.bib
 link-citations: yes
 ---
 
-# About
+# Preamble
+
+```{r, echo = FALSE}
+options(bitmapType="cairo")
+```
+
+## About this course
 
 This course will introduce participants to the analysis and
 exploration of mass spectrometry (MS) based proteomics data using R
@@ -27,11 +33,7 @@ participants will be able to manipulate MS data in R and use existing
 packages for their exploratory and statistical proteomics data
 analysis.
 
-- 15 - 17 March 2021, online
-- [Laurent Gatto](https://lgatto.github.io/about/), de Duve Institute, UCLouvain, Belgium
-- This page: http://bit.ly/2002rbiocprot
-
-## Targeted audience and assumed background  {-}
+### Targeted audience and assumed background  {-}
 
 The course is targeted to either proteomics practitioners or data
 analysts/bioinformaticians that would like to learn how to use R and
@@ -44,7 +46,7 @@ vectors, matrices, ... and their manipulation). Familiarity with other
 Bioconductor omics data classes and the tidyverse syntax is useful,
 but not required.
 
-## Program  {-}
+### Program  {-}
 
 - In the first part of this course, we will focus on raw MS data,
   including how mass spectrometry works, how raw MS data looks like,
@@ -78,15 +80,9 @@ knitr::write_bib(c('base', 'rmarkdown', 'bookdown', 'msmbstyle'), file = 'skelet
 ```{r env_0, echo = FALSE, message = FALSE, warning = FALSE}
 suppressPackageStartupMessages(library("BiocStyle"))
 suppressPackageStartupMessages(library("mzR"))
-suppressPackageStartupMessages(library("MSnbase"))
-suppressPackageStartupMessages(library("AnnotationHub"))
-suppressPackageStartupMessages(library("lattice"))
-suppressPackageStartupMessages(library("gridExtra"))
-suppressPackageStartupMessages(library("MSnID"))
-suppressPackageStartupMessages(library("RforProteomics"))
 ```
 
-# The R for Mass Spectrometry initiative
+## The R for Mass Spectrometry initiative
 
 The [R for Mass Spectrometry
 initiative](https://www.rformassspectrometry.org/) is a relatively
@@ -95,15 +91,15 @@ documented, tested and flexible R software for the analysis and
 interpretation of high throughput mass spectrometry assays, including
 proteomics and metabolomics experiments. The project formalises the
 longtime collaborative development efforts of its core members under
-the RforMassSpectrometry organisation to facilitate dissemination and
-accessibility of their work.
+the *R for Mass Spectrometry* organisation to facilitate dissemination
+and accessibility of their work.
 
 We will be making use of several of these packages in this course.
 
-# Setup
+## Setup
 
 The participants should set up [R and
-RStdio](https://uclouvain-cbio.github.io/WSBIM1207/sec-rrstudio.html)
+RStudio](https://uclouvain-cbio.github.io/WSBIM1207/sec-rrstudio.html)
 and be familiar with [R
 basics](https://uclouvain-cbio.github.io/WSBIM1207/sec-startr.html)
 
@@ -112,12 +108,10 @@ Familiarity with
 is useful, but not necessary. We will be learning about different
 types of
 [objects](https://uclouvain-cbio.github.io/WSBIM1322/sec-obj.html)
-related to mass spectrometry and proteomics, which we will learn about
-throughout the course. No experience in object-oriented programming is
-necessary.
+related to mass spectrometry and proteomics throughout the course. No
+experience in object-oriented programming is necessary.
 
-
-Install instructions
+Package installation instructions:
 
 ```{r, eval = FALSE}
 if (!requireNamespace("BiocManager", quietly = TRUE))
@@ -131,4 +125,5 @@ BiocManager::install("msdata")
 BiocManager::install("lgatto/ProtGenerics")
 BiocManager::install("RforMassSpectrometry/MsCoreUtils")
 BiocManager::install("RforMassSpectrometry/QFeatures")
+BiocManager::install("RforMassSpectrometry/PSM")
 ```

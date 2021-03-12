@@ -75,9 +75,9 @@ data.
 ![MS2 spectra interleaved between two MS1 spectra.](./img/F02-3D-MS1-MS2-scans-100-1200-lattice.png)
 
 
-## Accessing raw data
+## Accessing data
 
-### From the ProteomeXchange database
+### From the ProteomeXchange database {-}
 
 MS-based proteomics data is disseminated through the
 [ProteomeXchange](http://www.proteomexchange.org/) infrastructure,
@@ -129,7 +129,7 @@ mzf <- pxget(px, fn)
 mzf
 ```
 
-### Data packages
+### Data packages {-}
 
 Some data are also distributed through dedicated packages. The
 `r BiocStyle::Biocexptpkg("msdata")`, for example, provides some
@@ -155,6 +155,6 @@ package, that offers quantitative proteomics data.
 pRolocdata::pRolocdata()
 ```
 
-```{r prolocdata2, echo = FALSE}
+```{r prolocdata2, echo = FALSE, eval = FALSE}
 knitr::kable(pRolocdata::pRolocdata()$results[, -(1:2)])
 ```

@@ -5,7 +5,7 @@
 <meta charset="utf-8" />
 <meta name="generator" content="pandoc" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta property="og:title" content="Chapter 4 Introduction | R/Bioconductor for Mass Spectrometry and Proteomics" />
+<meta property="og:title" content="Chapter 2 Introduction | R/Bioconductor for Mass Spectrometry and Proteomics" />
 <meta property="og:type" content="book" />
 
 
@@ -23,9 +23,9 @@ MathJax.Hub.Config({
 </script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-<meta name="description" content="Chapter 4 Introduction | R/Bioconductor for Mass Spectrometry and Proteomics">
+<meta name="description" content="Chapter 2 Introduction | R/Bioconductor for Mass Spectrometry and Proteomics">
 
-<title>Chapter 4 Introduction | R/Bioconductor for Mass Spectrometry and Proteomics</title>
+<title>Chapter 2 Introduction | R/Bioconductor for Mass Spectrometry and Proteomics</title>
 
 <script src="libs/header-attrs-2.7/header-attrs.js"></script>
 <link href="libs/tufte-css-2015.12.29/tufte.css" rel="stylesheet" />
@@ -48,25 +48,6 @@ if(f.classList.contains('fa-plus-square')) {
 
 }
 </script>
-<script>
-function copy_link(id) {
-  var dummy = document.createElement('input'),
-  text = window.location.href.split(/[?#]/)[0] + '#' + id;
-  document.body.appendChild(dummy);
-  dummy.value = text;
-  dummy.select();
-  document.execCommand('copy');
-  document.body.removeChild(dummy);
-  
-  var tooltip = document.getElementById(id + '-tooltip');
-  tooltip.innerHTML = 'Copied!';
-}
-
-function reset_tooltip(id) {
-  var tooltip = document.getElementById(id);
-  tooltip.innerHTML = 'Copy link';
-}
-</script>
 
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -74,7 +55,6 @@ function reset_tooltip(id) {
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
-
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
 div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
@@ -136,29 +116,6 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 </style>
 
 
-<style type="text/css">
-/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
-div.csl-bib-body { }
-div.csl-entry {
-  clear: both;
-}
-.hanging div.csl-entry {
-  margin-left:2em;
-  text-indent:-2em;
-}
-div.csl-left-margin {
-  min-width:2em;
-  float:left;
-}
-div.csl-right-inline {
-  margin-left:2em;
-  padding-left:1em;
-}
-div.csl-indent {
-  margin-left: 2em;
-}
-</style>
-
 <link rel="stylesheet" href="style.css" type="text/css" />
 
 </head>
@@ -175,18 +132,15 @@ div.csl-indent {
 <li class="dropdown" style="float:right">
 <a href="javascript:void(0)" class="dropbtn">&#x25BE; Chapters</a>
 <div class="dropdown-content">
-<a href="index.html"><span class="toc-section-number">1</span> About</a>
-<a href="the-r-for-mass-spectrometry-initiative.html"><span class="toc-section-number">2</span> The R for Mass Spectrometry initiative</a>
-<a href="setup.html"><span class="toc-section-number">3</span> Setup</a>
-<a id="active-page" href="sec-msintro.html"><span class="toc-section-number">4</span> Introduction</a><ul class="toc-sections">
+<a href="index.html"><span class="toc-section-number">1</span> Preamble</a>
+<a id="active-page" href="sec-msintro.html"><span class="toc-section-number">2</span> Introduction</a><ul class="toc-sections">
 <li class="toc"><a href="#how-does-mass-spectrometry-work"> How does mass spectrometry work?</a></li>
-<li class="toc"><a href="#accessing-raw-data"> Accessing raw data</a></li>
+<li class="toc"><a href="#accessing-data"> Accessing data</a></li>
 </ul>
-<a href="raw-ms-data.html"><span class="toc-section-number">5</span> Raw MS data</a>
-<a href="identification-data.html"><span class="toc-section-number">6</span> Identification data</a>
-<a href="sec-quant.html"><span class="toc-section-number">7</span> Quantitative data</a>
-<a href="optional-material.html"><span class="toc-section-number">8</span> Optional material</a>
-<a href="sec-si.html"><span class="toc-section-number">9</span> Session information</a>
+<a href="raw-ms-data.html"><span class="toc-section-number">3</span> Raw MS data</a>
+<a href="identification-data.html"><span class="toc-section-number">4</span> Identification data</a>
+<a href="sec-quant.html"><span class="toc-section-number">5</span> Quantitative data</a>
+<a href="sec-si.html"><span class="toc-section-number">6</span> Session information</a>
 </div>
 </li>
 </ul>
@@ -196,13 +150,12 @@ div.csl-indent {
 <div class="row">
 <div class="col-sm-12">
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
-<html><body><div id="sec:msintro" class="section level1" number="4">
+<html><body><div id="sec:msintro" class="section level1" number="2">
 <h1>
-<span class="header-section-number">Chapter 4</span> Introduction</h1>
-<div id="how-does-mass-spectrometry-work" class="section level2" number="4.1">
+<span class="header-section-number">Chapter 2</span> Introduction</h1>
+<div id="how-does-mass-spectrometry-work" class="section level2" number="2.1">
 <h2>
-<span class="header-section-number">4.1</span> How does mass spectrometry work?<div class="tooltip"><button class="internal-link-btn" onclick="copy_link('how-does-mass-spectrometry-work')" onmouseout="reset_tooltip('how-does-mass-spectrometry-work-tooltip')"><span class="tooltiptext" id="how-does-mass-spectrometry-work-tooltip">Copy link</span><i class="fa fa-link"></i></button></div>
-</h2>
+<span class="header-section-number">2.1</span> How does mass spectrometry work?</h2>
 <p>Mass spectrometry (MS) is a technology that <em>separates</em> charged
 molecules (ions) based on their mass to charge ratio (M/Z). It is
 often coupled to chromatography (liquid LC, but can also be gas-based
@@ -274,14 +227,11 @@ data.</p>
 <img src="img/F02-3D-MS1-MS2-scans-100-1200-lattice.png" alt=""><p class="caption">MS2 spectra interleaved between two MS1 spectra.</p>
 </div>
 </div>
-<div id="accessing-raw-data" class="section level2" number="4.2">
+<div id="accessing-data" class="section level2" number="2.2">
 <h2>
-<span class="header-section-number">4.2</span> Accessing raw data<div class="tooltip"><button class="internal-link-btn" onclick="copy_link('accessing-raw-data')" onmouseout="reset_tooltip('accessing-raw-data-tooltip')"><span class="tooltiptext" id="accessing-raw-data-tooltip">Copy link</span><i class="fa fa-link"></i></button></div>
-</h2>
-<div id="from-the-proteomexchange-database" class="section level3" number="4.2.1">
-<h3>
-<span class="header-section-number">4.2.1</span> From the ProteomeXchange database<div class="tooltip"><button class="internal-link-btn" onclick="copy_link('from-the-proteomexchange-database')" onmouseout="reset_tooltip('from-the-proteomexchange-database-tooltip')"><span class="tooltiptext" id="from-the-proteomexchange-database-tooltip">Copy link</span><i class="fa fa-link"></i></button></div>
-</h3>
+<span class="header-section-number">2.2</span> Accessing data</h2>
+<div id="from-the-proteomexchange-database" class="section level3 unnumbered">
+<h3>From the ProteomeXchange database</h3>
 <p>MS-based proteomics data is disseminated through the
 <a href="http://www.proteomexchange.org/">ProteomeXchange</a> infrastructure,
 which centrally coordinates submission, storage and dissemination
@@ -297,22 +247,22 @@ resource. These data can be downloaded within R using the
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="sec-msintro.html#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"rpx"</span>)</span>
 <span id="cb2-2"><a href="sec-msintro.html#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">pxannounced</span>()</span></code></pre></div>
 <pre><code>## 15 new ProteomeXchange annoucements</code></pre>
-<pre><code>##     Data.Set    Publication.Data Message
-## 1  PXD018932 2021-03-12 17:15:05     New
-## 2  PXD023139 2021-03-12 15:42:59     New
-## 3  PXD024706 2021-03-12 14:11:33     New
-## 4  PXD024705 2021-03-12 14:08:23     New
-## 5  PXD013791 2021-03-12 13:15:21     New
-## 6  PXD022739 2021-03-12 12:56:18     New
-## 7  PXD020167 2021-03-12 12:01:44     New
-## 8  PXD011568 2021-03-12 11:26:46     New
-## 9  PXD020167 2021-03-12 09:52:35     New
-## 10 PXD024381 2021-03-12 08:00:54     New
-## 11 PXD024674 2021-03-12 07:12:38     New
-## 12 PXD024627 2021-03-12 06:36:15     New
-## 13 PXD008132 2021-03-12 06:31:24     New
-## 14 PXD021969 2021-03-12 06:28:50     New
-## 15 PXD022782 2021-03-12 06:26:37     New</code></pre>
+<pre><code>##     Data.Set Publication.Data Message
+## 1  PXD018932             &lt;NA&gt;     New
+## 2  PXD023139             &lt;NA&gt;     New
+## 3  PXD024706             &lt;NA&gt;     New
+## 4  PXD024705             &lt;NA&gt;     New
+## 5  PXD013791             &lt;NA&gt;     New
+## 6  PXD022739             &lt;NA&gt;     New
+## 7  PXD020167             &lt;NA&gt;     New
+## 8  PXD011568             &lt;NA&gt;     New
+## 9  PXD020167             &lt;NA&gt;     New
+## 10 PXD024381             &lt;NA&gt;     New
+## 11 PXD024674             &lt;NA&gt;     New
+## 12 PXD024627             &lt;NA&gt;     New
+## 13 PXD008132             &lt;NA&gt;     New
+## 14 PXD021969             &lt;NA&gt;     New
+## 15 PXD022782             &lt;NA&gt;     New</code></pre>
 <p>Using the unique <code>PXD000001</code> identifier, we can retrieve the relevant
 metadata that will be stored in a <code>PXDataset</code> object. The names of the
 files available in this data can be retrieved with the <code>pxfiles</code>
@@ -320,8 +270,8 @@ accessor function.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="sec-msintro.html#cb5-1" aria-hidden="true" tabindex="-1"></a>px <span class="ot">&lt;-</span> <span class="fu">PXDataset</span>(<span class="st">"PXD000001"</span>)</span>
 <span id="cb5-2"><a href="sec-msintro.html#cb5-2" aria-hidden="true" tabindex="-1"></a>px</span></code></pre></div>
 <pre><code>## Object of class "PXDataset"
-##  Id: PXD000001 with 12 files
-##  [1] 'F063721.dat' ... [12] 'generated'
+##  Id: PXD000001 with 11 files
+##  [1] 'F063721.dat' ... [11] 'erwinia_carotovora.fasta'
 ##  Use 'pxfiles(.)' to see all files.</code></pre>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="sec-msintro.html#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pxfiles</span>(px)</span></code></pre></div>
 <pre><code>##  [1] "F063721.dat"                                                         
@@ -334,8 +284,7 @@ accessor function.</p>
 ##  [8] "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzXML"
 ##  [9] "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.mzXML"         
 ## [10] "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.raw"           
-## [11] "erwinia_carotovora.fasta"                                            
-## [12] "generated"</code></pre>
+## [11] "erwinia_carotovora.fasta"</code></pre>
 <p>Other metadata for the <code>px</code> data set:</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="sec-msintro.html#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pxtax</span>(px)</span></code></pre></div>
 <pre><code>## [1] "Erwinia carotovora"</code></pre>
@@ -352,12 +301,10 @@ function and stored in the <code>mzf</code> variable for later use.<label for="t
 <span id="cb15-2"><a href="sec-msintro.html#cb15-2" aria-hidden="true" tabindex="-1"></a>mzf <span class="ot">&lt;-</span> <span class="fu">pxget</span>(px, fn)</span></code></pre></div>
 <pre><code>## Loading TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML from cache.</code></pre>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="sec-msintro.html#cb17-1" aria-hidden="true" tabindex="-1"></a>mzf</span></code></pre></div>
-<pre><code>## [1] "~/.cache/rpx/8557a69f9bf8_TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML"</code></pre>
+<pre><code>## [1] "~/.cache/rpx/10c1f4e4c6980_TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML"</code></pre>
 </div>
-<div id="data-packages" class="section level3" number="4.2.2">
-<h3>
-<span class="header-section-number">4.2.2</span> Data packages<div class="tooltip"><button class="internal-link-btn" onclick="copy_link('data-packages')" onmouseout="reset_tooltip('data-packages-tooltip')"><span class="tooltiptext" id="data-packages-tooltip">Copy link</span><i class="fa fa-link"></i></button></div>
-</h3>
+<div id="data-packages" class="section level3 unnumbered">
+<h3>Data packages</h3>
 <p>Some data are also distributed through dedicated packages. The
 <em><a href="https://bioconductor.org/packages/3.12/msdata">msdata</a></em>, for example, provides some
 general raw data files relevant for both proteomics and
@@ -380,462 +327,17 @@ metabolomics.</p>
 example of such is the <em><a href="https://bioconductor.org/packages/3.12/pRolocdata">pRolocdata</a></em>
 package, that offers quantitative proteomics data.</p>
 <div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="sec-msintro.html#cb25-1" aria-hidden="true" tabindex="-1"></a>pRolocdata<span class="sc">::</span><span class="fu">pRolocdata</span>()</span></code></pre></div>
-<table>
-<colgroup>
-<col width="17%">
-<col width="82%">
-</colgroup>
-<thead><tr class="header">
-<th align="left">Item</th>
-<th align="left">Title</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="left">Barylyuk2020ToxoLopit</td>
-<td align="left">Whole-cell spatial proteome of Toxoplasma: molecular anatomy of an apicomplexan cell</td>
-</tr>
-<tr class="even">
-<td align="left">E14TG2aR</td>
-<td align="left">LOPIT experiment on Mouse E14TG2a Embryonic Stem Cells from Breckels et al. (2016)</td>
-</tr>
-<tr class="odd">
-<td align="left">E14TG2aS1</td>
-<td align="left">LOPIT experiment on Mouse E14TG2a Embryonic Stem Cells from Breckels et al. (2016)</td>
-</tr>
-<tr class="even">
-<td align="left">E14TG2aS1goCC</td>
-<td align="left">LOPIT experiment on Mouse E14TG2a Embryonic Stem Cells from Breckels et al. (2016)</td>
-</tr>
-<tr class="odd">
-<td align="left">E14TG2aS1yLoc</td>
-<td align="left">LOPIT experiment on Mouse E14TG2a Embryonic Stem Cells from Breckels et al. (2016)</td>
-</tr>
-<tr class="even">
-<td align="left">E14TG2aS2</td>
-<td align="left">LOPIT experiment on Mouse E14TG2a Embryonic Stem Cells from Breckels et al. (2016)</td>
-</tr>
-<tr class="odd">
-<td align="left">HEK293T2011</td>
-<td align="left">LOPIT experiment on Human Embryonic Kidney fibroblast HEK293T cells from Breckels et al. (2013)</td>
-</tr>
-<tr class="even">
-<td align="left">HEK293T2011goCC</td>
-<td align="left">LOPIT experiment on Human Embryonic Kidney fibroblast HEK293T cells from Breckels et al. (2013)</td>
-</tr>
-<tr class="odd">
-<td align="left">HEK293T2011hpa</td>
-<td align="left">LOPIT experiment on Human Embryonic Kidney fibroblast HEK293T cells from Breckels et al. (2013)</td>
-</tr>
-<tr class="even">
-<td align="left">Kozik_con</td>
-<td align="left">Small molecule enhancers of endosome-to-cytosol import augment anti-tumour immunity</td>
-</tr>
-<tr class="odd">
-<td align="left">Kozik_pra</td>
-<td align="left">Small molecule enhancers of endosome-to-cytosol import augment anti-tumour immunity</td>
-</tr>
-<tr class="even">
-<td align="left">Kozik_tam</td>
-<td align="left">Small molecule enhancers of endosome-to-cytosol import augment anti-tumour immunity</td>
-</tr>
-<tr class="odd">
-<td align="left">Shin2019MitoControlrep1</td>
-<td align="left">Spatial proteomics defines the content of trafficking vesicles captured by golgin tethers</td>
-</tr>
-<tr class="even">
-<td align="left">Shin2019MitoControlrep2</td>
-<td align="left">Spatial proteomics defines the content of trafficking vesicles captured by golgin tethers</td>
-</tr>
-<tr class="odd">
-<td align="left">Shin2019MitoControlrep3</td>
-<td align="left">Spatial proteomics defines the content of trafficking vesicles captured by golgin tethers</td>
-</tr>
-<tr class="even">
-<td align="left">Shin2019MitoGcc88rep1</td>
-<td align="left">Spatial proteomics defines the content of trafficking vesicles captured by golgin tethers</td>
-</tr>
-<tr class="odd">
-<td align="left">Shin2019MitoGcc88rep2</td>
-<td align="left">Spatial proteomics defines the content of trafficking vesicles captured by golgin tethers</td>
-</tr>
-<tr class="even">
-<td align="left">Shin2019MitoGcc88rep3</td>
-<td align="left">Spatial proteomics defines the content of trafficking vesicles captured by golgin tethers</td>
-</tr>
-<tr class="odd">
-<td align="left">Shin2019MitoGol97rep1</td>
-<td align="left">Spatial proteomics defines the content of trafficking vesicles captured by golgin tethers</td>
-</tr>
-<tr class="even">
-<td align="left">Shin2019MitoGol97rep2</td>
-<td align="left">Spatial proteomics defines the content of trafficking vesicles captured by golgin tethers</td>
-</tr>
-<tr class="odd">
-<td align="left">Shin2019MitoGol97rep3</td>
-<td align="left">Spatial proteomics defines the content of trafficking vesicles captured by golgin tethers</td>
-</tr>
-<tr class="even">
-<td align="left">andreyev2010</td>
-<td align="left">Six sub-cellular fraction data from mouse macrophage-like RAW264.7 cells from Andreyev et al. (2009)</td>
-</tr>
-<tr class="odd">
-<td align="left">andreyev2010activ</td>
-<td align="left">Six sub-cellular fraction data from mouse macrophage-like RAW264.7 cells from Andreyev et al. (2009)</td>
-</tr>
-<tr class="even">
-<td align="left">andreyev2010rest</td>
-<td align="left">Six sub-cellular fraction data from mouse macrophage-like RAW264.7 cells from Andreyev et al. (2009)</td>
-</tr>
-<tr class="odd">
-<td align="left">andy2011</td>
-<td align="left">LOPIT experiment on Human Embryonic Kidney fibroblast HEK293T cells from Breckels et al. (2013)</td>
-</tr>
-<tr class="even">
-<td align="left">andy2011goCC</td>
-<td align="left">LOPIT experiment on Human Embryonic Kidney fibroblast HEK293T cells from Breckels et al. (2013)</td>
-</tr>
-<tr class="odd">
-<td align="left">andy2011hpa</td>
-<td align="left">LOPIT experiment on Human Embryonic Kidney fibroblast HEK293T cells from Breckels et al. (2013)</td>
-</tr>
-<tr class="even">
-<td align="left">at_chloro</td>
-<td align="left">The AT_CHLORO data base</td>
-</tr>
-<tr class="odd">
-<td align="left">baers2018</td>
-<td align="left">Synechocystis spatial proteomics</td>
-</tr>
-<tr class="even">
-<td align="left">beltran2016HCMV120</td>
-<td align="left">Data from Beltran et al. 2016</td>
-</tr>
-<tr class="odd">
-<td align="left">beltran2016HCMV24</td>
-<td align="left">Data from Beltran et al. 2016</td>
-</tr>
-<tr class="even">
-<td align="left">beltran2016HCMV48</td>
-<td align="left">Data from Beltran et al. 2016</td>
-</tr>
-<tr class="odd">
-<td align="left">beltran2016HCMV72</td>
-<td align="left">Data from Beltran et al. 2016</td>
-</tr>
-<tr class="even">
-<td align="left">beltran2016HCMV96</td>
-<td align="left">Data from Beltran et al. 2016</td>
-</tr>
-<tr class="odd">
-<td align="left">beltran2016MOCK120</td>
-<td align="left">Data from Beltran et al. 2016</td>
-</tr>
-<tr class="even">
-<td align="left">beltran2016MOCK24</td>
-<td align="left">Data from Beltran et al. 2016</td>
-</tr>
-<tr class="odd">
-<td align="left">beltran2016MOCK48</td>
-<td align="left">Data from Beltran et al. 2016</td>
-</tr>
-<tr class="even">
-<td align="left">beltran2016MOCK72</td>
-<td align="left">Data from Beltran et al. 2016</td>
-</tr>
-<tr class="odd">
-<td align="left">beltran2016MOCK96</td>
-<td align="left">Data from Beltran et al. 2016</td>
-</tr>
-<tr class="even">
-<td align="left">davies2018ap4b1</td>
-<td align="left">AP-4 vesicles contribute to spatial control of autophagy via RUSC-dependent peripheral delivery of ATG9A</td>
-</tr>
-<tr class="odd">
-<td align="left">davies2018ap4e1</td>
-<td align="left">AP-4 vesicles contribute to spatial control of autophagy via RUSC-dependent peripheral delivery of ATG9A</td>
-</tr>
-<tr class="even">
-<td align="left">davies2018wt</td>
-<td align="left">AP-4 vesicles contribute to spatial control of autophagy via RUSC-dependent peripheral delivery of ATG9A</td>
-</tr>
-<tr class="odd">
-<td align="left">dunkley2006</td>
-<td align="left">LOPIT data from Dunkley et al. (2006)</td>
-</tr>
-<tr class="even">
-<td align="left">dunkley2006goCC</td>
-<td align="left">LOPIT data from Dunkley et al. (2006)</td>
-</tr>
-<tr class="odd">
-<td align="left">fabre2015r1</td>
-<td align="left">Data from Fabre et al. 2015</td>
-</tr>
-<tr class="even">
-<td align="left">fabre2015r2</td>
-<td align="left">Data from Fabre et al. 2015</td>
-</tr>
-<tr class="odd">
-<td align="left">foster2006</td>
-<td align="left">PCP data from Foster et al. (2006)</td>
-</tr>
-<tr class="even">
-<td align="left">groen2014cmb</td>
-<td align="left">LOPIT experiments on Arabidopsis thaliana roots, from Groen et al. (2014)</td>
-</tr>
-<tr class="odd">
-<td align="left">groen2014r1</td>
-<td align="left">LOPIT experiments on Arabidopsis thaliana roots, from Groen et al. (2014)</td>
-</tr>
-<tr class="even">
-<td align="left">groen2014r1goCC</td>
-<td align="left">LOPIT experiments on Arabidopsis thaliana roots, from Groen et al. (2014)</td>
-</tr>
-<tr class="odd">
-<td align="left">groen2014r2</td>
-<td align="left">LOPIT experiments on Arabidopsis thaliana roots, from Groen et al. (2014)</td>
-</tr>
-<tr class="even">
-<td align="left">groen2014r3</td>
-<td align="left">LOPIT experiments on Arabidopsis thaliana roots, from Groen et al. (2014)</td>
-</tr>
-<tr class="odd">
-<td align="left">hall2009</td>
-<td align="left">LOPIT data from Hall et al. (2009)</td>
-</tr>
-<tr class="even">
-<td align="left">havugimana2012</td>
-<td align="left">Data from Havugimana et al. 2012</td>
-</tr>
-<tr class="odd">
-<td align="left">hirst2018</td>
-<td align="left">Data from Hirst et al. 2018</td>
-</tr>
-<tr class="even">
-<td align="left">hyperLOPIT2015</td>
-<td align="left">Protein and PMS-level hyperLOPIT datasets on Mouse E14TG2a embryonic stem cells from Christoforou et al. (2016).</td>
-</tr>
-<tr class="odd">
-<td align="left">hyperLOPIT2015goCC</td>
-<td align="left">Protein and PMS-level hyperLOPIT datasets on Mouse E14TG2a embryonic stem cells from Christoforou et al. (2016).</td>
-</tr>
-<tr class="even">
-<td align="left">hyperLOPIT2015ms2</td>
-<td align="left">Protein and PMS-level hyperLOPIT datasets on Mouse E14TG2a embryonic stem cells from Christoforou et al. (2016).</td>
-</tr>
-<tr class="odd">
-<td align="left">hyperLOPIT2015ms2psm</td>
-<td align="left">Protein and PMS-level hyperLOPIT datasets on Mouse E14TG2a embryonic stem cells from Christoforou et al. (2016).</td>
-</tr>
-<tr class="even">
-<td align="left">hyperLOPIT2015ms3r1</td>
-<td align="left">Protein and PMS-level hyperLOPIT datasets on Mouse E14TG2a embryonic stem cells from Christoforou et al. (2016).</td>
-</tr>
-<tr class="odd">
-<td align="left">hyperLOPIT2015ms3r1psm</td>
-<td align="left">Protein and PMS-level hyperLOPIT datasets on Mouse E14TG2a embryonic stem cells from Christoforou et al. (2016).</td>
-</tr>
-<tr class="even">
-<td align="left">hyperLOPIT2015ms3r2</td>
-<td align="left">Protein and PMS-level hyperLOPIT datasets on Mouse E14TG2a embryonic stem cells from Christoforou et al. (2016).</td>
-</tr>
-<tr class="odd">
-<td align="left">hyperLOPIT2015ms3r2psm</td>
-<td align="left">Protein and PMS-level hyperLOPIT datasets on Mouse E14TG2a embryonic stem cells from Christoforou et al. (2016).</td>
-</tr>
-<tr class="even">
-<td align="left">hyperLOPIT2015ms3r3</td>
-<td align="left">Protein and PMS-level hyperLOPIT datasets on Mouse E14TG2a embryonic stem cells from Christoforou et al. (2016).</td>
-</tr>
-<tr class="odd">
-<td align="left">hyperLOPITU2OS2017</td>
-<td align="left">2017 and 2018 hyperLOPIT on U2OS cells</td>
-</tr>
-<tr class="even">
-<td align="left">hyperLOPITU2OS2017b</td>
-<td align="left">2017 and 2018 hyperLOPIT on U2OS cells</td>
-</tr>
-<tr class="odd">
-<td align="left">hyperLOPITU2OS2018</td>
-<td align="left">2017 and 2018 hyperLOPIT on U2OS cells</td>
-</tr>
-<tr class="even">
-<td align="left">itzhak2016helaCtrl</td>
-<td align="left">Global, quantitative and dynamic mapping of protein subcellular localization</td>
-</tr>
-<tr class="odd">
-<td align="left">itzhak2016helaEgf</td>
-<td align="left">Global, quantitative and dynamic mapping of protein subcellular localization</td>
-</tr>
-<tr class="even">
-<td align="left">itzhak2016stcSILAC</td>
-<td align="left">Data from Itzhak et al. (2016)</td>
-</tr>
-<tr class="odd">
-<td align="left">itzhak2017</td>
-<td align="left">Data from Itzhak et al. 2017</td>
-</tr>
-<tr class="even">
-<td align="left">itzhak2017markers</td>
-<td align="left">Data from Itzhak et al. 2017</td>
-</tr>
-<tr class="odd">
-<td align="left">kirkwood2013</td>
-<td align="left">Data from Kirkwood et al. 2013.</td>
-</tr>
-<tr class="even">
-<td align="left">krahmer2018pcp</td>
-<td align="left">Subcellular Reorganization in Diet-Induced Hepatic Steatosis</td>
-</tr>
-<tr class="odd">
-<td align="left">krahmer2018phosphopcp</td>
-<td align="left">Subcellular Reorganization in Diet-Induced Hepatic Steatosis</td>
-</tr>
-<tr class="even">
-<td align="left">kristensen2012r1</td>
-<td align="left">Data from Kristensen et al. 2012</td>
-</tr>
-<tr class="odd">
-<td align="left">kristensen2012r2</td>
-<td align="left">Data from Kristensen et al. 2012</td>
-</tr>
-<tr class="even">
-<td align="left">kristensen2012r3</td>
-<td align="left">Data from Kristensen et al. 2012</td>
-</tr>
-<tr class="odd">
-<td align="left">lopimsSyn1</td>
-<td align="left">LOPIMS data for the Synapter 2.0 paper</td>
-</tr>
-<tr class="even">
-<td align="left">lopimsSyn2</td>
-<td align="left">LOPIMS data for the Synapter 2.0 paper</td>
-</tr>
-<tr class="odd">
-<td align="left">lopimsSyn2_0frags</td>
-<td align="left">LOPIMS data for the Synapter 2.0 paper</td>
-</tr>
-<tr class="even">
-<td align="left">lopitdcU2OS2018</td>
-<td align="left">2017 and 2018 hyperLOPIT on U2OS cells</td>
-</tr>
-<tr class="odd">
-<td align="left">mulvey2015</td>
-<td align="left">Data from Mulvey et al. 2015</td>
-</tr>
-<tr class="even">
-<td align="left">mulvey2015norm</td>
-<td align="left">Data from Mulvey et al. 2015</td>
-</tr>
-<tr class="odd">
-<td align="left">nikolovski2012</td>
-<td align="left">Meta-analysis from Nikolovski et al. (2012)</td>
-</tr>
-<tr class="even">
-<td align="left">nikolovski2012imp</td>
-<td align="left">Meta-analysis from Nikolovski et al. (2012)</td>
-</tr>
-<tr class="odd">
-<td align="left">nikolovski2014</td>
-<td align="left">LOPIMS data from Nikolovski et al. (2014)</td>
-</tr>
-<tr class="even">
-<td align="left">orre2019a431</td>
-<td align="left">SubCellBarCode: Proteome-wide Mapping of Protein Localization and Relocalization</td>
-</tr>
-<tr class="odd">
-<td align="left">orre2019h322</td>
-<td align="left">SubCellBarCode: Proteome-wide Mapping of Protein Localization and Relocalization</td>
-</tr>
-<tr class="even">
-<td align="left">orre2019hcc827</td>
-<td align="left">SubCellBarCode: Proteome-wide Mapping of Protein Localization and Relocalization</td>
-</tr>
-<tr class="odd">
-<td align="left">orre2019hcc827gef</td>
-<td align="left">SubCellBarCode: Proteome-wide Mapping of Protein Localization and Relocalization</td>
-</tr>
-<tr class="even">
-<td align="left">orre2019hcc827rep1</td>
-<td align="left">SubCellBarCode: Proteome-wide Mapping of Protein Localization and Relocalization</td>
-</tr>
-<tr class="odd">
-<td align="left">orre2019hcc827rep2</td>
-<td align="left">SubCellBarCode: Proteome-wide Mapping of Protein Localization and Relocalization</td>
-</tr>
-<tr class="even">
-<td align="left">orre2019hcc827rep3</td>
-<td align="left">SubCellBarCode: Proteome-wide Mapping of Protein Localization and Relocalization</td>
-</tr>
-<tr class="odd">
-<td align="left">orre2019mcf7</td>
-<td align="left">SubCellBarCode: Proteome-wide Mapping of Protein Localization and Relocalization</td>
-</tr>
-<tr class="even">
-<td align="left">orre2019u251</td>
-<td align="left">SubCellBarCode: Proteome-wide Mapping of Protein Localization and Relocalization</td>
-</tr>
-<tr class="odd">
-<td align="left">rodriguez2012r1</td>
-<td align="left">Spatial proteomics of human inducible goblet-like LS174T cells from Rodriguez-Pineiro et al. (2012)</td>
-</tr>
-<tr class="even">
-<td align="left">rodriguez2012r2</td>
-<td align="left">Spatial proteomics of human inducible goblet-like LS174T cells from Rodriguez-Pineiro et al. (2012)</td>
-</tr>
-<tr class="odd">
-<td align="left">rodriguez2012r3</td>
-<td align="left">Spatial proteomics of human inducible goblet-like LS174T cells from Rodriguez-Pineiro et al. (2012)</td>
-</tr>
-<tr class="even">
-<td align="left">stekhoven2014</td>
-<td align="left">Data from Stekhoven et al. 2014</td>
-</tr>
-<tr class="odd">
-<td align="left">tan2009r1</td>
-<td align="left">LOPIT data from Tan et al. (2009)</td>
-</tr>
-<tr class="even">
-<td align="left">tan2009r1goCC</td>
-<td align="left">LOPIT data from Tan et al. (2009)</td>
-</tr>
-<tr class="odd">
-<td align="left">tan2009r2</td>
-<td align="left">LOPIT data from Tan et al. (2009)</td>
-</tr>
-<tr class="even">
-<td align="left">tan2009r3</td>
-<td align="left">LOPIT data from Tan et al. (2009)</td>
-</tr>
-<tr class="odd">
-<td align="left">trotter2010</td>
-<td align="left">LOPIT data sets used in Trotter et al. (2010)</td>
-</tr>
-<tr class="even">
-<td align="left">trotter2010shallow</td>
-<td align="left">LOPIT data sets used in Trotter et al. (2010)</td>
-</tr>
-<tr class="odd">
-<td align="left">trotter2010steep</td>
-<td align="left">LOPIT data sets used in Trotter et al. (2010)</td>
-</tr>
-<tr class="even">
-<td align="left">yeast2018</td>
-<td align="left">Saccharomyces cerevisiae spatial proteomics (2018)</td>
-</tr>
-</tbody>
-</table>
+
 </div>
 </div>
 </div></body></html>
 
 <p style="text-align: center;">
-<a href="setup.html"><button class="btn btn-default">Previous</button></a>
+<a href="index.html"><button class="btn btn-default">Previous</button></a>
 <a href="raw-ms-data.html"><button class="btn btn-default">Next</button></a>
 </p>
 <p class="build-date">Page built: 
 2021-03-12
- using 
-R version 4.0.3 Patched (2021-01-18 r79847)
 </p>
 </div>
 </div>
