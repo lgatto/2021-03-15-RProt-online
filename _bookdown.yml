@@ -1,4 +1,4 @@
-book_filename: "berlin"
+book_filename: "physalia"
 delete_merged_file: true
 output_dir: "docs"
 language:

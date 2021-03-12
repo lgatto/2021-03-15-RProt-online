@@ -1,4 +1,4 @@
-# MS Introduction {#sec:msintro}
+# Introduction {#sec:msintro}
 
 
 ## How does mass spectrometry work?
@@ -128,38 +128,6 @@ fn <- "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML"
 mzf <- pxget(px, fn)
 mzf
 ```
-
-### From AnnotationHub
-
-`r Biocpkg("AnnotationHub")` is a cloud resource set up and managed by
-the Bioconductor project that serves various omics datasets. It is
-possible to contribute and access (albeit currently only a limited
-number of)
-[proteomics data](http://bioconductor.org/packages/devel/bioc/vignettes/ProteomicsAnnotationHubData/inst/doc/ProteomicsAnnotationHubData.html).
-
-```{r ah0}
-library("AnnotationHub")
-ah <- AnnotationHub()
-query(ah, "proteomics")
-```
-
-```{r ah, message=FALSE}
-ms <- ah[["AH49008"]]
-ms
-```
-
-```{r mshd, echo=FALSE}
-lms <- length(ms)
-hd <- header(ms)
-nms1 <- table(hd$msLevel)[[1]]
-nms2 <- table(hd$msLevel)[[2]]
-```
-
-The data contains `r lms` spectra - `r nms1` MS1 spectra and `r nms2`
-MS2 spectra. The file name, `r basename(fileName(ms))`, is not very
-descriptive because the data originates from the `AnnotationHub` cloud
-repository. If the data was read from a local file, is would be named
-as the `mzML` (or `mzXML`) file (see below).
 
 ### Data packages
 

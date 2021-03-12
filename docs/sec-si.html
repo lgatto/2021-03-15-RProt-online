@@ -5,7 +5,7 @@
 <meta charset="utf-8" />
 <meta name="generator" content="pandoc" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta property="og:title" content="Chapter 7 Session information | R/Bioconductor for Mass Spectrometry and Proteomics" />
+<meta property="og:title" content="Chapter 9 Session information | R/Bioconductor for Mass Spectrometry and Proteomics" />
 <meta property="og:type" content="book" />
 
 
@@ -14,7 +14,7 @@
 
 <meta name="author" content="Laurent Gatto" />
 
-<meta name="date" content="2021-03-09" />
+<meta name="date" content="2021-03-12" />
 
 <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
@@ -23,9 +23,9 @@ MathJax.Hub.Config({
 </script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-<meta name="description" content="Chapter 7 Session information | R/Bioconductor for Mass Spectrometry and Proteomics">
+<meta name="description" content="Chapter 9 Session information | R/Bioconductor for Mass Spectrometry and Proteomics">
 
-<title>Chapter 7 Session information | R/Bioconductor for Mass Spectrometry and Proteomics</title>
+<title>Chapter 9 Session information | R/Bioconductor for Mass Spectrometry and Proteomics</title>
 
 <script src="libs/header-attrs-2.7/header-attrs.js"></script>
 <link href="libs/tufte-css-2015.12.29/tufte.css" rel="stylesheet" />
@@ -153,14 +153,15 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="dropdown" style="float:right">
 <a href="javascript:void(0)" class="dropbtn">&#x25BE; Chapters</a>
 <div class="dropdown-content">
-<a href="index.html">Preamble</a>
-<a href="sec-setup.html"><span class="toc-section-number">1</span> Setup</a>
-<a href="sec-msintro.html"><span class="toc-section-number">2</span> MS Introduction</a>
-<a href="raw-ms-data-mzr-and-msnbase.html"><span class="toc-section-number">3</span> Raw MS data: <code>mzR</code> and <code>MSnbase</code></a>
-<a href="identification-data.html"><span class="toc-section-number">4</span> Identification data</a>
-<a href="sec-quant.html"><span class="toc-section-number">5</span> Quantitative data</a>
-<a href="optional-material.html"><span class="toc-section-number">6</span> Optional material</a>
-<a id="active-page" href="sec-si.html"><span class="toc-section-number">7</span> Session information</a>
+<a href="index.html"><span class="toc-section-number">1</span> About</a>
+<a href="the-r-for-mass-spectrometry-initiative.html"><span class="toc-section-number">2</span> The R for Mass Spectrometry initiative</a>
+<a href="setup.html"><span class="toc-section-number">3</span> Setup</a>
+<a href="sec-msintro.html"><span class="toc-section-number">4</span> Introduction</a>
+<a href="raw-ms-data.html"><span class="toc-section-number">5</span> Raw MS data</a>
+<a href="identification-data.html"><span class="toc-section-number">6</span> Identification data</a>
+<a href="sec-quant.html"><span class="toc-section-number">7</span> Quantitative data</a>
+<a href="optional-material.html"><span class="toc-section-number">8</span> Optional material</a>
+<a id="active-page" href="sec-si.html"><span class="toc-section-number">9</span> Session information</a>
 </div>
 </li>
 </ul>
@@ -170,11 +171,11 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <div class="row">
 <div class="col-sm-12">
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
-<html><body><div id="sec:si" class="section level1" number="7">
+<html><body><div id="sec:si" class="section level1" number="9">
 <h1>
-<span class="header-section-number">Chapter 7</span> Session information</h1>
+<span class="header-section-number">Chapter 9</span> Session information</h1>
 <p>The following packages have been used to generate this document.</p>
-<div class="sourceCode" id="cb389"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb389-1"><a href="sec-si.html#cb389-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb376"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb376-1"><a href="sec-si.html#cb376-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code></pre></div>
 <pre><code>## R version 4.0.3 Patched (2021-01-18 r79847)
 ## Platform: x86_64-pc-linux-gnu (64-bit)
 ## Running under: Manjaro Linux
@@ -196,71 +197,71 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 ## [8] methods   base     
 ## 
 ## other attached packages:
-##  [1] proDA_1.4.0           magrittr_2.0.1        MSqRob_0.7.7         
-##  [4] lme4_1.1-26           Matrix_1.3-2          ggrepel_0.9.1        
-##  [7] forcats_0.5.1         stringr_1.4.0         purrr_0.3.4          
-## [10] readr_1.4.0           tidyr_1.1.3           tibble_3.1.0         
-## [13] tidyverse_1.3.0       limma_3.46.0          mzID_1.28.0          
-## [16] dplyr_1.0.5           ggplot2_3.3.3         rgl_0.105.22         
-## [19] msdata_0.30.0         rpx_1.99.1            RforProteomics_1.28.1
-## [22] MSnID_1.24.0          gridExtra_2.3         lattice_0.20-41      
-## [25] AnnotationHub_2.22.0  BiocFileCache_1.14.0  dbplyr_2.1.0         
-## [28] MSnbase_2.17.5        ProtGenerics_1.23.7   S4Vectors_0.28.1     
-## [31] Biobase_2.50.0        BiocGenerics_0.36.0   mzR_2.24.1           
-## [34] Rcpp_1.0.6            BiocStyle_2.18.1     
+##  [1] proDA_1.4.0           MSqRob_0.7.7          lme4_1.1-26          
+##  [4] Matrix_1.3-2          ggrepel_0.9.1         forcats_0.5.1        
+##  [7] stringr_1.4.0         purrr_0.3.4           readr_1.4.0          
+## [10] tidyr_1.1.3           tibble_3.1.0          tidyverse_1.3.0      
+## [13] limma_3.46.0          mzID_1.28.0           ggplot2_3.3.3        
+## [16] dplyr_1.0.5           magrittr_2.0.1        Spectra_1.1.9        
+## [19] BiocParallel_1.24.1   msdata_0.30.0         rpx_1.99.1           
+## [22] RforProteomics_1.28.1 MSnID_1.24.0          gridExtra_2.3        
+## [25] lattice_0.20-41       AnnotationHub_2.22.0  BiocFileCache_1.14.0 
+## [28] dbplyr_2.1.0          MSnbase_2.17.5        ProtGenerics_1.23.7  
+## [31] S4Vectors_0.28.1      Biobase_2.50.0        BiocGenerics_0.36.0  
+## [34] mzR_2.24.1            Rcpp_1.0.6            BiocStyle_2.18.1     
 ## 
 ## loaded via a namespace (and not attached):
 ##   [1] utf8_1.1.4                  R.utils_2.10.1             
 ##   [3] gmm_1.6-6                   RUnit_0.4.32               
 ##   [5] tidyselect_1.1.0            RSQLite_2.2.3              
-##   [7] AnnotationDbi_1.52.0        htmlwidgets_1.5.3          
-##   [9] grid_4.0.3                  BiocParallel_1.24.1        
-##  [11] norm_1.0-9.5                munsell_0.5.0              
-##  [13] codetools_0.2-18            preprocessCore_1.52.1      
-##  [15] statmod_1.4.35              miniUI_0.1.1.1             
-##  [17] withr_2.4.1                 colorspace_2.0-0           
-##  [19] highr_0.8                   knitr_1.31.3               
-##  [21] rstudioapi_0.13             MatrixGenerics_1.2.1       
-##  [23] labeling_0.4.2              GenomeInfoDbData_1.2.4     
-##  [25] bit64_4.0.5                 farver_2.1.0               
-##  [27] vctrs_0.3.6                 generics_0.1.0             
-##  [29] xfun_0.21                   GenomeInfoDb_1.26.2        
-##  [31] R6_2.5.0                    doParallel_1.0.16          
-##  [33] MsCoreUtils_1.3.2           manipulateWidget_0.10.1    
-##  [35] DelayedArray_0.16.2         bitops_1.0-6               
-##  [37] pRolocdata_1.28.0           cachem_1.0.4               
-##  [39] assertthat_0.2.1            promises_1.2.0.1           
-##  [41] scales_1.1.1                gtable_0.3.0               
-##  [43] extraDistr_1.9.1            affy_1.68.0                
-##  [45] biocViews_1.58.1            sandwich_3.0-0             
-##  [47] rlang_0.4.10                splines_4.0.3              
-##  [49] impute_1.64.0               broom_0.7.5                
-##  [51] BiocManager_1.30.10         yaml_2.2.1                 
-##  [53] reshape2_1.4.4              modelr_0.1.8               
-##  [55] crosstalk_1.1.1             backports_1.2.1            
-##  [57] httpuv_1.5.5                RBGL_1.66.0                
-##  [59] tools_4.0.3                 bookdown_0.21.6            
-##  [61] affyio_1.60.0               ellipsis_0.3.1             
-##  [63] gplots_3.1.1                jquerylib_0.1.3            
-##  [65] plyr_1.8.6                  zlibbioc_1.36.0            
-##  [67] RCurl_1.98-1.2              ps_1.6.0                   
-##  [69] zoo_1.8-8                   SummarizedExperiment_1.20.0
-##  [71] haven_2.3.1                 fs_1.5.0                   
-##  [73] data.table_1.14.0           reprex_1.0.0               
-##  [75] pcaMethods_1.82.0           mvtnorm_1.1-1              
-##  [77] msmbstyle_0.0.18            matrixStats_0.58.0         
-##  [79] R.cache_0.14.0              hms_1.0.0                  
-##  [81] mime_0.10                   evaluate_0.14              
-##  [83] xtable_1.8-4                XML_3.99-0.5               
-##  [85] readxl_1.3.1                IRanges_2.24.1             
-##  [87] compiler_4.0.3              KernSmooth_2.23-18         
-##  [89] ncdf4_1.17                  crayon_1.4.1               
-##  [91] minqa_1.2.4                 R.oo_1.24.0                
-##  [93] htmltools_0.5.1.1           later_1.1.0.1              
-##  [95] lubridate_1.7.10            DBI_1.1.1                  
-##  [97] MASS_7.3-53                 tmvtnorm_1.4-10            
-##  [99] rappdirs_0.3.3              boot_1.3-25                
-##  [ reached getOption("max.print") -- omitted 40 entries ]</code></pre>
+##   [7] AnnotationDbi_1.52.0        grid_4.0.3                 
+##   [9] norm_1.0-9.5                munsell_0.5.0              
+##  [11] codetools_0.2-18            preprocessCore_1.52.1      
+##  [13] statmod_1.4.35              withr_2.4.1                
+##  [15] colorspace_2.0-0            highr_0.8                  
+##  [17] knitr_1.31.3                rstudioapi_0.13            
+##  [19] MatrixGenerics_1.2.1        labeling_0.4.2             
+##  [21] GenomeInfoDbData_1.2.4      bit64_4.0.5                
+##  [23] farver_2.1.0                rhdf5_2.34.0               
+##  [25] vctrs_0.3.6                 generics_0.1.0             
+##  [27] xfun_0.21                   GenomeInfoDb_1.26.2        
+##  [29] R6_2.5.0                    doParallel_1.0.16          
+##  [31] MsCoreUtils_1.3.2           DelayedArray_0.16.2        
+##  [33] bitops_1.0-6                rhdf5filters_1.2.0         
+##  [35] pRolocdata_1.28.0           cachem_1.0.4               
+##  [37] assertthat_0.2.1            promises_1.2.0.1           
+##  [39] scales_1.1.1                gtable_0.3.0               
+##  [41] affy_1.68.0                 biocViews_1.58.1           
+##  [43] sandwich_3.0-0              rlang_0.4.10               
+##  [45] splines_4.0.3               impute_1.64.0              
+##  [47] broom_0.7.5                 BiocManager_1.30.10        
+##  [49] yaml_2.2.1                  reshape2_1.4.4             
+##  [51] modelr_0.1.8                backports_1.2.1            
+##  [53] httpuv_1.5.5                RBGL_1.66.0                
+##  [55] tools_4.0.3                 bookdown_0.21.6            
+##  [57] affyio_1.60.0               ellipsis_0.3.1             
+##  [59] gplots_3.1.1                jquerylib_0.1.3            
+##  [61] plyr_1.8.6                  zlibbioc_1.36.0            
+##  [63] RCurl_1.98-1.2              ps_1.6.0                   
+##  [65] zoo_1.8-8                   SummarizedExperiment_1.20.0
+##  [67] haven_2.3.1                 fs_1.5.0                   
+##  [69] data.table_1.14.0           reprex_1.0.0               
+##  [71] pcaMethods_1.82.0           mvtnorm_1.1-1              
+##  [73] msmbstyle_0.0.18            R.cache_0.14.0             
+##  [75] matrixStats_0.58.0          hms_1.0.0                  
+##  [77] mime_0.10                   evaluate_0.14              
+##  [79] xtable_1.8-4                XML_3.99-0.5               
+##  [81] readxl_1.3.1                IRanges_2.24.1             
+##  [83] compiler_4.0.3              KernSmooth_2.23-18         
+##  [85] ncdf4_1.17                  crayon_1.4.1               
+##  [87] minqa_1.2.4                 R.oo_1.24.0                
+##  [89] htmltools_0.5.1.1           later_1.1.0.1              
+##  [91] lubridate_1.7.10            DBI_1.1.1                  
+##  [93] MASS_7.3-53                 tmvtnorm_1.4-10            
+##  [95] rappdirs_0.3.3              boot_1.3-25                
+##  [97] cli_2.3.1                   vsn_3.58.0                 
+##  [99] imputeLCMD_2.0              R.methodsS3_1.8.1          
+##  [ reached getOption("max.print") -- omitted 36 entries ]</code></pre>
 
 </div></body></html>
 
@@ -268,7 +269,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <a href="optional-material.html"><button class="btn btn-default">Previous</button></a>
 </p>
 <p class="build-date">Page built: 
-2021-03-09
+2021-03-12
  using 
 R version 4.0.3 Patched (2021-01-18 r79847)
 </p>

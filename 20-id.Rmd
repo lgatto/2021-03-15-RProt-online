@@ -47,9 +47,9 @@ table(iddf2$rank)
 ```
 </details>
 
-### Exercise {-} 
+### Exercise {-}
 
-The `r CRANpkg("tidyverse")` 
+The `r CRANpkg("tidyverse")`
 tools are fit for data wrangling with identification data. Using the
 above identification dataframe, calculate the length of each peptide
 (you can use `nchar` with the peptide sequence `sequence`) and the
@@ -100,7 +100,7 @@ knitr::kable(x[sel, ])
 ### `mzID`
 
 The main functions are `mzID` to read the data into a dedicated data
-class and `flatten` to transform it into a `data.frame`. 
+class and `flatten` to transform it into a `data.frame`.
 
 ```{r mzid1}
 idf
@@ -204,13 +204,13 @@ idres
 
 ```
 ## An mzID object
-## 
+##
 ## Software used:   MS-GF+ (version: Beta (v10072))
-## 
+##
 ## Rawfile:         /home/lg390/Documents/Teaching/bioc-ms-prot/TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML
-## 
+##
 ## Database:        /home/lg390/Documents/Teaching/bioc-ms-prot/erwinia_carotovora.fasta
-## 
+##
 ## Number of scans: 5343
 ## Number of PSM's: 5656
 ```
@@ -239,7 +239,7 @@ data(itraqdata)
 ### Annotated spectra and spectra comparison
 
 ```{r plotwithseq1, fig.width=10}
-itraqdata2 <- pickPeaks(itraqdata, verbose = FALSE)
+itraqdata2 <- MSnbase::pickPeaks(itraqdata, verbose = FALSE)
 s <- "SIGFEGDSIGR"
 plot(itraqdata2[[14]], s, main = s)
 ```
@@ -259,11 +259,11 @@ Visualising a pair of spectra means that we can access them, and that,
 in addition to plotting, we can manipulate them and perform
 computations. The two spectra corresponding to the `IMIDLDGTENK`
 peptide, for example have
-`r compareSpectra(itraqdata2[[25]], itraqdata2[[28]], fun = "common")`
+`r MSnbase::compareSpectra(itraqdata2[[25]], itraqdata2[[28]], fun = "common")`
 common peaks, a correlation of
-`r round(compareSpectra(itraqdata2[[25]], itraqdata2[[28]], fun = "cor"), 3)`
+`r round(MSnbase::compareSpectra(itraqdata2[[25]], itraqdata2[[28]], fun = "cor"), 3)`
 and a dot product of
-`r round(compareSpectra(itraqdata2[[25]], itraqdata2[[28]], fun = "dotproduct"), 3)`
+`r round(MSnbase::compareSpectra(itraqdata2[[25]], itraqdata2[[28]], fun = "dotproduct"), 3)`
 (see `?compareSpectra` for details).
 
 ### Exercise {-}
@@ -275,10 +275,10 @@ peaks from `itraqdata` first.
 <details>
 ```{r compspex}
 data(itraqdata)
-itraqdata2 <- pickPeaks(itraqdata, verbose = FALSE)
-compareSpectra(itraqdata2[[25]], itraqdata2[[28]], fun = "common")
-compareSpectra(itraqdata2[[25]], itraqdata2[[28]], fun = "cor")
-compareSpectra(itraqdata2[[25]], itraqdata2[[28]], fun = "dotproduct")
+itraqdata2 <- MSnbase::pickPeaks(itraqdata, verbose = FALSE)
+MSnbase::compareSpectra(itraqdata2[[25]], itraqdata2[[28]], fun = "common")
+MSnbase::compareSpectra(itraqdata2[[25]], itraqdata2[[28]], fun = "cor")
+MSnbase::compareSpectra(itraqdata2[[25]], itraqdata2[[28]], fun = "dotproduct")
 ```
 </details>
 
@@ -297,7 +297,7 @@ measurement accuracy, etc.
 ### Step-by-step work-flow
 
 Let's reproduce parts of the analysis described the `MSnID`
-vignette. You can explore more with 
+vignette. You can explore more with
 
 ```{r, eval = FALSE}
 vignette("msnid_vignette", package = "MSnID")
@@ -397,14 +397,14 @@ summary(mass_measurement_error(msnid))
 
 ### Filtering criteria
 
-Filtering of the identification data will rely on 
+Filtering of the identification data will rely on
 
 * -log10 transformed MS-GF+ Spectrum E-value, reflecting the goodness
   of match experimental and theoretical fragmentation patterns
-  
+
 ```{r filt1}
 msnid$msmsScore <- -log10(msnid$`MS-GF:SpecEValue`)
-```  
+```
 
 * the absolute mass measurement error (in ppm units) of the parent ion
 
@@ -460,10 +460,10 @@ show(msnid)
 ```
 
 And finally, identifications that matched decoy and contaminant
-protein sequences are removed 
+protein sequences are removed
 
 ```{r optim4}
-msnid <- apply_filter(msnid, "isDecoy == FALSE") 
+msnid <- apply_filter(msnid, "isDecoy == FALSE")
 msnid <- apply_filter(msnid, "!grepl('Contaminant',accession)")
 show(msnid)
 ```

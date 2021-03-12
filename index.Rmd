@@ -11,11 +11,11 @@ output:
     split_by: chapter
     margin_references: FALSE
     css: style.css
-bibliography: skeleton.bib
+bibliography: refs.bib
 link-citations: yes
 ---
 
-# Preamble {-}
+# About
 
 This course will introduce participants to the analysis and
 exploration of mass spectrometry (MS) based proteomics data using R
@@ -64,7 +64,10 @@ The matriel from this course is compiled from various documents, from
 the [*bioc-ms-prot*](https://lgatto.github.io/bioc-ms-prot/lab.html)
 and
 [*CSAMA*](https://lgatto.github.io/bioc-ms-prot/csama2019-lab.html)
-labs.
+labs. See also [a previous
+interation]([https://github.com/lgatto/2020-02-17-RProt-Berlin]) of
+this course.
+
 
 
 ```{r bib, include=FALSE}
@@ -81,4 +84,51 @@ suppressPackageStartupMessages(library("lattice"))
 suppressPackageStartupMessages(library("gridExtra"))
 suppressPackageStartupMessages(library("MSnID"))
 suppressPackageStartupMessages(library("RforProteomics"))
+```
+
+# The R for Mass Spectrometry initiative
+
+The [R for Mass Spectrometry
+initiative](https://www.rformassspectrometry.org/) is a relatively
+recent project. Its aim is to provide efficient, thoroughly
+documented, tested and flexible R software for the analysis and
+interpretation of high throughput mass spectrometry assays, including
+proteomics and metabolomics experiments. The project formalises the
+longtime collaborative development efforts of its core members under
+the RforMassSpectrometry organisation to facilitate dissemination and
+accessibility of their work.
+
+We will be making use of several of these packages in this course.
+
+# Setup
+
+The participants should set up [R and
+RStdio](https://uclouvain-cbio.github.io/WSBIM1207/sec-rrstudio.html)
+and be familiar with [R
+basics](https://uclouvain-cbio.github.io/WSBIM1207/sec-startr.html)
+
+Familiarity with
+[Bioconductor](https://uclouvain-cbio.github.io/WSBIM1207/sec-bioinfo.html#sec:bioconductor)
+is useful, but not necessary. We will be learning about different
+types of
+[objects](https://uclouvain-cbio.github.io/WSBIM1322/sec-obj.html)
+related to mass spectrometry and proteomics, which we will learn about
+throughout the course. No experience in object-oriented programming is
+necessary.
+
+
+Install instructions
+
+```{r, eval = FALSE}
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install(version = "3.12")
+
+###Install the required libraries
+BiocManager::install("MSnbase")
+BiocManager::install("msdata")
+BiocManager::install("lgatto/ProtGenerics")
+BiocManager::install("RforMassSpectrometry/MsCoreUtils")
+BiocManager::install("RforMassSpectrometry/QFeatures")
 ```
