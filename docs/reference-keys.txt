@@ -38,7 +38,7 @@ adding-identification-data-to-raw-data
 visualising-peptide-spectrum-matches
 comparing-spectra
 summary-exercice
-exploration-and-assessment-of-confidence-of-lc-msn-proteomics-identifications-using-msnid
+exploration-and-assessment-of-identifications-using-msnid
 step-by-step-work-flow
 analysis-of-peptide-sequences
 trimming-the-data

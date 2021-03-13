@@ -496,7 +496,7 @@ plotSpectraMirror(sp_k[3], sp_k[4], main = "SQ...")
    with the scans of interest, switch to an in-memory backend to seed
    up the calculations.
 
-## Exploration and Assessment of Confidence of LC-MSn Proteomics Identifications using `MSnID`
+## Exploration and Assessment of Identifications using `MSnID`
 
 ```{r, echo = FALSE}
 unloadNamespace("PSM")
