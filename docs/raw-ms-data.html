@@ -163,7 +163,8 @@ commonly used open formats (<code>mzML</code>, <code>mzXML</code> and <code>netC
 |Raw        |mzXML or mzML |mzRpwiz or mzRramp           |mzR               |
 |Raw        |mzXML or mzML |list of MassSpectrum objects |MALDIquantForeign |
 |Raw        |mzXML or mzML |MSnExp                       |MSnbase           |
-|Peak lists |mgf           |MSnExp                       |MSnbase           |</code></pre>
+|Peak lists |mgf           |MSnExp                       |MSnbase           |
+|Raw        |several       |Spectra                      |Spectra           |</code></pre>
 <div id="what-is-raw-data-in-r" class="section level2">
 <h2>
 <span class="header-section-number">3.1</span> What is raw data in R</h2>
@@ -174,11 +175,11 @@ conventions, make mundane and repetitive tasks trivial and be able to
 complete more complex things easily. Abstractions provide a smoother
 approaches to handle complex data using common patterns.</p>
 <div class="figure" style="text-align: center">
-<span id="fig:unnamed-chunk-3"></span>
+<span id="fig:unnamed-chunk-8"></span>
 <p class="caption marginnote shownote">
-Figure 3.1: Schematic representation of what is referred to by <em>raw data</em>: a collection of mass spectra and a table containing spectrum-level annotations along the lines. Raw data are imported from one of the many community-maintained open standards formats (mzML, mzXML, mzData or ANDI-MS/netCDF) (Figure taken from <span class="citation">(Gatto, Gibb, and Rainer <a href="#ref-Gatto:2020">2020</a>)</span>.
+Figure 3.1: Schematic representation of what is referred to by <em>raw data</em>: a collection of mass spectra and a table containing spectrum-level annotations along the lines. Raw data are imported from one of the many community-maintained open standards formats (mzML, mzXML, mzData or ANDI-MS/netCDF) (Figure taken from <span class="citation">(Gatto, Gibb, and Rainer <a href="#ref-Gatto:2020">2020</a>)</span>).
 </p>
-<img src="img/raw.png" alt="Schematic representation of what is referred to by *raw data*: a collection of mass spectra and a table containing spectrum-level annotations along the lines. Raw data are imported from one of the many community-maintained open standards formats (mzML, mzXML, mzData or ANDI-MS/netCDF) (Figure taken from [@Gatto:2020]." width="100%">
+<img src="img/raw.png" alt="Schematic representation of what is referred to by *raw data*: a collection of mass spectra and a table containing spectrum-level annotations along the lines. Raw data are imported from one of the many community-maintained open standards formats (mzML, mzXML, mzData or ANDI-MS/netCDF) (Figure taken from [@Gatto:2020])." width="100%">
 </div>
 <p>We are going to use the
 <a href="https://rformassspectrometry.github.io/Spectra/"><code>Spectra</code></a> package
@@ -415,7 +416,7 @@ memory footprint.</li>
 ## 1862         1   259.752       931
 ##  ... 33 more variables/columns.
 ## Processing:
-##  Switch backend from MsBackendMzR to MsBackendDataFrame [Sat Mar 13 02:26:10 2021]</code></pre>
+##  Switch backend from MsBackendMzR to MsBackendDataFrame [Sat Mar 13 15:53:07 2021]</code></pre>
 <ul>
 <li>
 <code>MsBackendHdf5Peaks</code>: similar to <code>MsBackendMzR</code> this backend reads peak data
@@ -444,7 +445,7 @@ memory. The peak data are stored in Hdf5 files which guarantees scalability.</li
 ##  20171016_POOL_POS_1_105-134.h5
 ##  20171016_POOL_POS_3_105-134.h5
 ## Processing:
-##  Switch backend from MsBackendMzR to MsBackendHdf5Peaks [Sat Mar 13 02:26:19 2021]</code></pre>
+##  Switch backend from MsBackendMzR to MsBackendHdf5Peaks [Sat Mar 13 15:53:16 2021]</code></pre>
 <div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" title="1"><span class="kw">table</span>(sp_hdf5<span class="op">$</span>dataOrigin)</a></code></pre></div>
 <pre><code>## 
 ## /home/lgatto/R/x86_64-pc-linux-gnu-library/4.0/msdata/sciex/20171016_POOL_POS_1_105-134.mzML 
@@ -453,9 +454,9 @@ memory. The peak data are stored in Hdf5 files which guarantees scalability.</li
 ##                                                                                          931</code></pre>
 <div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" title="1"><span class="kw">table</span>(sp_hdf5<span class="op">$</span>dataStorage)</a></code></pre></div>
 <pre><code>## 
-## /tmp/RtmpiTeMnz/20171016_POOL_POS_1_105-134.h5 
+## /tmp/Rtmpb11qVc/20171016_POOL_POS_1_105-134.h5 
 ##                                            931 
-## /tmp/RtmpiTeMnz/20171016_POOL_POS_3_105-134.h5 
+## /tmp/Rtmpb11qVc/20171016_POOL_POS_3_105-134.h5 
 ##                                            931</code></pre>
 <p>All of the above mentioned backends support changing all of their their spectra
 variables, <strong>except</strong> the <code>MsBackendMzR</code> that does not support changing m/z or
@@ -621,7 +622,7 @@ the spectrum of interest.</li>
 <details><div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb69-1" title="1"><span class="kw">with</span>(<span class="kw">spectraData</span>(<span class="kw">filterMsLevel</span>(sp, <span class="dv">1</span>)),</a>
 <a class="sourceLine" id="cb69-2" title="2">     <span class="kw">plot</span>(rtime, totIonCurrent, <span class="dt">type =</span> <span class="st">"l"</span>))</a>
 <a class="sourceLine" id="cb69-3" title="3"><span class="kw">abline</span>(<span class="dt">v =</span> <span class="kw">rtime</span>(sp)[<span class="dv">2807</span>], <span class="dt">col =</span> <span class="st">"red"</span>)</a></code></pre></div>
-<p><img src="physalia_files/figure-html/unnamed-chunk-10-1.png" width="672"></p>
+<p><img src="physalia_files/figure-html/unnamed-chunk-15-1.png" width="672"></p>
 </details><ol start="2" style="list-style-type: decimal">
 <li>The <code>filterPrecursorScan()</code> function can be used to retains parent
 (MS1) and children scans (MS2) of a scan, as defined by its
@@ -649,7 +650,7 @@ all its MS2 children.</li>
 ## file(s):
 ## 10c1f4e4c6980_TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML
 ## Processing:
-##  Filter: select parent/children scans for 2807 [Sat Mar 13 02:26:26 2021]</code></pre>
+##  Filter: select parent/children scans for 2807 [Sat Mar 13 15:53:23 2021]</code></pre>
 </details><ol start="3" style="list-style-type: decimal">
 <li>Plot the MS1 spectrum of interest and highlight all the peaks that
 will be selected for MS2 analysis.</li>
@@ -657,18 +658,18 @@ will be selected for MS2 analysis.</li>
 <details><div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb72-1" title="1"><span class="kw">plotSpectra</span>(sp[<span class="dv">2807</span>], <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">400</span>, <span class="dv">1000</span>))</a>
 <a class="sourceLine" id="cb72-2" title="2"><span class="kw">abline</span>(<span class="dt">v =</span> <span class="kw">precursorMz</span>(ms_<span class="dv">2</span>)[<span class="op">-</span><span class="dv">1</span>], <span class="dt">col =</span> <span class="st">"grey"</span>)</a>
 <a class="sourceLine" id="cb72-3" title="3"><span class="kw">abline</span>(<span class="dt">v =</span> <span class="kw">precursorMz</span>(ms_<span class="dv">2</span>)[<span class="dv">2</span>], <span class="dt">col =</span> <span class="st">"red"</span>)</a></code></pre></div>
-<img src="physalia_files/figure-html/unnamed-chunk-12-1.png" width="672"></details><ol start="4" style="list-style-type: decimal">
+<img src="physalia_files/figure-html/unnamed-chunk-17-1.png" width="672"></details><ol start="4" style="list-style-type: decimal">
 <li>Zoom in mz values 521.1 and 522.5 to reveal the isotopic envelope
 of that peak.</li>
 </ol>
 <details><div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb73-1" title="1"><span class="kw">plotSpectra</span>(sp[<span class="dv">2807</span>], <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="fl">521.2</span>, <span class="fl">522.5</span>), <span class="dt">type =</span> <span class="st">"l"</span>)</a>
 <a class="sourceLine" id="cb73-2" title="2"><span class="kw">abline</span>(<span class="dt">v =</span> <span class="kw">precursorMz</span>(ms_<span class="dv">2</span>)[<span class="dv">2</span>], <span class="dt">col =</span> <span class="st">"red"</span>)</a></code></pre></div>
-<img src="physalia_files/figure-html/unnamed-chunk-13-1.png" width="672"></details><ol start="5" style="list-style-type: decimal">
+<img src="physalia_files/figure-html/unnamed-chunk-18-1.png" width="672"></details><ol start="5" style="list-style-type: decimal">
 <li>The <code>plotSpectra()</code> function is used to plot all 10 MS2 spectra in
 one call.</li>
 </ol>
 <details><div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb74-1" title="1"><span class="kw">plotSpectra</span>(ms_<span class="dv">2</span>[<span class="op">-</span><span class="dv">1</span>])</a></code></pre></div>
-<img src="physalia_files/figure-html/unnamed-chunk-14-1.png" width="768"></details><p>It is possible to label the peaks with the <code>plotSpectra()</code>
+<img src="physalia_files/figure-html/unnamed-chunk-19-1.png" width="768"></details><p>It is possible to label the peaks with the <code>plotSpectra()</code>
 function. The <code>labels</code> argument is either a <code>character</code> of appropriate
 length (i.e. with a label for each peak) or, as illustrated below, a
 function that computes the labels.</p>
@@ -684,7 +685,7 @@ function that computes the labels.</p>
 <a class="sourceLine" id="cb75-10" title="10">            <span class="dt">labels =</span> mzLabel,</a>
 <a class="sourceLine" id="cb75-11" title="11">            <span class="dt">labelSrt =</span> <span class="dv">-30</span>, <span class="dt">labelPos =</span> <span class="dv">2</span>,</a>
 <a class="sourceLine" id="cb75-12" title="12">            <span class="dt">labelOffset =</span> <span class="fl">0.1</span>)</a></code></pre></div>
-<p><img src="physalia_files/figure-html/unnamed-chunk-15-1.png" width="672"></p>
+<p><img src="physalia_files/figure-html/unnamed-chunk-20-1.png" width="672"></p>
 <p>Spectra can also be compared either by overlay or mirror plotting
 using the <code>plotSpectraOverlay()</code> and <code>plotSpectraMirror()</code> functions.</p>
 <div id="exercice" class="section level3 unnumbered">
@@ -704,9 +705,9 @@ the precursor m/z values.</li>
 <code>plotSpectraMirror()</code> functions.</li>
 </ol>
 <details><div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb79-1" title="1"><span class="kw">plotSpectraOverlay</span>(sp2i, <span class="dt">col =</span> <span class="kw">c</span>(<span class="st">"red"</span>, <span class="st">"steelblue"</span>))</a></code></pre></div>
-<p><img src="physalia_files/figure-html/unnamed-chunk-17-1.png" width="672"></p>
+<p><img src="physalia_files/figure-html/unnamed-chunk-22-1.png" width="672"></p>
 <div class="sourceCode" id="cb80"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb80-1" title="1"><span class="kw">plotSpectraMirror</span>(sp2i[<span class="dv">1</span>], sp2i[<span class="dv">2</span>])</a></code></pre></div>
-<img src="physalia_files/figure-html/unnamed-chunk-18-1.png" width="672"></details>
+<img src="physalia_files/figure-html/unnamed-chunk-23-1.png" width="672"></details>
 </div>
 </div>
 <div id="raw-data-processing-and-manipulation" class="section level2">
@@ -784,17 +785,17 @@ between 175 and 189 seconds in the measurement run.</p>
 ## file(s):
 ## 20171016_POOL_POS_3_105-134.mzML
 ## Processing:
-##  Filter: select data origin(s) /home/lgatto/R/x86_64-pc-linux-gnu-library/4.0/msdata/sciex/20171016_POOL_POS_3_105-134.mzML [Sat Mar 13 02:26:28 2021]
-##  Filter: select retention time [175..189] on MS level(s) 1 [Sat Mar 13 02:26:28 2021]</code></pre>
+##  Filter: select data origin(s) /home/lgatto/R/x86_64-pc-linux-gnu-library/4.0/msdata/sciex/20171016_POOL_POS_3_105-134.mzML [Sat Mar 13 15:53:24 2021]
+##  Filter: select retention time [175..189] on MS level(s) 1 [Sat Mar 13 15:53:24 2021]</code></pre>
 <p>As an example of data processing, below we use the <code>pickPeaks()</code>
 function to pick peaks:</p>
 <div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb89-1" title="1"><span class="kw">plotSpectra</span>(sp[<span class="dv">2807</span>], <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="fl">521.2</span>, <span class="fl">522.5</span>))</a></code></pre></div>
-<p><img src="physalia_files/figure-html/unnamed-chunk-19-1.png" width="672"></p>
+<p><img src="physalia_files/figure-html/unnamed-chunk-24-1.png" width="672"></p>
 <div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb90-1" title="1"><span class="kw">library</span>(<span class="st">"magrittr"</span>)</a>
 <a class="sourceLine" id="cb90-2" title="2"><span class="kw">pickPeaks</span>(sp[<span class="dv">2807</span>]) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb90-3" title="3"><span class="st">    </span><span class="kw">filterIntensity</span>(<span class="fl">1e7</span>) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb90-4" title="4"><span class="st">    </span><span class="kw">plotSpectra</span>(<span class="dt">xlim =</span> <span class="kw">c</span>(<span class="fl">521.2</span>, <span class="fl">522.5</span>))</a></code></pre></div>
-<p><img src="physalia_files/figure-html/unnamed-chunk-20-1.png" width="672"></p>
+<p><img src="physalia_files/figure-html/unnamed-chunk-25-1.png" width="672"></p>
 </div>
 </div>
 <div id="a-note-on-efficiency" class="section level2">
@@ -803,7 +804,7 @@ function to pick peaks:</p>
 <div id="backends-1" class="section level3 unnumbered">
 <h3>Backends</h3>
 <div class="figure" style="text-align: center">
-<span id="fig:unnamed-chunk-21"></span>
+<span id="fig:unnamed-chunk-26"></span>
 <p class="caption marginnote shownote">
 Figure 3.2: (a) Reading time (triplicates, in seconds) and (b) data size in memory (in MB) to read/store 1, 5, and 10 files containing 1431 MS1 (on-disk only) and 6103 MS2 (on-disk and in-memory) spectra. (c) Filtering benchmark assessed over 10 interactions on in-memory and on-disk data containing 6103 MS2 spectra. (d) Access time to spectra for the in-memory (left) and on-disk (right) backends for 1, 10, 100 1000, 5000, and all 6103 spectra. Benchmarks were performed on a Dell XPS laptop with an Intel i5-8250U processor 1.60 GHz (4 cores, 8 threads), 7.5 GB RAM running Ubuntu 18.04.4 LTS 64-bit, and an SSD drive. The data used for the benchmarking are a TMT 4-plex experiment acquired on a LTQ Orbitrap Velos (Thermo Fisher Scientific) available in the msdata package . (Figure taken from <span class="citation">(Gatto, Gibb, and Rainer <a href="#ref-Gatto:2020">2020</a>)</span>.
 </p>
@@ -855,7 +856,7 @@ below (next to Lazy evaluation queue).</p>
 ## 20171016_POOL_POS_3_105-134.mzML
 ## Lazy evaluation queue: 1 processing step(s)
 ## Processing:
-##  Remove peaks with intensities outside [10, Inf] in spectra of MS level(s) 1. [Sat Mar 13 02:26:28 2021]</code></pre>
+##  Remove peaks with intensities outside [10, Inf] in spectra of MS level(s) 1. [Sat Mar 13 15:53:25 2021]</code></pre>
 <div class="sourceCode" id="cb95"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb95-1" title="1"><span class="kw">min</span>(<span class="kw">intensity</span>(sp_sciex[<span class="dv">1</span>]))</a></code></pre></div>
 <pre><code>## [1] 412</code></pre>
 <div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb97-1" title="1">sp_sciex<span class="op">@</span>processingQueue</a></code></pre></div>

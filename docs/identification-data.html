@@ -142,6 +142,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="toc"><a href="#adding-identification-data-to-raw-data"> Adding identification data to raw data</a></li>
 <li class="toc"><a href="#visualising-peptide-spectrum-matches"> Visualising peptide-spectrum matches</a></li>
 <li class="toc"><a href="#comparing-spectra"> Comparing spectra</a></li>
+<li class="toc"><a href="#summary-exercice"> Summary exercice</a></li>
 <li class="toc"><a href="#exploration-and-assessment-of-confidence-of-lc-msn-proteomics-identifications-using-msnid"> Exploration and Assessment of Confidence of LC-MSn Proteomics Identifications using <code>MSnID</code></a></li>
 </ul>
 <a href="sec-quant.html"><span class="toc-section-number">5</span> Quantitative data</a>
@@ -462,7 +463,7 @@ non-decoy hits.</p>
 <a class="sourceLine" id="cb152-3" title="3"><span class="st">    </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> MS.GF.RawScore,</a>
 <a class="sourceLine" id="cb152-4" title="4">               <span class="dt">colour =</span> isDecoy)) <span class="op">+</span></a>
 <a class="sourceLine" id="cb152-5" title="5"><span class="st">    </span><span class="kw">geom_density</span>()</a></code></pre></div>
-<p><img src="physalia_files/figure-html/unnamed-chunk-38-1.png" width="672"></p>
+<p><img src="physalia_files/figure-html/unnamed-chunk-43-1.png" width="672"></p>
 </div>
 <div id="exercise-9" class="section level3 unnumbered">
 <h3>Exercise</h3>
@@ -803,7 +804,7 @@ the MS1 scans.</li>
 it.</p>
 <div class="sourceCode" id="cb190"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb190-1" title="1">i &lt;-<span class="st"> </span><span class="kw">which</span>(sp<span class="op">$</span>MS.GF.RawScore <span class="op">&gt;</span><span class="st"> </span><span class="dv">100</span>)[<span class="dv">1</span>]</a>
 <a class="sourceLine" id="cb190-2" title="2"><span class="kw">plotSpectra</span>(sp[i])</a></code></pre></div>
-<p><img src="physalia_files/figure-html/unnamed-chunk-44-1.png" width="672"></p>
+<p><img src="physalia_files/figure-html/unnamed-chunk-49-1.png" width="672"></p>
 <p>We have seen above that we can add labels to each peak using the
 <code>labels</code> argument in <code>plotSpectra()</code>. The <code>addFragments()</code> function
 takes a spectrum as input (that is a <code>Spectra</code> object of length 1) and
@@ -822,7 +823,7 @@ annotates its peaks.</p>
 <p>It can be directly used with <code>plotSpectra()</code>:</p>
 <div class="sourceCode" id="cb193"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb193-1" title="1"><span class="kw">plotSpectra</span>(sp[i], <span class="dt">labels =</span> addFragments,</a>
 <a class="sourceLine" id="cb193-2" title="2">            <span class="dt">labelPos =</span> <span class="dv">3</span>, <span class="dt">labelCol =</span> <span class="st">"steelblue"</span>)</a></code></pre></div>
-<p><img src="physalia_files/figure-html/unnamed-chunk-46-1.png" width="672"></p>
+<p><img src="physalia_files/figure-html/unnamed-chunk-51-1.png" width="672"></p>
 <p>The annotation of spectra is obtained by simulating fragmentation of a
 peptide and matching observed peaks to fragments:</p>
 <div class="sourceCode" id="cb194"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb194-1" title="1">sp[i]<span class="op">$</span>sequence</a></code></pre></div>
@@ -890,23 +891,27 @@ page for details. Draw a heatmap of that distance matrix</li>
 ## SQ 0.0012613380 0.001459654 0.4321330158 1.000000000 0.4467153012
 ## SQ 0.0008256185 0.001761321 0.6879331218 0.446715301 1.0000000000</code></pre>
 <div class="sourceCode" id="cb203"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb203-1" title="1">pheatmap<span class="op">::</span><span class="kw">pheatmap</span>(distmat)</a></code></pre></div>
-<img src="physalia_files/figure-html/unnamed-chunk-48-1.png" width="672"></details><ol start="3" style="list-style-type: decimal">
+<img src="physalia_files/figure-html/unnamed-chunk-53-1.png" width="672"></details><ol start="3" style="list-style-type: decimal">
 <li>Compare the spectra with the plotting function seen previously.</li>
 </ol>
 <details><div class="sourceCode" id="cb204"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb204-1" title="1"><span class="kw">filterIntensity</span>(sp_k, <span class="fl">1e3</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">plotSpectra</span>(<span class="dt">main =</span> sp_k<span class="op">$</span>sequence)</a></code></pre></div>
-<p><img src="physalia_files/figure-html/unnamed-chunk-49-1.png" width="672"></p>
+<p><img src="physalia_files/figure-html/unnamed-chunk-54-1.png" width="672"></p>
 <div class="sourceCode" id="cb205"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb205-1" title="1"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">1</span>))</a>
 <a class="sourceLine" id="cb205-2" title="2"><span class="kw">plotSpectraMirror</span>(sp_k[<span class="dv">1</span>], sp_k[<span class="dv">2</span>], <span class="dt">main =</span> <span class="st">"TK..."</span>)</a>
 <a class="sourceLine" id="cb205-3" title="3"><span class="kw">plotSpectraMirror</span>(sp_k[<span class="dv">3</span>], sp_k[<span class="dv">4</span>], <span class="dt">main =</span> <span class="st">"SQ..."</span>)</a>
 <a class="sourceLine" id="cb205-4" title="4"><span class="kw">plotSpectraMirror</span>(sp_k[<span class="dv">3</span>], sp_k[<span class="dv">4</span>], <span class="dt">main =</span> <span class="st">"SQ..."</span>)</a></code></pre></div>
-<img src="physalia_files/figure-html/unnamed-chunk-50-1.png" width="672"></details>
+<img src="physalia_files/figure-html/unnamed-chunk-55-1.png" width="672"></details>
 </div>
-<div id="exercice-1" class="section level3 unnumbered">
-<h3>Exercice</h3>
+</div>
+<div id="summary-exercice" class="section level2">
+<h2>
+<span class="header-section-number">4.9</span> Summary exercice</h2>
 <ol style="list-style-type: decimal">
 <li><p>Download the 3 first mzML and mzID files from the
 <a href="https://www.ebi.ac.uk/pride/archive/projects/PXD022816">PXD022816</a>
-project.</p></li>
+project. Hint: you will need to execute
+<code>rpx:::apply_fix_issue_5(FALSE)</code> before instantiating the data
+object.</p></li>
 <li><p>Generate a <code>Spectra</code> object containing only MS2 scans and a table
 of filtered PSMs. Check the quality of the identification data by
 comparing the density of the decoy and forward PSMs id scores for
@@ -915,13 +920,14 @@ each file. What is the proportion if identified MS2 spectra?</p></li>
 joining must now be performed by spectrum ids and by files.</p></li>
 <li><p>Extract the PSMs for <code>"DGSDEPGTAACPNGSFHCTNTGYK"</code>,
 <code>"DGQVINETSQHHDDLE"</code> and <code>"DSYVGDEAQSK"</code> and compare and cluster
-the scans.</p></li>
+the scans. Hint: once you have created the smaller <code>Spectra</code> object
+with the scans of interest, switch to an in-memory backend to seed
+up the calculations.</p></li>
 </ol>
-</div>
 </div>
 <div id="exploration-and-assessment-of-confidence-of-lc-msn-proteomics-identifications-using-msnid" class="section level2">
 <h2>
-<span class="header-section-number">4.9</span> Exploration and Assessment of Confidence of LC-MSn Proteomics Identifications using <code>MSnID</code>
+<span class="header-section-number">4.10</span> Exploration and Assessment of Confidence of LC-MSn Proteomics Identifications using <code>MSnID</code>
 </h2>
 <p>The <code>MSnID</code> package extracts MS/MS ID data from mzIdentML (leveraging
 the <code>mzID</code> package) or text files. After collating the search results
@@ -933,7 +939,7 @@ results and assess missed and irregular enzymatic cleavages, mass
 measurement accuracy, etc.</p>
 <div id="step-by-step-work-flow" class="section level3">
 <h3>
-<span class="header-section-number">4.9.1</span> Step-by-step work-flow</h3>
+<span class="header-section-number">4.10.1</span> Step-by-step work-flow</h3>
 <p>Let’s reproduce parts of the analysis described the <code>MSnID</code>
 vignette. You can explore more with</p>
 <div class="sourceCode" id="cb206"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb206-1" title="1"><span class="kw">vignette</span>(<span class="st">"msnid_vignette"</span>, <span class="dt">package =</span> <span class="st">"MSnID"</span>)</a></code></pre></div>
@@ -1015,7 +1021,7 @@ package’s vignette for more details:</p>
 </div>
 <div id="analysis-of-peptide-sequences" class="section level3">
 <h3>
-<span class="header-section-number">4.9.2</span> Analysis of peptide sequences</h3>
+<span class="header-section-number">4.10.2</span> Analysis of peptide sequences</h3>
 <p>Cleaning irregular cleavages at the termini of the peptides and
 missing cleavage site within the peptide sequences. The following two
 function call create the new <code>numMisCleavages</code> and <code>numIrregCleavages</code>
@@ -1025,7 +1031,7 @@ columns in the <code>MSnID</code> object</p>
 </div>
 <div id="trimming-the-data" class="section level3">
 <h3>
-<span class="header-section-number">4.9.3</span> Trimming the data</h3>
+<span class="header-section-number">4.10.3</span> Trimming the data</h3>
 <p>Now, we can use the <code>apply_filter</code> function to effectively apply
 filters. The strings passed to the function represent expressions that
 will be evaluated, thus keeping only PSMs that have 0 irregular
@@ -1042,7 +1048,7 @@ cleavages and 2 or less missed cleavages.</p>
 </div>
 <div id="parent-ion-mass-errors" class="section level3">
 <h3>
-<span class="header-section-number">4.9.4</span> Parent ion mass errors</h3>
+<span class="header-section-number">4.10.4</span> Parent ion mass errors</h3>
 <p>Using <code>"calculatedMassToCharge"</code> and <code>"experimentalMassToCharge"</code>, the
 <code>mass_measurement_error</code> function calculates the parent ion mass
 measurement error in parts per million.</p>
@@ -1057,7 +1063,7 @@ measurement error in parts per million.</p>
 </div>
 <div id="filtering-criteria" class="section level3">
 <h3>
-<span class="header-section-number">4.9.5</span> Filtering criteria</h3>
+<span class="header-section-number">4.10.5</span> Filtering criteria</h3>
 <p>Filtering of the identification data will rely on</p>
 <ul>
 <li>-log10 transformed MS-GF+ Spectrum E-value, reflecting the goodness
@@ -1071,7 +1077,7 @@ of match experimental and theoretical fragmentation patterns</li>
 </div>
 <div id="setting-filters" class="section level3">
 <h3>
-<span class="header-section-number">4.9.6</span> Setting filters</h3>
+<span class="header-section-number">4.10.6</span> Setting filters</h3>
 <p>MS2 filters are handled by a special <code>MSnIDFilter</code> class objects, where
 individual filters are set by name (that is present in <code>names(msnid)</code>)
 and comparison operator (&gt;, &lt;, = , …) defining if we should retain
@@ -1094,7 +1100,7 @@ identifications for the filtering criteria at hand.</p>
 </div>
 <div id="filter-optimisation" class="section level3">
 <h3>
-<span class="header-section-number">4.9.7</span> Filter optimisation</h3>
+<span class="header-section-number">4.10.7</span> Filter optimisation</h3>
 <p>Rather than setting filtering values by hand, as shown above, these
 can be set automatically to meet a specific false discovery rate.</p>
 <div class="sourceCode" id="cb235"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb235-1" title="1">filtObj.grid &lt;-<span class="st"> </span><span class="kw">optimize_filter</span>(filtObj, msnid, <span class="dt">fdr.max=</span><span class="fl">0.01</span>,</a>
@@ -1132,7 +1138,7 @@ protein sequences are removed</p>
 </div>
 <div id="export-msnid-data" class="section level3">
 <h3>
-<span class="header-section-number">4.9.8</span> Export <code>MSnID</code> data</h3>
+<span class="header-section-number">4.10.8</span> Export <code>MSnID</code> data</h3>
 <p>The resulting filtered identification data can be exported to a
 <code>data.frame</code> (or to a dedicated <code>MSnSet</code> data structure from the
 <code>MSnbase</code> package) for quantitative MS data, described below, and

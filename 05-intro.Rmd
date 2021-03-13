@@ -46,14 +46,21 @@ search engine such as, for example Mascot, MSGF+, ..., that will match
 the observed, experimental spectrum to theoratical spectra (see
 details below).
 
-![Schematics of a mass spectrometer and two rounds of MS.](./img/SchematicMS2.png)
+
+```{r, results='markup', fig.cap="Schematics of a mass spectrometer and two rounds of MS.", echo=FALSE, purl=FALSE, out.width='100%', fig.align='center'}
+knitr::include_graphics("./img/SchematicMS2.png")
+```
+
 
 The animation below show how 25 ions different ions (i.e. having
 different M/Z values) are separated throughout the MS analysis and are
 eventually detected (i.e. quantified). The final frame shows the
 hypothetical spectrum.
 
-![Separation and detection of ions in a mass spectrometer.](./img/mstut.gif)
+
+```{r, results='markup', fig.cap="Separation and detection of ions in a mass spectrometer.", echo=FALSE, purl=FALSE, out.width='100%', fig.align='center'}
+knitr::include_graphics("./img/mstut.gif")
+```
 
 The figures below illustrate the two rounds of MS. The spectrum on the
 left is an MS1 spectrum acquired after 21 minutes and 3 seconds of
@@ -63,17 +70,22 @@ red (orange) vertical line on the MS1 spectrum and the fragment
 spectra are shown on the MS2 spectrum on the top (bottom) right
 figure.
 
-![Parent ions in the MS1 spectrum (left) and two sected fragment ions MS2 spectra (right).](./img/MS1-MS2-spectra.png)
+```{r, results='markup', fig.cap="Parent ions in the MS1 spectrum (left) and two sected fragment ions MS2 spectra (right)", echo=FALSE, purl=FALSE, out.width='100%', fig.align='center'}
+knitr::include_graphics("./img/MS1-MS2-spectra.png")
+```
 
 The figures below represent the 3 dimensions of MS data: a set of
 spectra (M/Z and intensity) of retention time, as well as the
 interleaved nature of MS1 and MS2 (and there could be more levels)
 data.
 
-![MS1 spectra over retention time.](./img/F02-3D-MS1-scans-400-1200-lattice.png)
+```{r, results='markup', fig.cap="MS1 spectra over retention time.", echo=FALSE, purl=FALSE, out.width='100%', fig.align='center'}
+knitr::include_graphics("./img/F02-3D-MS1-scans-400-1200-lattice.png")
+```
 
-![MS2 spectra interleaved between two MS1 spectra.](./img/F02-3D-MS1-MS2-scans-100-1200-lattice.png)
-
+```{r, results='markup', fig.cap="MS2 spectra interleaved between two MS1 spectra..", echo=FALSE, purl=FALSE, out.width='100%', fig.align='center'}
+knitr::include_graphics("./img/F02-3D-MS1-MS2-scans-100-1200-lattice.png")
+```
 
 ## Accessing data
 

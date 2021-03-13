@@ -120,8 +120,8 @@ if (!requireNamespace("BiocManager", quietly = TRUE))
 BiocManager::install(version = "3.12")
 
 ###Install the required libraries
-BiocManager::install("MSnbase")
 BiocManager::install("msdata")
+BiocManager::install("mzR")
 BiocManager::install("lgatto/ProtGenerics")
 BiocManager::install("RforMassSpectrometry/MsCoreUtils")
 BiocManager::install("RforMassSpectrometry/QFeatures")
