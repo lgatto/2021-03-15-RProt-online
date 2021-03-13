@@ -11,12 +11,12 @@ commonly used open formats (`mzML`, `mzXML` and `netCDF`) into R.
 ```
 
 ```
-|   |Data type  |File format   |Data structure               |Package           |
-|:--|:----------|:-------------|:----------------------------|:-----------------|
-|1  |Raw        |mzXML or mzML |mzRpwiz or mzRramp           |mzR               |
-|2  |Raw        |mzXML or mzML |list of MassSpectrum objects |MALDIquantForeign |
-|3  |Raw        |mzXML or mzML |MSnExp                       |MSnbase           |
-|7  |Peak lists |mgf           |MSnExp                       |MSnbase           |
+|Data type  |File format   |Data structure               |Package           |
+|:----------|:-------------|:----------------------------|:-----------------|
+|Raw        |mzXML or mzML |mzRpwiz or mzRramp           |mzR               |
+|Raw        |mzXML or mzML |list of MassSpectrum objects |MALDIquantForeign |
+|Raw        |mzXML or mzML |MSnExp                       |MSnbase           |
+|Peak lists |mgf           |MSnExp                       |MSnbase           |
 ```
 
 ## What is raw data in R
