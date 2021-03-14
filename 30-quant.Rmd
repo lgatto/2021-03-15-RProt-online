@@ -447,10 +447,10 @@ or technical.
 
 1. Values that are missing due to the absence (or extremely low
    contentration) of a protein are observed for biological reasons,
-   and their pattern **aren't random**. A protein missing in due to
-   the suppression of its expression will not be missing at random: it
-   will be missing in the condition in which it was suppressed, and be
-   present in the condition where it is expressed.
+   and their pattern **aren't random** (MNAR). A protein missing in
+   due to the suppression of its expression will not be missing at
+   random: it will be missing in the condition in which it was
+   suppressed, and be present in the condition where it is expressed.
 
 2. Due to it's data-dependent acquisition, mass spectrometry isn't
    capable to assaying all peptides in a sample. Peptides that are
@@ -458,7 +458,7 @@ or technical.
    not ionise well or peptides that do not get identified might be
    sporadically missing in the final quantitation table, despite their
    presence in the biological samples. Their absence patterns are
-   **random** in such cases.
+   (completely) **random** (MAR or MCAR) in such cases.
 
 Often, third party software that produce quantiative data use zeros
 instead of properly reporting missing values. We can use the
@@ -526,15 +526,11 @@ Imputation is the technique of replacing missing data with probable
 values. This can be done with `impute()` method. As we have discussed
 above, there are however two types of missing values in mass
 spectrometry-based proteomics, namely data missing at random (MAR),
-and data missing not at random (MNAR). These two types of missing data
-need to be imputed with [different types of imputation
+and data missing not at random (MNAR). These two types of missing
+data, those missing at random, and those missing not at random, need
+to be imputed with [different types of imputation
 methods](https://rformassspectrometry.github.io/QFeatures/articles/Processing.html#imputation-1)
 [@Lazar:2016].
-
-
-```{r lazar, fig.cap = "Effect of the nature of missing values on their imputation. Root-mean-square error (RMSE) observations standard deviation ratio (RSR), KNN and MinDet imputation. Lower (blue) is better.", echo = FALSE, out.width='100%'}
-knitr::include_graphics("./img/imp-sim.png")
-```
 
 
 ```{r miximp, echo = FALSE, fig.cap = "Mixed imputation method. Black cells represent presence of quantitation values and light grey corresponds to missing data. The two groups of interest are depicted in green and blue along the heatmap columns. Two classes of proteins are annotated on the left: yellow are proteins with randomly occurring missing values (if any) while proteins in brown are candidates for non-random missing value imputation."}
@@ -549,9 +545,97 @@ heatmap.2(x, col = c("lightgray", "black"),
           ColSideColors = rep(c("steelblue", "darkolivegreen"), each = 8))
 ```
 
-When downstream analyses permit, it might thus be safer not to impute
-data and deal explicitly with missing values. This is possible when
-performing hypothesis tests, but not to perform a principal component
+
+```{r lazar, fig.cap = "Effect of the nature of missing values on their imputation. Root-mean-square error (RMSE) observations standard deviation ratio (RSR), KNN and MinDet imputation. Lower (blue) is better.", echo = FALSE, out.width='100%'}
+knitr::include_graphics("./img/imp-sim.png")
+```
+Generally, it is recommended to use **hot deck** methods (nearest
+neighbour (**left**), maximum likelihood, ...) when data are missing
+at random.Conversely, MNAR features should ideally be imputed with a
+**left-censor** (minimum value (**right**), but not zero, ...) method.
+
+
+There are various methods to perform data imputation, as described in
+`?impute`. The `r CRANpkg("imp4p")` package contains additional
+functionality, including some to estimate the randomness of missing
+data.
+
+The general syntax for imputation is
+
+```{r impute}
+data(se_na2)
+## impute missing values using knn imputation
+impute(se_na2, method = "knn")
+```
+
+#### Exercise {-}
+
+Following the example above, apply a mixed imputation, using knn for
+data missing at random and the deterministic minumum left-cencored
+imputation for data missing no at random.
+
+
+<details>
+```{r naex1, message = FALSE}
+impute(se_na2, "mixed",
+       randna = rowData(se_na2)$randna,
+       mar = "knn", mnar = "MinDet")
+```
+</details>
+
+#### Exercise {-}
+
+When assessing missing data imputation methods, such as in [Lazar et
+al. (2016)](https://pubs.acs.org/doi/abs/10.1021/acs.jproteome.5b00981),
+one often replaces values with missing data, imputes these with a
+method of choice, then quantifies the difference between original
+(expected) and observed (imputed) values. Here, using the `se_na2`
+data, use this strategy to assess the difference between knn and
+Bayesian PCA imputation.
+
+<details>
+```{r naex2, cache = TRUE}
+imp1 <- impute(se_na2, method = "knn")
+imp2 <- impute(se_na2, method = "bpca")
+summary(abs(assay(imp1)[is.na(assay(se_na2))] - assay(imp2)[is.na(assay(se_na2))]))
+summary(as.numeric(na.omit(assay(se_na2))))
+```
+</details>
+
+#### Exercise {-}
+
+When assessing the impact of missing value imputation on real data,
+one can't use the strategy above. Another useful approach is to assess
+the impact of the imputation method on the distribution of the
+quantitative data. For instance, here is the intensity distribution of
+the `se_na2` data. Verify the effect of applying `knn`, `zero`,
+`MinDet` and `bpca` on this distribution.
+
+```{r nasetdist, fig.cap = "Intensity disctribution of the `naset` data."}
+plot(density(na.omit(assay(se_na2))))
+```
+
+<details>
+
+```{r naex3, cache = TRUE}
+cls <- c("black", "red", "blue", "steelblue", "orange")
+plot(density(na.omit(assay(se_na2))), col = cls[1])
+lines(density(assay(impute(se_na2, method = "knn"))), col = cls[2])
+lines(density(assay(impute(se_na2, method = "zero"))), col = cls[3])
+lines(density(assay(impute(se_na2, method = "MinDet"))), col = cls[4])
+lines(density(assay(impute(se_na2, method = "bpca"))), col = cls[5])
+legend("topright", legend = c("orig", "knn", "zero", "MinDet", "bpca"),
+       col = cls, lwd = 2, bty = "n")
+```
+</details>
+
+**Tip**: When downstream analyses permit, it might be safer not to
+impute data and deal explicitly with missing values. Indeed misssing
+data impuration is however not a straightforward thing, as is likely
+to dramatically fail when a high proportion of data is missing (10s of
+%). It is possible to keep NAs when performing hypothesis
+tests^[Still, it is recommended to explore missingness as part of the
+exploratory data analysis.], but not to perform a principal component
 analysis.
 
 
@@ -653,11 +737,29 @@ cptac <- logTransform(cptac, i = "peptides",
                       name = "log_peptides")
 ```
 
+#### Exercise {-}
+
+Use the `normalize()` method to normalise the data. The syntax is the
+same as `logTransform()`. Use the `centre.median` method.
+
+<details>
+
 ```{r nrom}
 cptac <- normalize(cptac, i = "log_peptides",
                    name = "lognorm_peptides",
                    method = "center.median")
 ```
+
+</details>
+
+#### Exercise {-}
+
+Visualise the result of the transformations above. The
+`plotDensities()` function from the `limma` package is very
+convenient, but feel free to use boxplots, violin plots, or any other
+visualisation that you deem useful to assess the tranformations.
+
+<details>
 
 ```{r plotdens, fig.cap = "Three peptide level assays: raw data, log transformed and normalised.", fig.width = 15, fig.height = 5}
 par(mfrow = c(1, 3))
@@ -665,12 +767,18 @@ limma::plotDensities(assay(cptac[["peptides"]]))
 limma::plotDensities(assay(cptac[["log_peptides"]]))
 limma::plotDensities(assay(cptac[["lognorm_peptides"]]))
 ```
+</details>
 
 ### Aggregation
 
-Below, we are going to use median aggregation, as a first
-attempt. This is however not the best choice, as we will see later.
+#### Exercise {-}
 
+Use median aggregation to aggregation peptides into protein
+values. This is not necessarily not the best choice, as we will see
+later, but a good star.
+
+
+<details>
 
 ```{r qfagg1, message = FALSE}
 cptac <-
@@ -682,6 +790,8 @@ cptac <-
                       na.rm = TRUE)
 ```
 
+</details>
+
 Looking at the `.n` row variable computed during the aggregation, we
 see that most proteins result of the aggregation of 5 peptides or
 less, while very few proteins are accounted for by tens of peptides.
@@ -692,10 +802,8 @@ table(rowData(cptac[["proteins_med"]])$.n)
 
 ### Principal component analysis
 
-
 ```{r pca, message = FALSE}
 library("factoextra")
-library("patchwork")
 
 pca_pep <-
     cptac[["lognorm_peptides"]] %>%
@@ -717,11 +825,11 @@ pca_prot <-
 ```
 
 ```{r plotpca, fig.width = 12, fig.height = 6, fig.cap = "Peptide and protein level PCA analyses."}
+library("patchwork")
 pca_pep + pca_prot
 ```
 
 ### Visualisation
-
 
 Below, we use the `longFormat()` function to extract the quantitative
 and row data in a long format, that can be directly reused by the
