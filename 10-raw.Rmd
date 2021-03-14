@@ -34,6 +34,8 @@ approaches to handle complex data using common patterns.
 knitr::include_graphics("./img/raw.png")
 ```
 
+### The `Spectra` class
+
 We are going to use the
 [`Spectra`](https://rformassspectrometry.github.io/Spectra/) package
 as an abstraction to raw mass spectrometry data.
@@ -65,7 +67,7 @@ sp0 <- Spectra(spd)
 sp0
 ```
 
-### Exercise {-}
+#### Exercise {-}
 
 Explore the newly created object using
 
@@ -84,13 +86,14 @@ sp <- Spectra(mzf)
 sp
 ```
 
-### Exercise {-}
+#### Exercise {-}
 
 - Repeat the data manipulations above.
 - Check the number of scans in the object with `length()`.
 - Note the difference in the first line when showing the object in the
   console. We will get back to this idea of backend later.
 
+### `Spectra` from mzML files
 
 Mass spectrometry data in `Spectra` objects can be thought of as a
 list of individual spectra, with each spectrum having a set of
@@ -144,7 +147,7 @@ function see the help for `Spectra` (`?Spectra`). Also note that these
 variables are suggested, but not required to characterize a
 spectrum. Also, some only make sense for MSn, but not for MS1 spectra.
 
-### Exercise {-}
+#### Exercise {-}
 
 - Extract a set of spectra variables using the accessor (for example
   `msLevel(.)`) or using the `$` notation (for example `.$msLevel`).
@@ -157,8 +160,7 @@ spectrum. Also, some only make sense for MSn, but not for MS1 spectra.
   function to visualise peaks and set the m/z range with the `xlim`
   arguments.
 
-
-### Exercise {-}
+#### Exercise {-}
 
 Using the first raw data file starting with `MS3TMT10`, answer the
 following questions:
@@ -179,7 +181,7 @@ sp_sciex <- Spectra(fls)
 table(dataOrigin(sp_sciex))
 ```
 
-## Backends
+### Backends
 
 Backends allow to use different *backends* to store mass spectrometry data while
 providing *via* the `Spectra` class a unified interface to use that data. The
@@ -216,7 +218,6 @@ table(sp_hdf5$dataOrigin)
 table(sp_hdf5$dataStorage)
 ```
 
-
 All of the above mentioned backends support changing all of their their spectra
 variables, **except** the `MsBackendMzR` that does not support changing m/z or
 intensity values for the mass peaks.
@@ -230,7 +231,7 @@ There is also an (under development) SQLite-based backend called
 that will store all data, i.e. raw and metadata, on disk.
 
 
-## Under the hood: `mzR`
+## Under the hood: `mzR` (optional)
 
 The `mzR` package in a direct interface to the
 [proteowizard](http://proteowizard.sourceforge.net/) code base. It
@@ -275,7 +276,7 @@ head(peaks(ms, 117))
 str(peaks(ms, 1:5))
 ```
 
-### Exercise {-}
+#### Exercise {-}
 
 Let's extract the index of the MS2 spectrum with the highest base peak
 intensity and plot its spectrum. Is the data centroided or in profile
@@ -295,7 +296,7 @@ plot(pi, type = "h", xlim = c(mz - 0.5, mz + 0.5))
 
 </details>
 
-### Exercise {-}
+#### Exercise {-}
 
 Pick an MS1 spectrum and visually check whether it is centroided or in
 profile mode.
@@ -345,7 +346,7 @@ knitr::include_graphics("./img/msvisfig.png")
 
 We are going to reproduce the figure above trought a set of exercices.
 
-
+#### Exercise {-}
 
 1. Create the chromatogram can be created by extracting the
    `totIonCurrent` and `rtime` variables for all MS1 spectra. Annotate
@@ -360,8 +361,6 @@ abline(v = rtime(sp)[2807], col = "red")
 ```
 
 </details>
-
-
 
 2. The `filterPrecursorScan()` function can be used to retains parent
    (MS1) and children scans (MS2) of a scan, as defined by its
@@ -432,9 +431,7 @@ plotSpectra(ms_2[7],
 Spectra can also be compared either by overlay or mirror plotting
 using the `plotSpectraOverlay()` and `plotSpectraMirror()` functions.
 
-
-### Exercice {-}
-
+#### Exercice {-}
 
 1. Filter MS2 level spectra.
 2. Find any 2 MS2 spectra that have matching precursor peaks based on
@@ -462,7 +459,6 @@ plotSpectraMirror(sp2i[1], sp2i[2])
 ```
 </details>
 
-
 ## Raw data processing and manipulation
 
 Apart from *classical* subsetting operations such as `[` and `split`,
@@ -488,7 +484,7 @@ detailed help please see the `?Spectra` help):
 - `filterRt`: filter based on retention time ranges.
 
 
-### Exercise {-}
+#### Exercise {-}
 
 Using the `sp_sciex` data, select all spectra measured in the second
 mzML file and subsequently filter them to retain spectra measured
@@ -510,7 +506,6 @@ sp_sciex %>%
     filterRt(c(175, 189))
 ```
 
-
 As an example of data processing, below we use the `pickPeaks()`
 function to pick peaks:
 
@@ -527,15 +522,14 @@ pickPeaks(sp[2807]) %>%
 
 ## A note on efficiency
 
-### Backends {-}
+### Backends
 
 
 ```{r, results='markup', fig.cap="(a) Reading time (triplicates, in seconds) and (b) data size in memory (in MB) to read/store 1, 5, and 10 files containing 1431 MS1 (on-disk only) and 6103 MS2 (on-disk and in-memory) spectra. (c) Filtering benchmark assessed over 10 interactions on in-memory and on-disk data containing 6103 MS2 spectra. (d) Access time to spectra for the in-memory (left) and on-disk (right) backends for 1, 10, 100 1000, 5000, and all 6103 spectra. Benchmarks were performed on a Dell XPS laptop with an Intel i5-8250U processor 1.60 GHz (4 cores, 8 threads), 7.5 GB RAM running Ubuntu 18.04.4 LTS 64-bit, and an SSD drive. The data used for the benchmarking are a TMT 4-plex experiment acquired on a LTQ Orbitrap Velos (Thermo Fisher Scientific) available in the msdata package . (Figure taken from [@Gatto:2020].", echo=FALSE, purl=FALSE, out.width='70%', fig.align='center'}
 knitr::include_graphics("./img/pr0c00313_0002.gif")
 ```
 
-
-### Parallel processing {-}
+### Parallel processing
 
 Most functions on `Spectra` support (and use) parallel processing out
 of the box. Peak data access and manipulation methods perform by
@@ -545,7 +539,7 @@ dataStorage variable as splitting factor). Spectra uses
 parallel processing and all functions use the default registered
 parallel processing setup of that package.
 
-### Lazy evaluation {-}
+### Lazy evaluation
 
 Data manipulations on Spectra objects are not immediately applied to
 the peak data. They are added to a so called processing queue which is

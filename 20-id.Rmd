@@ -28,14 +28,20 @@ n_scans <- length(unique(id$spectrumID))
 n_seqs <- length(unique(id$sequence))
 ```
 
-This table contains `r n_matches` matches for `r n_scans` scans and
-`r n_seqs` peptides sequences.
+#### Exercise {-}
+
+Verify that this table contains `r n_matches` matches for `r n_scans`
+scans and `r n_seqs` peptides sequences.
+
+<details>
 
 ```{r}
 nrow(id) ## number of matches
 length(unique(id$spectrumID)) ## number of scans
 length(unique(id$sequence))   ## number of peptide sequences
 ```
+
+</details>
 
 The PSM data are read as is, without and filtering. As we can see
 below, we still have all the hits from the forward and reverse (decoy)
@@ -103,13 +109,13 @@ wrong identification manually.
 Here, the `filter()` from the `dplyr` package comes very handy. We
 will thus start by convering the `DataFrame` to a `tibble`.
 
-```{r}
+```{r, message = FALSE}
 library("dplyr")
 id_tbl <- tidyr::as_tibble(id)
 id_tbl
 ```
 
-### Exercise {-}
+#### Exercise {-}
 
 - Remove decoy hits
 
@@ -164,10 +170,12 @@ This can also be achieved with the `filterPSMs()` function:
 id_filtered <- filterPSMs(id)
 ```
 
-### Exercise {-}
+#### Exercise {-}
 
 Compare the distribution of raw idenfication scores of the decoy and
-non-decoy hits.
+non-decoy hits. Interpret the figure.
+
+<details>
 
 ```{r}
 library(ggplot2)
@@ -176,6 +184,8 @@ as_tibble(id) %>%
                colour = isDecoy)) +
     geom_density()
 ```
+
+</details>
 
 ### Exercise {-}
 
@@ -204,7 +214,7 @@ ggplot(iddf, aes(x = n, y = DBseqLength)) + geom_point()
 </details>
 
 
-## Low level access to id data
+## Low level access to id data (optional)
 
 There are two packages that can be used to parse `mzIdentML` files,
 namely `mzR` (that we have already used for raw data) and `mzID`. The
@@ -219,11 +229,14 @@ knitr::kable(x[sel, ])
 ```
 
 ```
-|   |Data type      |File format |Data structure |Package |
-|:--|:--------------|:-----------|:--------------|:-------|
-|4  |Identification |mzIdentML   |mzRident       |mzR     |
-|5  |Identification |mzIdentML   |mzID           |mzID    |
+|Data type      |File format |Data structure |Package |
+|:--------------|:-----------|:--------------|:-------|
+|Identification |mzIdentML   |mzRident       |mzR     |
+|Identification |mzIdentML   |mzID           |mzID    |
 ```
+
+Which of these packages is used by `readPSMs()` can be defined by the
+`parser` argument.
 
 ### `mzID` {-}
 
