@@ -1,6 +1,5 @@
 # Quantitative data {#sec:quant}
 
-
 There are a wide range of proteomics quantitation techniques that can
 broadly be classified as labelled vs. label-free, depending whether
 the features are labelled prior the MS acquisition and the MS level at
@@ -30,13 +29,14 @@ quantitation technologies:
   peptide-spectrum matching confidence assessment.
 * `r Githubpkg("vladpetyuk/N14N15")` for heavy Nitrogen-labelled data.
 
-## The QFeatures class {#sec:qf}
+## QFeatures {#sec:qf}
+
 Mass spectrometry-based quantitative proteomics data can be
 representated as a matrix of quantitative values for features (PSMs,
 peptides, proteins) arranged along the rows, measured for a set of
-samples, arranged along the columns. The is a common representation
-for any quantitative data set. We will be using the
-`SummarizedExperiment` [@SE] class:
+samples, arranged along the columns. There is a common representation
+for such quantitative data set, namely the `SummarizedExperiment` (SE)
+[@SE] class:
 
 ```{r sefig, echo = FALSE, fig.cap = "Schematic representation of the anatomy of a `SummarizedExperiment` object. (Figure taken from the `SummarizedExperiment` package vignette.)", out.width='100%', fig.align='center'}
 knitr::include_graphics("./img/SE.png")
@@ -53,7 +53,7 @@ knitr::include_graphics("./img/SE.png")
 - The quantiative data can be accessed with `assay()`.
 - `assays()` returns a list of matrix-like assays.
 
-### QFeatures {-}
+### The QFeatures class
 
 While mass spectrometers acquire data for spectra/peptides, the
 biological entity of interest are the protein. As part of the data
@@ -125,7 +125,7 @@ We are going to start to familiarise ourselves with the `QFeatures`
 class implemented in the
 [`QFeatures`](https://rformassspectrometry.github.io/QFeatures/articles/QFeatures.html)
 package. The class is derived from the Bioconductor
-`MultiAssayExperiment` [@MAE] class. Let's start by loading the
+`MultiAssayExperiment` [@MAE] (MAE) class. Let's start by loading the
 `QFeatures` package.
 
 
@@ -149,6 +149,13 @@ Let's perform some simple operations to familiarise ourselves with the
   have previously done with `SummarizedExperiment` objects).
 
 ```{r cd}
+colData(feat1)
+```
+We can also further annotate the experiment by adding columns to the `colData` slot:
+
+```{r cd2}
+colData(feat1)$X <- c("X1", "X2")
+feat1$Y <- c("Y1", "Y2")
 colData(feat1)
 ```
 
@@ -313,7 +320,7 @@ head(rowData(hl[["psms"]]))
 ```
 
 For further details on how to manipulate such objects, refer to the
-`r BiocStyle::Biocpkg("MultiAssayExperiment")` [@Ramos:2017] and
+`r BiocStyle::Biocpkg("MultiAssayExperiment")` [@MAE] and
 `r BiocStyle::Biocpkg("SummerizedExperiment")` [@SE] packages.
 
 It is also possible to first create a `SummerizedExperiment`, and then
@@ -544,7 +551,7 @@ heatmap.2(x, col = c("lightgray", "black"),
 
 When downstream analyses permit, it might thus be safer not to impute
 data and deal explicitly with missing values. This is possible when
-performing hypethesis tests, but not to perform a principal component
+performing hypothesis tests, but not to perform a principal component
 analysis.
 
 
@@ -568,8 +575,13 @@ table(rowData(cptac_se)$Potential.contaminant)
 Let's visualise some of the cptac's metadata using standard `ggplot2`
 code:
 
-- Visualise the score distributions from forward and reverse hits and
-  interpret the figure.
+#### Exercise {-}
+
+Visualise the identification score and the posterior probability
+probability (PEP) distributions from forward and reverse hits and
+interpret the figure.
+
+<details>
 
 ```{r idqc1}
 rowData(cptac_se) %>%
@@ -579,8 +591,6 @@ rowData(cptac_se) %>%
 
 ```
 
-- Do the same with the posterior probability score (PEP).
-
 ```{r idqc2}
 rowData(cptac_se) %>%
     as_tibble() %>%
@@ -588,6 +598,7 @@ rowData(cptac_se) %>%
     geom_density()
 ```
 
+</details>
 
 ### Creating the QFeatures data
 
@@ -615,9 +626,12 @@ assays within a `QFeatures` object.
 
 ### Filtering out contaminants and reverse hits
 
+#### Exercise {-}
+
 Using the `filterFeatures()` function, filter out the reverse and
 contaminant hits.
 
+<details>
 
 ```{r qcfilter}
 cptac <-
@@ -626,6 +640,7 @@ cptac <-
     filterFeatures(~ Potential.contaminant != "+")
 ```
 
+</details>
 
 ### Log-transformation and normaliation
 
