@@ -127,3 +127,8 @@ BiocManager::install("RforMassSpectrometry/MsCoreUtils")
 BiocManager::install("RforMassSpectrometry/QFeatures")
 BiocManager::install("RforMassSpectrometry/PSM")
 ```
+
+## License
+
+The content of this workshop is provided under a [CC-BY
+ShareAlike](https://creativecommons.org/licenses/by-sa/2.0/) license.

@@ -9,7 +9,10 @@ often coupled to chromatography (liquid LC, but can also be gas-based
 GC). The time an analytes takes to elute from the chromatography
 column is the *retention time*.
 
-![A chromatogram, illustrating the total amount of analytes over the retention time.](./img/chromatogram.png)
+
+```{r, results='markup', fig.cap="A chromatogram, illustrating the total amount of analytes over the retention time.", echo=FALSE, purl=FALSE, out.width='100%', fig.align='center'}
+knitr::include_graphics("./img/chromatogram.png")
+```
 
 An mass spectrometer is composed of three components:
 
@@ -34,17 +37,19 @@ sequence).
 
 In MSMS (or MS2), the settings of the mass spectrometer are set
 automatically to select a certain number of MS1 peaks (for example
-20). Once a narrow M/Z range has been selected (corresponding to one
-high-intensity peak, a peptide, and some background noise), it is
-fragmented (using for example collision-induced dissociation (CID),
-higher energy collisional dissociation (HCD) or electron-transfer
-dissociation (ETD)). The fragment ions are then themselves separated
-in the analyser to produce a MS2 spectrum. The unique fragment ion
-pattern can then be used to infer the peptide sequence using de novo
-sequencing (when the spectrum is of high enough quality) of using a
-search engine such as, for example Mascot, MSGF+, ..., that will match
-the observed, experimental spectrum to theoratical spectra (see
-details below).
+20)^[Here, we will focus in data dependent acquisition (DDA), where
+MS1 peaks a selected. In data independent acquisition (DIA), all peaks
+in the MS1 spectrum are fragmented.]. Once a narrow M/Z range has been
+selected (corresponding to one high-intensity peak, a peptide, and
+some background noise), it is fragmented (using for example
+collision-induced dissociation (CID), higher energy collisional
+dissociation (HCD) or electron-transfer dissociation (ETD)). The
+fragment ions are then themselves separated in the analyser to produce
+a MS2 spectrum. The unique fragment ion pattern can then be used to
+infer the peptide sequence using de novo sequencing (when the spectrum
+is of high enough quality) of using a search engine such as, for
+example Mascot, MSGF+, ..., that will match the observed, experimental
+spectrum to theoratical spectra (see details below).
 
 
 ```{r, results='markup', fig.cap="Schematics of a mass spectrometer and two rounds of MS.", echo=FALSE, purl=FALSE, out.width='100%', fig.align='center'}

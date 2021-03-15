@@ -1,13 +1,5 @@
 # R/Bioconductor for Mass Spectrometry and Proteomics
 
-- Annoucement: https://www.physalia-courses.org/courses-workshops/course58/
-- Course: https://lgatto.github.io/2020-02-17-RProt-Berlin/
-- Short URL: http://bit.ly/2002rbiocprot
-
-## Dates and location
-
-17 - 19 Feb 2020, Free University (FU) Berlin
-
 ## Overview
 
 This course will introduce participants to the analysis and
@@ -37,7 +29,6 @@ but not required.
 
 ### Day 1
 
-
 During the first day, we will focus on raw MS data, including how mass
 spectrometry works, how raw MS data looks like, MS data formats, and
 how to extract, manipulate and visualise raw data.
@@ -57,3 +48,8 @@ identify differentially expression proteins between two groups.
 ## Instructor
 
 [Prof Laurent Gatto](https://lgatto.github.io/about/), de Duve Institute, UCLouvain, Belgium
+
+## License
+
+The content of this workshop is provided under a [CC-BY
+ShareAlike](https://creativecommons.org/licenses/by-sa/2.0/) license.
