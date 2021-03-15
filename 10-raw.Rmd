@@ -154,7 +154,7 @@ spectrum. Also, some only make sense for MSn, but not for MS1 spectra.
   `msLevel(.)`) or using the `$` notation (for example `.$msLevel`).
 - How many MS level are there, and how many scans of each level?
 - Extract the index of the MS2 spectrum with the highest base peak
-  intensity and plot its spectrum.
+  intensity.
 - Are the data centroided or in profile mode?
 - Pick a spectrum of each level and visually check whether it is
   centroided or in profile mode. You can use the `plotSpectra()`
