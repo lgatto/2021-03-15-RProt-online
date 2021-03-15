@@ -14,7 +14,7 @@
 
 <meta name="author" content="Laurent Gatto" />
 
-<meta name="date" content="2021-03-14" />
+<meta name="date" content="2021-03-15" />
 
 
 <meta name="description" content="Chapter 2 Introduction | R/Bioconductor for Mass Spectrometry and Proteomics">
@@ -132,7 +132,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <a href="raw-ms-data.html"><span class="toc-section-number">3</span> Raw MS data</a>
 <a href="identification-data.html"><span class="toc-section-number">4</span> Identification data</a>
 <a href="sec-quant.html"><span class="toc-section-number">5</span> Quantitative data</a>
-<a href="sec-si.html"><span class="toc-section-number">6</span> Session information</a>
+<a href="sec-si.html"><span class="toc-section-number">6</span> References and session information</a>
 </div>
 </li>
 </ul>
@@ -153,8 +153,12 @@ molecules (ions) based on their mass to charge ratio (M/Z). It is
 often coupled to chromatography (liquid LC, but can also be gas-based
 GC). The time an analytes takes to elute from the chromatography
 column is the <em>retention time</em>.</p>
-<div class="figure">
-<img src="img/chromatogram.png" alt="A chromatogram, illustrating the total amount of analytes over the retention time."><p class="caption">A chromatogram, illustrating the total amount of analytes over the retention time.</p>
+<div class="figure" style="text-align: center">
+<span id="fig:unnamed-chunk-3"></span>
+<p class="caption marginnote shownote">
+Figure 2.1: A chromatogram, illustrating the total amount of analytes over the retention time.
+</p>
+<img src="img/chromatogram.png" alt="A chromatogram, illustrating the total amount of analytes over the retention time." width="100%">
 </div>
 <p>An mass spectrometer is composed of three components:</p>
 <ol style="list-style-type: decimal">
@@ -177,21 +181,23 @@ below), which is not enough to infer their identify (i.e. their
 sequence).</p>
 <p>In MSMS (or MS2), the settings of the mass spectrometer are set
 automatically to select a certain number of MS1 peaks (for example
-20). Once a narrow M/Z range has been selected (corresponding to one
-high-intensity peak, a peptide, and some background noise), it is
-fragmented (using for example collision-induced dissociation (CID),
-higher energy collisional dissociation (HCD) or electron-transfer
-dissociation (ETD)). The fragment ions are then themselves separated
-in the analyser to produce a MS2 spectrum. The unique fragment ion
-pattern can then be used to infer the peptide sequence using de novo
-sequencing (when the spectrum is of high enough quality) of using a
-search engine such as, for example Mascot, MSGF+, …, that will match
-the observed, experimental spectrum to theoratical spectra (see
-details below).</p>
+20)<label for="tufte-sn-1" class="margin-toggle sidenote-number">1</label><input type="checkbox" id="tufte-sn-1" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">1</span> Here, we will focus in data dependent acquisition (DDA), where
+MS1 peaks a selected. In data independent acquisition (DIA), all peaks
+in the MS1 spectrum are fragmented.</span>. Once a narrow M/Z range has been
+selected (corresponding to one high-intensity peak, a peptide, and
+some background noise), it is fragmented (using for example
+collision-induced dissociation (CID), higher energy collisional
+dissociation (HCD) or electron-transfer dissociation (ETD)). The
+fragment ions are then themselves separated in the analyser to produce
+a MS2 spectrum. The unique fragment ion pattern can then be used to
+infer the peptide sequence using de novo sequencing (when the spectrum
+is of high enough quality) of using a search engine such as, for
+example Mascot, MSGF+, …, that will match the observed, experimental
+spectrum to theoratical spectra (see details below).</p>
 <div class="figure" style="text-align: center">
-<span id="fig:unnamed-chunk-3"></span>
+<span id="fig:unnamed-chunk-4"></span>
 <p class="caption marginnote shownote">
-Figure 2.1: Schematics of a mass spectrometer and two rounds of MS.
+Figure 2.2: Schematics of a mass spectrometer and two rounds of MS.
 </p>
 <img src="img/SchematicMS2.png" alt="Schematics of a mass spectrometer and two rounds of MS." width="100%">
 </div>
@@ -200,9 +206,9 @@ different M/Z values) are separated throughout the MS analysis and are
 eventually detected (i.e. quantified). The final frame shows the
 hypothetical spectrum.</p>
 <div class="figure" style="text-align: center">
-<span id="fig:unnamed-chunk-4"></span>
+<span id="fig:unnamed-chunk-5"></span>
 <p class="caption marginnote shownote">
-Figure 2.2: Separation and detection of ions in a mass spectrometer.
+Figure 2.3: Separation and detection of ions in a mass spectrometer.
 </p>
 <img src="img/mstut.gif" alt="Separation and detection of ions in a mass spectrometer." width="100%">
 </div>
@@ -214,9 +220,9 @@ red (orange) vertical line on the MS1 spectrum and the fragment
 spectra are shown on the MS2 spectrum on the top (bottom) right
 figure.</p>
 <div class="figure" style="text-align: center">
-<span id="fig:unnamed-chunk-5"></span>
+<span id="fig:unnamed-chunk-6"></span>
 <p class="caption marginnote shownote">
-Figure 2.3: Parent ions in the MS1 spectrum (left) and two sected fragment ions MS2 spectra (right)
+Figure 2.4: Parent ions in the MS1 spectrum (left) and two sected fragment ions MS2 spectra (right)
 </p>
 <img src="img/MS1-MS2-spectra.png" alt="Parent ions in the MS1 spectrum (left) and two sected fragment ions MS2 spectra (right)" width="100%">
 </div>
@@ -225,16 +231,16 @@ spectra (M/Z and intensity) of retention time, as well as the
 interleaved nature of MS1 and MS2 (and there could be more levels)
 data.</p>
 <div class="figure" style="text-align: center">
-<span id="fig:unnamed-chunk-6"></span>
+<span id="fig:unnamed-chunk-7"></span>
 <p class="caption marginnote shownote">
-Figure 2.4: MS1 spectra over retention time.
+Figure 2.5: MS1 spectra over retention time.
 </p>
 <img src="img/F02-3D-MS1-scans-400-1200-lattice.png" alt="MS1 spectra over retention time." width="100%">
 </div>
 <div class="figure" style="text-align: center">
-<span id="fig:unnamed-chunk-7"></span>
+<span id="fig:unnamed-chunk-8"></span>
 <p class="caption marginnote shownote">
-Figure 2.5: MS2 spectra interleaved between two MS1 spectra..
+Figure 2.6: MS2 spectra interleaved between two MS1 spectra..
 </p>
 <img src="img/F02-3D-MS1-MS2-scans-100-1200-lattice.png" alt="MS2 spectra interleaved between two MS1 spectra.." width="100%">
 </div>
@@ -260,21 +266,21 @@ resource. These data can be downloaded within R using the
 <a class="sourceLine" id="cb2-2" title="2"><span class="kw">pxannounced</span>()</a></code></pre></div>
 <pre><code>## 15 new ProteomeXchange annoucements</code></pre>
 <pre><code>##     Data.Set Publication.Data Message
-## 1  PXD017953             &lt;NA&gt;     New
-## 2  PXD020016             &lt;NA&gt;     New
-## 3  PXD020399             &lt;NA&gt;     New
-## 4  PXD020714             &lt;NA&gt;     New
-## 5  PXD018932             &lt;NA&gt;     New
-## 6  PXD023139             &lt;NA&gt;     New
-## 7  PXD024706             &lt;NA&gt;     New
-## 8  PXD024705             &lt;NA&gt;     New
-## 9  PXD013791             &lt;NA&gt;     New
-## 10 PXD022739             &lt;NA&gt;     New
-## 11 PXD020167             &lt;NA&gt;     New
-## 12 PXD011568             &lt;NA&gt;     New
-## 13 PXD020167             &lt;NA&gt;     New
-## 14 PXD024381             &lt;NA&gt;     New
-## 15 PXD024674             &lt;NA&gt;     New</code></pre>
+## 1  PXD021218             &lt;NA&gt;     New
+## 2  PXD024672             &lt;NA&gt;     New
+## 3  PXD022992             &lt;NA&gt;     New
+## 4  PXD019945             &lt;NA&gt;     New
+## 5  PXD022952             &lt;NA&gt;     New
+## 6  PXD022627             &lt;NA&gt;     New
+## 7  PXD022405             &lt;NA&gt;     New
+## 8  PXD023858             &lt;NA&gt;     New
+## 9  PXD017953             &lt;NA&gt;     New
+## 10 PXD018932             &lt;NA&gt;     New
+## 11 PXD024482             &lt;NA&gt;     New
+## 12 PXD024483             &lt;NA&gt;     New
+## 13 PXD024484             &lt;NA&gt;     New
+## 14 PXD024485             &lt;NA&gt;     New
+## 15 PXD023139             &lt;NA&gt;     New</code></pre>
 <p>Using the unique <code>PXD000001</code> identifier, we can retrieve the relevant
 metadata that will be stored in a <code>PXDataset</code> object. The names of the
 files available in this data can be retrieved with the <code>pxfiles</code>
@@ -306,9 +312,9 @@ accessor function.</p>
 <pre><code>## [1] "Gatto L, Christoforou A. Using R and Bioconductor for proteomics data analysis. Biochim Biophys Acta. 2013 May 18. doi:pii: S1570-9639(13)00186-6. 10.1016/j.bbapap.2013.04.032"</code></pre>
 <p>Data files can then be downloaded with the <code>pxget</code> function. Below, we
 retrieve the raw data file. The file is
-downloaded<label for="tufte-sn-1" class="margin-toggle sidenote-number">1</label><input type="checkbox" id="tufte-sn-1" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">1</span> If the file is already available, it is not downloaded a second time.</span>
+downloaded<label for="tufte-sn-2" class="margin-toggle sidenote-number">2</label><input type="checkbox" id="tufte-sn-2" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">2</span> If the file is already available, it is not downloaded a second time.</span>
 in the working directory and the name of the file is return by the
-function and stored in the <code>mzf</code> variable for later use.<label for="tufte-sn-2" class="margin-toggle sidenote-number">2</label><input type="checkbox" id="tufte-sn-2" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">2</span> This and other files are also availabel in the <code>msdata</code> package, described below</span></p>
+function and stored in the <code>mzf</code> variable for later use.<label for="tufte-sn-3" class="margin-toggle sidenote-number">3</label><input type="checkbox" id="tufte-sn-3" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">3</span> This and other files are also availabel in the <code>msdata</code> package, described below</span></p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" title="1">fn &lt;-<span class="st"> "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML"</span></a>
 <a class="sourceLine" id="cb15-2" title="2">mzf &lt;-<span class="st"> </span><span class="kw">pxget</span>(px, fn)</a></code></pre></div>
 <pre><code>## Loading TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML from cache.</code></pre>
@@ -349,7 +355,7 @@ package, that offers quantitative proteomics data.</p>
 <a href="raw-ms-data.html"><button class="btn btn-default">Next</button></a>
 </p>
 <p class="build-date">Page built: 
-2021-03-14
+2021-03-15
 </p>
 </div>
 </div>

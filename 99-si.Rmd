@@ -1,4 +1,4 @@
-# Session information {#sec:si}
+# References and session information {#sec:si}
 
 The following packages have been used to generate this document.
 
@@ -12,3 +12,5 @@ knitr::write_bib(c(
 ```{r si}
 sessionInfo()
 ```
+
+## References {-}

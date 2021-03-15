@@ -5,7 +5,7 @@
 <meta charset="utf-8" />
 <meta name="generator" content="pandoc" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta property="og:title" content="Chapter 6 Session information | R/Bioconductor for Mass Spectrometry and Proteomics" />
+<meta property="og:title" content="Chapter 6 References and session information | R/Bioconductor for Mass Spectrometry and Proteomics" />
 <meta property="og:type" content="book" />
 
 
@@ -14,12 +14,12 @@
 
 <meta name="author" content="Laurent Gatto" />
 
-<meta name="date" content="2021-03-14" />
+<meta name="date" content="2021-03-15" />
 
 
-<meta name="description" content="Chapter 6 Session information | R/Bioconductor for Mass Spectrometry and Proteomics">
+<meta name="description" content="Chapter 6 References and session information | R/Bioconductor for Mass Spectrometry and Proteomics">
 
-<title>Chapter 6 Session information | R/Bioconductor for Mass Spectrometry and Proteomics</title>
+<title>Chapter 6 References and session information | R/Bioconductor for Mass Spectrometry and Proteomics</title>
 
 <link href="libs/tufte-css-2015.12.29/tufte.css" rel="stylesheet" />
 <link href="libs/tufte-css-2015.12.29/envisioned.css" rel="stylesheet" />
@@ -129,7 +129,9 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <a href="raw-ms-data.html"><span class="toc-section-number">3</span> Raw MS data</a>
 <a href="identification-data.html"><span class="toc-section-number">4</span> Identification data</a>
 <a href="sec-quant.html"><span class="toc-section-number">5</span> Quantitative data</a>
-<a id="active-page" href="sec-si.html"><span class="toc-section-number">6</span> Session information</a>
+<a id="active-page" href="sec-si.html"><span class="toc-section-number">6</span> References and session information</a><ul class="toc-sections">
+<li class="toc"><a href="#references">References</a></li>
+</ul>
 </div>
 </li>
 </ul>
@@ -141,9 +143,9 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
 <html><body><div id="sec:si" class="section level1">
 <h1>
-<span class="header-section-number">Chapter 6</span> Session information</h1>
+<span class="header-section-number">Chapter 6</span> References and session information</h1>
 <p>The following packages have been used to generate this document.</p>
-<div class="sourceCode" id="cb346"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb346-1" title="1"><span class="kw">sessionInfo</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb357"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb357-1" title="1"><span class="kw">sessionInfo</span>()</a></code></pre></div>
 <pre><code>## R version 4.0.3 Patched (2021-01-13 r79827)
 ## Platform: x86_64-pc-linux-gnu (64-bit)
 ## Running under: Ubuntu 20.04.2 LTS
@@ -185,57 +187,43 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 ## [35] BiocStyle_2.18.1            
 ## 
 ## loaded via a namespace (and not attached):
-##   [1] readxl_1.3.1                  backports_1.2.1              
-##   [3] AnnotationHub_2.22.0          BiocFileCache_1.14.0         
-##   [5] plyr_1.8.6                    lazyeval_0.2.2               
-##   [7] digest_0.6.27                 msmbstyle_0.0.11             
-##   [9] foreach_1.5.1                 htmltools_0.5.1.1            
-##  [11] fansi_0.4.2                   memoise_2.0.0                
-##  [13] doParallel_1.0.16             openxlsx_4.2.3               
-##  [15] Biostrings_2.58.0             modelr_0.1.8                 
-##  [17] R.utils_2.10.1                colorspace_2.0-0             
-##  [19] ggrepel_0.9.1                 rvest_1.0.0                  
-##  [21] blob_1.2.1                    rappdirs_0.3.3               
-##  [23] haven_2.3.1                   xfun_0.22                    
-##  [25] crayon_1.4.1                  RCurl_1.98-1.2               
-##  [27] jsonlite_1.7.2                impute_1.64.0                
-##  [29] iterators_1.0.13              glue_1.4.2                   
-##  [31] gtable_0.3.0                  zlibbioc_1.36.0              
-##  [33] XVector_0.30.0                DelayedArray_0.16.2          
-##  [35] car_3.0-10                    R.cache_0.14.0               
-##  [37] Rhdf5lib_1.12.1               abind_1.4-5                  
-##  [39] scales_1.1.1                  pheatmap_1.0.12              
-##  [41] vsn_3.58.0                    DBI_1.1.1                    
-##  [43] rstatix_0.7.0                 xtable_1.8-4                 
-##  [45] foreign_0.8-81                bit_4.0.4                    
-##  [47] preprocessCore_1.52.1         MsCoreUtils_1.3.2            
-##  [49] httr_1.4.2                    RColorBrewer_1.1-2           
-##  [51] ellipsis_0.3.1                pkgconfig_2.0.3              
-##  [53] XML_3.99-0.5                  R.methodsS3_1.8.1            
-##  [55] farver_2.1.0                  sass_0.3.1                   
-##  [57] dbplyr_2.1.0                  utf8_1.1.4                   
-##  [59] tidyselect_1.1.0              labeling_0.4.2               
-##  [61] rlang_0.4.10                  reshape2_1.4.4               
-##  [63] later_1.1.0.1                 AnnotationDbi_1.52.0         
-##  [65] cellranger_1.1.0              munsell_0.5.0                
-##  [67] BiocVersion_3.12.0            tools_4.0.3                  
-##  [69] cachem_1.0.4                  cli_2.3.1                    
-##  [71] generics_0.1.0                RSQLite_2.2.4                
-##  [73] broom_0.7.5                   evaluate_0.14                
-##  [75] fastmap_1.1.0                 yaml_2.2.1                   
-##  [77] knitr_1.31                    bit64_4.0.5                  
-##  [79] fs_1.5.0                      zip_2.1.1                    
-##  [81] caTools_1.18.1                AnnotationFilter_1.14.0      
-##  [83] ncdf4_1.17                    mime_0.10                    
-##  [85] R.oo_1.24.0                   xml2_1.3.2                   
-##  [87] compiler_4.0.3                rstudioapi_0.13              
-##  [89] png_0.1-7                     curl_4.3                     
-##  [91] interactiveDisplayBase_1.28.0 ggsignif_0.6.1               
-##  [93] affyio_1.60.0                 reprex_1.0.0                 
-##  [95] bslib_0.2.4                   stringi_1.5.3                
-##  [97] highr_0.8                     ps_1.6.0                     
-##  [99] MSnbase_2.17.1                lattice_0.20-41              
-##  [ reached getOption("max.print") -- omitted 32 entries ]</code></pre>
+##   [1] utf8_1.1.4              R.utils_2.10.1          gmm_1.6-6              
+##   [4] tidyselect_1.1.0        RSQLite_2.2.4           AnnotationDbi_1.52.0   
+##   [7] grid_4.0.3              norm_1.0-9.5            munsell_0.5.0          
+##  [10] codetools_0.2-18        preprocessCore_1.52.1   withr_2.4.1            
+##  [13] colorspace_2.0-0        highr_0.8               knitr_1.31             
+##  [16] rstudioapi_0.13         ggsignif_0.6.1          labeling_0.4.2         
+##  [19] GenomeInfoDbData_1.2.4  bit64_4.0.5             farver_2.1.0           
+##  [22] pheatmap_1.0.12         rhdf5_2.34.0            vctrs_0.3.6            
+##  [25] generics_0.1.0          xfun_0.22               BiocFileCache_1.14.0   
+##  [28] R6_2.5.0                doParallel_1.0.16       MsCoreUtils_1.3.2      
+##  [31] AnnotationFilter_1.14.0 bitops_1.0-6            rhdf5filters_1.2.0     
+##  [34] cachem_1.0.4            DelayedArray_0.16.2     assertthat_0.2.1       
+##  [37] promises_1.2.0.1        scales_1.1.1            gtable_0.3.0           
+##  [40] affy_1.68.0             sandwich_3.0-0          rlang_0.4.10           
+##  [43] rstatix_0.7.0           lazyeval_0.2.2          impute_1.64.0          
+##  [46] broom_0.7.5             abind_1.4-5             BiocManager_1.30.10    
+##  [49] yaml_2.2.1              reshape2_1.4.4          modelr_0.1.8           
+##  [52] backports_1.2.1         httpuv_1.5.5            tools_4.0.3            
+##  [55] bookdown_0.21           affyio_1.60.0           ellipsis_0.3.1         
+##  [58] jquerylib_0.1.3         RColorBrewer_1.1-2      MSnbase_2.17.1         
+##  [61] plyr_1.8.6              zlibbioc_1.36.0         RCurl_1.98-1.2         
+##  [64] ps_1.6.0                ggpubr_0.4.0            zoo_1.8-9              
+##  [67] haven_2.3.1             ggrepel_0.9.1           fs_1.5.0               
+##  [70] data.table_1.14.0       openxlsx_4.2.3          reprex_1.0.0           
+##  [73] pcaMethods_1.82.0       mvtnorm_1.1-1           msmbstyle_0.0.11       
+##  [76] R.cache_0.14.0          hms_1.0.0               mime_0.10              
+##  [79] evaluate_0.14           xtable_1.8-4            XML_3.99-0.5           
+##  [82] rio_0.5.26              readxl_1.3.1            compiler_4.0.3         
+##  [85] KernSmooth_2.23-18      ncdf4_1.17              crayon_1.4.1           
+##  [88] R.oo_1.24.0             htmltools_0.5.1.1       later_1.1.0.1          
+##  [91] lubridate_1.7.10        DBI_1.1.1               dbplyr_2.1.0           
+##  [94] MASS_7.3-53             tmvtnorm_1.4-10         rappdirs_0.3.3         
+##  [97] Matrix_1.3-2            car_3.0-10              cli_2.3.1              
+## [100] vsn_3.58.0             
+##  [ reached getOption("max.print") -- omitted 39 entries ]</code></pre>
+<div id="references" class="section level2 unnumbered">
+<h2>References</h2>
 
 <div id="refs" class="references">
 <div>
@@ -245,7 +233,13 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <p>Gatto, Laurent, Sebastian Gibb, and Johannes Rainer. 2020. “MSnbase, Efficient and Elegant R-Based Processing and Visualisation of Raw Mass Spectrometry Data.” <em>J. Proteome Res.</em>, September.</p>
 </div>
 <div>
+<p>Lazar, C, L Gatto, M Ferro, C Bruley, and T Burger. 2016. “Accounting for the Multiple Natures of Missing Values in Label-Free Quantitative Proteomics Data Sets to Compare Imputation Strategies.” <em>J Proteome Res</em> 15 (4): 1116–25. <a href="https://doi.org/10.1021/acs.jproteome.5b00981">https://doi.org/10.1021/acs.jproteome.5b00981</a>.</p>
+</div>
+<div>
 <p>Morgan, Martin, Valerie Obenchain, Jim Hester, and Hervé Pagès. 2020. <em>SummarizedExperiment: SummarizedExperiment Container</em>. <a href="https://bioconductor.org/packages/SummarizedExperiment">https://bioconductor.org/packages/SummarizedExperiment</a>.</p>
+</div>
+<div>
+<p>Paulovich, Amanda G, Dean Billheimer, Amy-Joan L Ham, Lorenzo Vega-Montoto, Paul A Rudnick, David L Tabb, Pei Wang, et al. 2010. “Interlaboratory Study Characterizing a Yeast Performance Standard for Benchmarking LC-MS Platform Performance.” <em>Mol. Cell. Proteomics</em> 9 (2): 242–54.</p>
 </div>
 <div>
 <p>Ramos, Marcel, Lucas Schiffer, Angela Re, Rimsha Azhar, Azfar Basunia, Carmen Rodriguez Cabrera, Tiffany Chan, et al. 2017. “Software for the Integration of Multi-Omics Experiments in Bioconductor.” <em>Cancer Research</em> 77(21); e39-42.</p>
@@ -254,13 +248,14 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <p>Sticker, Adriaan, Ludger Goeminne, Lennart Martens, and Lieven Clement. 2019. “Robust Summarization and Inference in Proteome-Wide Label-Free Quantification.” <em>bioRxiv</em>. <a href="https://doi.org/10.1101/668863">https://doi.org/10.1101/668863</a>.</p>
 </div>
 </div>
+</div>
 </div></body></html>
 
 <p style="text-align: center;">
 <a href="sec-quant.html"><button class="btn btn-default">Previous</button></a>
 </p>
 <p class="build-date">Page built: 
-2021-03-14
+2021-03-15
 </p>
 </div>
 </div>
