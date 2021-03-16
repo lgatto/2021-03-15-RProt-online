@@ -508,7 +508,7 @@ sp_sciex %>%
     filterDataOrigin(fls[2]) %>%
     filterRt(c(175, 189))
 ```
-<details>
+</details>
 
 As an example of data processing, below we use the `pickPeaks()`
 function to pick peaks:
