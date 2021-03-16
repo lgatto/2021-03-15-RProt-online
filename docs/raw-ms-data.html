@@ -14,7 +14,7 @@
 
 <meta name="author" content="Laurent Gatto" />
 
-<meta name="date" content="2021-03-15" />
+<meta name="date" content="2021-03-16" />
 
 
 <meta name="description" content="Chapter 3 Raw MS data | R/Bioconductor for Mass Spectrometry and Proteomics">
@@ -42,6 +42,25 @@ if(f.classList.contains('fa-plus-square')) {
 
 }
 </script>
+<script>
+function copy_link(id) {
+  var dummy = document.createElement('input'),
+  text = window.location.href.split(/[?#]/)[0] + '#' + id;
+  document.body.appendChild(dummy);
+  dummy.value = text;
+  dummy.select();
+  document.execCommand('copy');
+  document.body.removeChild(dummy);
+  
+  var tooltip = document.getElementById(id + '-tooltip');
+  tooltip.innerHTML = 'Copied!';
+}
+
+function reset_tooltip(id) {
+  var tooltip = document.getElementById(id);
+  tooltip.innerHTML = 'Copy link';
+}
+</script>
 
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -49,6 +68,7 @@ if(f.classList.contains('fa-plus-square')) {
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
+
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
 div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
@@ -110,6 +130,29 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 </style>
 
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="style.css" type="text/css" />
 
 </head>
@@ -147,7 +190,8 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <div class="row">
 <div class="col-sm-12">
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
-<html><body><div id="raw-ms-data" class="section level1" number="3">
+<html><body>
+<div id="raw-ms-data" class="section level1" number="3">
 <h1>
 <span class="header-section-number">Chapter 3</span> Raw MS data</h1>
 <p>In this section, we will learn how to read raw data from in one of the
@@ -161,7 +205,8 @@ commonly used open formats (<code>mzML</code>, <code>mzXML</code> and <code>netC
 |Raw        |several       |Spectra                      |Spectra           |</code></pre>
 <div id="what-is-raw-data-in-r" class="section level2" number="3.1">
 <h2>
-<span class="header-section-number">3.1</span> What is raw data in R</h2>
+<span class="header-section-number">3.1</span> What is raw data in R<div class="tooltip"><button class="internal-link-btn" onclick="copy_link('what-is-raw-data-in-r')" onmouseout="reset_tooltip('what-is-raw-data-in-r-tooltip')"><span class="tooltiptext" id="what-is-raw-data-in-r-tooltip">Copy link</span><i class="fa fa-link"></i></button></div>
+</h2>
 <p>When we manipulate complex data, we need a way to abstract it.</p>
 <p>The need for and abstraction saves us from having to know about all
 the details of that data <strong>and</strong> its associated metadata. This allows
@@ -172,13 +217,14 @@ data using common patterns.</p>
 <div class="figure" style="text-align: center">
 <span id="fig:unnamed-chunk-9"></span>
 <p class="caption marginnote shownote">
-Figure 3.1: Schematic representation of what is referred to by <em>raw data</em>: a collection of mass spectra and a table containing spectrum-level annotations along the lines. Raw data are imported from one of the many community-maintained open standards formats (mzML, mzXML, mzData or ANDI-MS/netCDF) (Figure taken from <span class="citation">(<a href="sec-si.html#ref-Gatto:2020" role="doc-biblioref">Gatto, Gibb, and Rainer 2020</a>)</span>).
+Figure 3.1: Schematic representation of what is referred to by <em>raw data</em>: a collection of mass spectra and a table containing spectrum-level annotations along the lines. Raw data are imported from one of the many community-maintained open standards formats (mzML, mzXML, mzData or ANDI-MS/netCDF) (Figure taken from <span class="citation">(<a href="#ref-Gatto:2020" role="doc-biblioref">Gatto, Gibb, and Rainer 2020</a>)</span>).
 </p>
 <img src="img/raw.png" alt="Schematic representation of what is referred to by *raw data*: a collection of mass spectra and a table containing spectrum-level annotations along the lines. Raw data are imported from one of the many community-maintained open standards formats (mzML, mzXML, mzData or ANDI-MS/netCDF) (Figure taken from [@Gatto:2020])." width="100%">
 </div>
 <div id="the-spectra-class" class="section level3" number="3.1.1">
 <h3>
-<span class="header-section-number">3.1.1</span> The <code>Spectra</code> class</h3>
+<span class="header-section-number">3.1.1</span> The <code>Spectra</code> class<div class="tooltip"><button class="internal-link-btn" onclick="copy_link('the-spectra-class')" onmouseout="reset_tooltip('the-spectra-class-tooltip')"><span class="tooltiptext" id="the-spectra-class-tooltip">Copy link</span><i class="fa fa-link"></i></button></div>
+</h3>
 <p>We are going to use the
 <a href="https://rformassspectrometry.github.io/Spectra/"><code>Spectra</code></a> package
 as an abstraction to raw mass spectrometry data.</p>
@@ -226,11 +272,12 @@ for 2 spectra:</p>
 </div>
 <div id="spectra-from-mzml-files" class="section level3" number="3.1.2">
 <h3>
-<span class="header-section-number">3.1.2</span> <code>Spectra</code> from mzML files</h3>
+<span class="header-section-number">3.1.2</span> <code>Spectra</code> from mzML files<div class="tooltip"><button class="internal-link-btn" onclick="copy_link('spectra-from-mzml-files')" onmouseout="reset_tooltip('spectra-from-mzml-files-tooltip')"><span class="tooltiptext" id="spectra-from-mzml-files-tooltip">Copy link</span><i class="fa fa-link"></i></button></div>
+</h3>
 <p>Let’s now create a new object using the mzML data previously
 downloaded and available in the <code>mzf</code> file.</p>
 <div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="raw-ms-data.html#cb32-1" aria-hidden="true" tabindex="-1"></a>mzf</span></code></pre></div>
-<pre><code>## [1] "~/.cache/rpx/10c1f4e4c6980_TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML"</code></pre>
+<pre><code>## [1] "~/.cache/rpx/8557a69f9bf8_TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML"</code></pre>
 <div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="raw-ms-data.html#cb34-1" aria-hidden="true" tabindex="-1"></a>sp <span class="ot">&lt;-</span> <span class="fu">Spectra</span>(mzf)</span>
 <span id="cb34-2"><a href="raw-ms-data.html#cb34-2" aria-hidden="true" tabindex="-1"></a>sp</span></code></pre></div>
 <pre><code>## MSn data (Spectra) with 7534 spectra in a MsBackendMzR backend:
@@ -250,7 +297,7 @@ downloaded and available in the <code>mzf</code> file.</p>
 ##  ... 33 more variables/columns.
 ## 
 ## file(s):
-## 10c1f4e4c6980_TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML</code></pre>
+## 8557a69f9bf8_TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML</code></pre>
 <div id="exercise-1" class="section level4 unnumbered">
 <h4>Exercise</h4>
 <ul>
@@ -372,7 +419,8 @@ mode?</li>
 </div>
 <div id="backends" class="section level3" number="3.1.3">
 <h3>
-<span class="header-section-number">3.1.3</span> Backends</h3>
+<span class="header-section-number">3.1.3</span> Backends<div class="tooltip"><button class="internal-link-btn" onclick="copy_link('backends')" onmouseout="reset_tooltip('backends-tooltip')"><span class="tooltiptext" id="backends-tooltip">Copy link</span><i class="fa fa-link"></i></button></div>
+</h3>
 <p>Backends allow to use different <em>backends</em> to store mass spectrometry data while
 providing <em>via</em> the <code>Spectra</code> class a unified interface to use that data. The
 <code>Spectra</code> package defines a set of example backends but any object extending the
@@ -427,7 +475,7 @@ memory footprint.</li>
 ## 1862         1   259.752       931
 ##  ... 33 more variables/columns.
 ## Processing:
-##  Switch backend from MsBackendMzR to MsBackendDataFrame [Mon Mar 15 18:08:22 2021]</code></pre>
+##  Switch backend from MsBackendMzR to MsBackendDataFrame [Tue Mar 16 13:45:09 2021]</code></pre>
 <ul>
 <li>
 <code>MsBackendHdf5Peaks</code>: similar to <code>MsBackendMzR</code> this backend reads peak data
@@ -456,7 +504,7 @@ memory. The peak data are stored in Hdf5 files which guarantees scalability.</li
 ##  20171016_POOL_POS_1_105-134.h5
 ##  20171016_POOL_POS_3_105-134.h5
 ## Processing:
-##  Switch backend from MsBackendMzR to MsBackendHdf5Peaks [Mon Mar 15 18:08:31 2021]</code></pre>
+##  Switch backend from MsBackendMzR to MsBackendHdf5Peaks [Tue Mar 16 13:45:15 2021]</code></pre>
 <div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="raw-ms-data.html#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(sp_hdf5<span class="sc">$</span>dataOrigin)</span></code></pre></div>
 <pre><code>## 
 ## /home/lgatto/R/x86_64-pc-linux-gnu-library/4.0/msdata/sciex/20171016_POOL_POS_1_105-134.mzML 
@@ -465,9 +513,9 @@ memory. The peak data are stored in Hdf5 files which guarantees scalability.</li
 ##                                                                                          931</code></pre>
 <div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="raw-ms-data.html#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(sp_hdf5<span class="sc">$</span>dataStorage)</span></code></pre></div>
 <pre><code>## 
-## /tmp/Rtmp1HQ9lR/20171016_POOL_POS_1_105-134.h5 
+## /tmp/RtmpZQ1I6W/20171016_POOL_POS_1_105-134.h5 
 ##                                            931 
-## /tmp/Rtmp1HQ9lR/20171016_POOL_POS_3_105-134.h5 
+## /tmp/RtmpZQ1I6W/20171016_POOL_POS_3_105-134.h5 
 ##                                            931</code></pre>
 <p>All of the above mentioned backends support changing all of their their spectra
 variables, <strong>except</strong> the <code>MsBackendMzR</code> that does not support changing m/z or
@@ -482,7 +530,8 @@ that will store all data, i.e. raw and metadata, on disk.</p>
 </div>
 <div id="under-the-hood-mzr-optional" class="section level2" number="3.2">
 <h2>
-<span class="header-section-number">3.2</span> Under the hood: <code>mzR</code> (optional)</h2>
+<span class="header-section-number">3.2</span> Under the hood: <code>mzR</code> (optional)<div class="tooltip"><button class="internal-link-btn" onclick="copy_link('under-the-hood-mzr-optional')" onmouseout="reset_tooltip('under-the-hood-mzr-optional-tooltip')"><span class="tooltiptext" id="under-the-hood-mzr-optional-tooltip">Copy link</span><i class="fa fa-link"></i></button></div>
+</h2>
 <p>The <code>mzR</code> package in a direct interface to the
 <a href="http://proteowizard.sourceforge.net/">proteowizard</a> code base. It
 includes a substantial proportion of <em>pwiz</em>’s C/C++ code for fast and
@@ -602,7 +651,8 @@ profile mode.</p>
 </div>
 <div id="visualisation-of-raw-ms-data" class="section level2" number="3.3">
 <h2>
-<span class="header-section-number">3.3</span> Visualisation of raw MS data</h2>
+<span class="header-section-number">3.3</span> Visualisation of raw MS data<div class="tooltip"><button class="internal-link-btn" onclick="copy_link('visualisation-of-raw-ms-data')" onmouseout="reset_tooltip('visualisation-of-raw-ms-data-tooltip')"><span class="tooltiptext" id="visualisation-of-raw-ms-data-tooltip">Copy link</span><i class="fa fa-link"></i></button></div>
+</h2>
 <p>The importance of flexible access to specialised data becomes visible
 in the figure below (taken from the <code>RforProteomics</code> <a href="http://bioconductor.org/packages/release/data/experiment/vignettes/RforProteomics/inst/doc/RProtVis.html">visualisation
 vignette</a>).
@@ -661,9 +711,9 @@ all its MS2 children.</li>
 ##  ... 33 more variables/columns.
 ## 
 ## file(s):
-## 10c1f4e4c6980_TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML
+## 8557a69f9bf8_TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML
 ## Processing:
-##  Filter: select parent/children scans for 2807 [Mon Mar 15 18:08:39 2021]</code></pre>
+##  Filter: select parent/children scans for 2807 [Tue Mar 16 13:45:22 2021]</code></pre>
 </details><ol start="3" style="list-style-type: decimal">
 <li>Plot the MS1 spectrum of interest and highlight all the peaks that
 will be selected for MS2 analysis.</li>
@@ -726,7 +776,8 @@ the precursor m/z values.</li>
 </div>
 <div id="raw-data-processing-and-manipulation" class="section level2" number="3.4">
 <h2>
-<span class="header-section-number">3.4</span> Raw data processing and manipulation</h2>
+<span class="header-section-number">3.4</span> Raw data processing and manipulation<div class="tooltip"><button class="internal-link-btn" onclick="copy_link('raw-data-processing-and-manipulation')" onmouseout="reset_tooltip('raw-data-processing-and-manipulation-tooltip')"><span class="tooltiptext" id="raw-data-processing-and-manipulation-tooltip">Copy link</span><i class="fa fa-link"></i></button></div>
+</h2>
 <p>Apart from <em>classical</em> subsetting operations such as <code>[</code> and <code>split</code>,
 a set of filter functions are defined for <code>Spectra</code> objects (for
 detailed help please see the <code>?Spectra</code> help):</p>
@@ -799,8 +850,8 @@ between 175 and 189 seconds in the measurement run.</p>
 ## file(s):
 ## 20171016_POOL_POS_3_105-134.mzML
 ## Processing:
-##  Filter: select data origin(s) /home/lgatto/R/x86_64-pc-linux-gnu-library/4.0/msdata/sciex/20171016_POOL_POS_3_105-134.mzML [Mon Mar 15 18:08:41 2021]
-##  Filter: select retention time [175..189] on MS level(s) 1 [Mon Mar 15 18:08:41 2021]</code></pre>
+##  Filter: select data origin(s) /home/lgatto/R/x86_64-pc-linux-gnu-library/4.0/msdata/sciex/20171016_POOL_POS_3_105-134.mzML [Tue Mar 16 13:45:23 2021]
+##  Filter: select retention time [175..189] on MS level(s) 1 [Tue Mar 16 13:45:23 2021]</code></pre>
 <p>As an example of data processing, below we use the <code>pickPeaks()</code>
 function to pick peaks:</p>
 <div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb90-1"><a href="raw-ms-data.html#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotSpectra</span>(sp[<span class="dv">2807</span>], <span class="at">xlim =</span> <span class="fu">c</span>(<span class="fl">521.2</span>, <span class="fl">522.5</span>))</span></code></pre></div>
@@ -814,21 +865,24 @@ function to pick peaks:</p>
 </div>
 <div id="a-note-on-efficiency" class="section level2" number="3.5">
 <h2>
-<span class="header-section-number">3.5</span> A note on efficiency</h2>
+<span class="header-section-number">3.5</span> A note on efficiency<div class="tooltip"><button class="internal-link-btn" onclick="copy_link('a-note-on-efficiency')" onmouseout="reset_tooltip('a-note-on-efficiency-tooltip')"><span class="tooltiptext" id="a-note-on-efficiency-tooltip">Copy link</span><i class="fa fa-link"></i></button></div>
+</h2>
 <div id="backends-1" class="section level3" number="3.5.1">
 <h3>
-<span class="header-section-number">3.5.1</span> Backends</h3>
+<span class="header-section-number">3.5.1</span> Backends<div class="tooltip"><button class="internal-link-btn" onclick="copy_link('backends-1')" onmouseout="reset_tooltip('backends-1-tooltip')"><span class="tooltiptext" id="backends-1-tooltip">Copy link</span><i class="fa fa-link"></i></button></div>
+</h3>
 <div class="figure" style="text-align: center">
 <span id="fig:unnamed-chunk-27"></span>
 <p class="caption marginnote shownote">
-Figure 3.2: (a) Reading time (triplicates, in seconds) and (b) data size in memory (in MB) to read/store 1, 5, and 10 files containing 1431 MS1 (on-disk only) and 6103 MS2 (on-disk and in-memory) spectra. (c) Filtering benchmark assessed over 10 interactions on in-memory and on-disk data containing 6103 MS2 spectra. (d) Access time to spectra for the in-memory (left) and on-disk (right) backends for 1, 10, 100 1000, 5000, and all 6103 spectra. Benchmarks were performed on a Dell XPS laptop with an Intel i5-8250U processor 1.60 GHz (4 cores, 8 threads), 7.5 GB RAM running Ubuntu 18.04.4 LTS 64-bit, and an SSD drive. The data used for the benchmarking are a TMT 4-plex experiment acquired on a LTQ Orbitrap Velos (Thermo Fisher Scientific) available in the msdata package . (Figure taken from <span class="citation">(<a href="sec-si.html#ref-Gatto:2020" role="doc-biblioref">Gatto, Gibb, and Rainer 2020</a>)</span>.
+Figure 3.2: (a) Reading time (triplicates, in seconds) and (b) data size in memory (in MB) to read/store 1, 5, and 10 files containing 1431 MS1 (on-disk only) and 6103 MS2 (on-disk and in-memory) spectra. (c) Filtering benchmark assessed over 10 interactions on in-memory and on-disk data containing 6103 MS2 spectra. (d) Access time to spectra for the in-memory (left) and on-disk (right) backends for 1, 10, 100 1000, 5000, and all 6103 spectra. Benchmarks were performed on a Dell XPS laptop with an Intel i5-8250U processor 1.60 GHz (4 cores, 8 threads), 7.5 GB RAM running Ubuntu 18.04.4 LTS 64-bit, and an SSD drive. The data used for the benchmarking are a TMT 4-plex experiment acquired on a LTQ Orbitrap Velos (Thermo Fisher Scientific) available in the msdata package . (Figure taken from <span class="citation">(<a href="#ref-Gatto:2020" role="doc-biblioref">Gatto, Gibb, and Rainer 2020</a>)</span>.
 </p>
 <img src="img/pr0c00313_0002.gif" alt="(a) Reading time (triplicates, in seconds) and (b) data size in memory (in MB) to read/store 1, 5, and 10 files containing 1431 MS1 (on-disk only) and 6103 MS2 (on-disk and in-memory) spectra. (c) Filtering benchmark assessed over 10 interactions on in-memory and on-disk data containing 6103 MS2 spectra. (d) Access time to spectra for the in-memory (left) and on-disk (right) backends for 1, 10, 100 1000, 5000, and all 6103 spectra. Benchmarks were performed on a Dell XPS laptop with an Intel i5-8250U processor 1.60 GHz (4 cores, 8 threads), 7.5 GB RAM running Ubuntu 18.04.4 LTS 64-bit, and an SSD drive. The data used for the benchmarking are a TMT 4-plex experiment acquired on a LTQ Orbitrap Velos (Thermo Fisher Scientific) available in the msdata package . (Figure taken from [@Gatto:2020]." width="70%">
 </div>
 </div>
 <div id="parallel-processing" class="section level3" number="3.5.2">
 <h3>
-<span class="header-section-number">3.5.2</span> Parallel processing</h3>
+<span class="header-section-number">3.5.2</span> Parallel processing<div class="tooltip"><button class="internal-link-btn" onclick="copy_link('parallel-processing')" onmouseout="reset_tooltip('parallel-processing-tooltip')"><span class="tooltiptext" id="parallel-processing-tooltip">Copy link</span><i class="fa fa-link"></i></button></div>
+</h3>
 <p>Most functions on <code>Spectra</code> support (and use) parallel processing out
 of the box. Peak data access and manipulation methods perform by
 default parallel processing on a per-file basis (i.e. using the
@@ -839,7 +893,8 @@ parallel processing setup of that package.</p>
 </div>
 <div id="lazy-evaluation" class="section level3" number="3.5.3">
 <h3>
-<span class="header-section-number">3.5.3</span> Lazy evaluation</h3>
+<span class="header-section-number">3.5.3</span> Lazy evaluation<div class="tooltip"><button class="internal-link-btn" onclick="copy_link('lazy-evaluation')" onmouseout="reset_tooltip('lazy-evaluation-tooltip')"><span class="tooltiptext" id="lazy-evaluation-tooltip">Copy link</span><i class="fa fa-link"></i></button></div>
+</h3>
 <p>Data manipulations on Spectra objects are not immediately applied to
 the peak data. They are added to a so called processing queue which is
 applied each time peak data is accessed (with the <code>peaksData</code>, <code>mz</code> or
@@ -873,7 +928,7 @@ below (next to Lazy evaluation queue).</p>
 ## 20171016_POOL_POS_3_105-134.mzML
 ## Lazy evaluation queue: 1 processing step(s)
 ## Processing:
-##  Remove peaks with intensities outside [10, Inf] in spectra of MS level(s) 1. [Mon Mar 15 18:08:41 2021]</code></pre>
+##  Remove peaks with intensities outside [10, Inf] in spectra of MS level(s) 1. [Tue Mar 16 13:45:24 2021]</code></pre>
 <div class="sourceCode" id="cb96"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb96-1"><a href="raw-ms-data.html#cb96-1" aria-hidden="true" tabindex="-1"></a><span class="fu">min</span>(<span class="fu">intensity</span>(sp_sciex[<span class="dv">1</span>]))</span></code></pre></div>
 <pre><code>## [1] 412</code></pre>
 <div class="sourceCode" id="cb98"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb98-1"><a href="raw-ms-data.html#cb98-1" aria-hidden="true" tabindex="-1"></a>sp_sciex<span class="sc">@</span>processingQueue</span></code></pre></div>
@@ -891,14 +946,24 @@ below (next to Lazy evaluation queue).</p>
 
 </div>
 </div>
-</div></body></html>
+</div>
+<h3>References<div class="tooltip"><button class="internal-link-btn" onclick="copy_link('NA')" onmouseout="reset_tooltip('NA-tooltip')"><span class="tooltiptext" id="NA-tooltip">Copy link</span><i class="fa fa-link"></i></button></div>
+</h3>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-Gatto:2020" class="csl-entry">
+<p>Gatto, Laurent, Sebastian Gibb, and Johannes Rainer. 2020. <span>“<span>MSnbase</span>, Efficient and Elegant r-Based Processing and Visualisation of Raw Mass Spectrometry Data.”</span> <em>J. Proteome Res.</em>, September.</p>
+</div>
+</div>
+</body></html>
 
 <p style="text-align: center;">
 <a href="sec-msintro.html"><button class="btn btn-default">Previous</button></a>
 <a href="identification-data.html"><button class="btn btn-default">Next</button></a>
 </p>
 <p class="build-date">Page built: 
-2021-03-15
+2021-03-16
+ using 
+R version 4.0.3 Patched (2021-01-18 r79847)
 </p>
 </div>
 </div>

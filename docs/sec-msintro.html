@@ -14,7 +14,7 @@
 
 <meta name="author" content="Laurent Gatto" />
 
-<meta name="date" content="2021-03-15" />
+<meta name="date" content="2021-03-16" />
 
 
 <meta name="description" content="Chapter 2 Introduction | R/Bioconductor for Mass Spectrometry and Proteomics">
@@ -42,6 +42,25 @@ if(f.classList.contains('fa-plus-square')) {
 
 }
 </script>
+<script>
+function copy_link(id) {
+  var dummy = document.createElement('input'),
+  text = window.location.href.split(/[?#]/)[0] + '#' + id;
+  document.body.appendChild(dummy);
+  dummy.value = text;
+  dummy.select();
+  document.execCommand('copy');
+  document.body.removeChild(dummy);
+  
+  var tooltip = document.getElementById(id + '-tooltip');
+  tooltip.innerHTML = 'Copied!';
+}
+
+function reset_tooltip(id) {
+  var tooltip = document.getElementById(id);
+  tooltip.innerHTML = 'Copy link';
+}
+</script>
 
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -49,6 +68,7 @@ if(f.classList.contains('fa-plus-square')) {
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
+
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
 div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
@@ -110,6 +130,29 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 </style>
 
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="style.css" type="text/css" />
 
 </head>
@@ -149,7 +192,8 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <span class="header-section-number">Chapter 2</span> Introduction</h1>
 <div id="how-does-mass-spectrometry-work" class="section level2" number="2.1">
 <h2>
-<span class="header-section-number">2.1</span> How does mass spectrometry work?</h2>
+<span class="header-section-number">2.1</span> How does mass spectrometry work?<div class="tooltip"><button class="internal-link-btn" onclick="copy_link('how-does-mass-spectrometry-work')" onmouseout="reset_tooltip('how-does-mass-spectrometry-work-tooltip')"><span class="tooltiptext" id="how-does-mass-spectrometry-work-tooltip">Copy link</span><i class="fa fa-link"></i></button></div>
+</h2>
 <p>Mass spectrometry (MS) is a technology that <em>separates</em> charged
 molecules (ions) based on their mass to charge ratio (M/Z). It is
 often coupled to chromatography (liquid LC, but can also be gas-based
@@ -249,9 +293,11 @@ Figure 2.6: MS2 spectra interleaved between two MS1 spectra..
 </div>
 <div id="accessing-data" class="section level2" number="2.2">
 <h2>
-<span class="header-section-number">2.2</span> Accessing data</h2>
+<span class="header-section-number">2.2</span> Accessing data<div class="tooltip"><button class="internal-link-btn" onclick="copy_link('accessing-data')" onmouseout="reset_tooltip('accessing-data-tooltip')"><span class="tooltiptext" id="accessing-data-tooltip">Copy link</span><i class="fa fa-link"></i></button></div>
+</h2>
 <div id="from-the-proteomexchange-database" class="section level3 unnumbered">
-<h3>From the ProteomeXchange database</h3>
+<h3>From the ProteomeXchange database<div class="tooltip"><button class="internal-link-btn" onclick="copy_link('from-the-proteomexchange-database')" onmouseout="reset_tooltip('from-the-proteomexchange-database-tooltip')"><span class="tooltiptext" id="from-the-proteomexchange-database-tooltip">Copy link</span><i class="fa fa-link"></i></button></div>
+</h3>
 <p>MS-based proteomics data is disseminated through the
 <a href="http://www.proteomexchange.org/">ProteomeXchange</a> infrastructure,
 which centrally coordinates submission, storage and dissemination
@@ -267,22 +313,22 @@ resource. These data can be downloaded within R using the
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="sec-msintro.html#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"rpx"</span>)</span>
 <span id="cb2-2"><a href="sec-msintro.html#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">pxannounced</span>()</span></code></pre></div>
 <pre><code>## 15 new ProteomeXchange annoucements</code></pre>
-<pre><code>##     Data.Set Publication.Data Message
-## 1  PXD023140             &lt;NA&gt;     New
-## 2  PXD021826             &lt;NA&gt;     New
-## 3  PXD012054             &lt;NA&gt;     New
-## 4  PXD020797             &lt;NA&gt;     New
-## 5  PXD019972             &lt;NA&gt;     New
-## 6  PXD023852             &lt;NA&gt;     New
-## 7  PXD021218             &lt;NA&gt;     New
-## 8  PXD024672             &lt;NA&gt;     New
-## 9  PXD022992             &lt;NA&gt;     New
-## 10 PXD019945             &lt;NA&gt;     New
-## 11 PXD022952             &lt;NA&gt;     New
-## 12 PXD022627             &lt;NA&gt;     New
-## 13 PXD022405             &lt;NA&gt;     New
-## 14 PXD023858             &lt;NA&gt;     New
-## 15 PXD017953             &lt;NA&gt;     New</code></pre>
+<pre><code>##     Data.Set    Publication.Data Message
+## 1  PXD020524 2021-03-16 11:56:25     New
+## 2  PXD020537 2021-03-16 11:53:13     New
+## 3  PXD022997 2021-03-16 10:42:08     New
+## 4  PXD022419 2021-03-16 10:00:45     New
+## 5  PXD020640 2021-03-16 04:09:03     New
+## 6  PXD024754 2021-03-16 03:49:27     New
+## 7  PXD024739 2021-03-16 02:55:55     New
+## 8  PXD023140 2021-03-15 15:59:30     New
+## 9  PXD021826 2021-03-15 15:10:32     New
+## 10 PXD012054 2021-03-15 14:38:25     New
+## 11 PXD020797 2021-03-15 14:23:40     New
+## 12 PXD019972 2021-03-15 14:05:44     New
+## 13 PXD023852 2021-03-15 10:00:01     New
+## 14 PXD021218 2021-03-15 08:20:18     New
+## 15 PXD024672 2021-03-15 06:40:43     New</code></pre>
 <p>Using the unique <code>PXD000001</code> identifier, we can retrieve the relevant
 metadata that will be stored in a <code>PXDataset</code> object. The names of the
 files available in this data can be retrieved with the <code>pxfiles</code>
@@ -290,8 +336,8 @@ accessor function.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="sec-msintro.html#cb5-1" aria-hidden="true" tabindex="-1"></a>px <span class="ot">&lt;-</span> <span class="fu">PXDataset</span>(<span class="st">"PXD000001"</span>)</span>
 <span id="cb5-2"><a href="sec-msintro.html#cb5-2" aria-hidden="true" tabindex="-1"></a>px</span></code></pre></div>
 <pre><code>## Object of class "PXDataset"
-##  Id: PXD000001 with 11 files
-##  [1] 'F063721.dat' ... [11] 'erwinia_carotovora.fasta'
+##  Id: PXD000001 with 12 files
+##  [1] 'F063721.dat' ... [12] 'generated'
 ##  Use 'pxfiles(.)' to see all files.</code></pre>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="sec-msintro.html#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pxfiles</span>(px)</span></code></pre></div>
 <pre><code>##  [1] "F063721.dat"                                                         
@@ -304,7 +350,8 @@ accessor function.</p>
 ##  [8] "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzXML"
 ##  [9] "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.mzXML"         
 ## [10] "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.raw"           
-## [11] "erwinia_carotovora.fasta"</code></pre>
+## [11] "erwinia_carotovora.fasta"                                            
+## [12] "generated"</code></pre>
 <p>Other metadata for the <code>px</code> data set:</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="sec-msintro.html#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pxtax</span>(px)</span></code></pre></div>
 <pre><code>## [1] "Erwinia carotovora"</code></pre>
@@ -321,10 +368,11 @@ function and stored in the <code>mzf</code> variable for later use.<label for="t
 <span id="cb15-2"><a href="sec-msintro.html#cb15-2" aria-hidden="true" tabindex="-1"></a>mzf <span class="ot">&lt;-</span> <span class="fu">pxget</span>(px, fn)</span></code></pre></div>
 <pre><code>## Loading TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML from cache.</code></pre>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="sec-msintro.html#cb17-1" aria-hidden="true" tabindex="-1"></a>mzf</span></code></pre></div>
-<pre><code>## [1] "~/.cache/rpx/10c1f4e4c6980_TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML"</code></pre>
+<pre><code>## [1] "~/.cache/rpx/8557a69f9bf8_TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML"</code></pre>
 </div>
 <div id="data-packages" class="section level3 unnumbered">
-<h3>Data packages</h3>
+<h3>Data packages<div class="tooltip"><button class="internal-link-btn" onclick="copy_link('data-packages')" onmouseout="reset_tooltip('data-packages-tooltip')"><span class="tooltiptext" id="data-packages-tooltip">Copy link</span><i class="fa fa-link"></i></button></div>
+</h3>
 <p>Some data are also distributed through dedicated packages. The
 <em><a href="https://bioconductor.org/packages/3.12/msdata">msdata</a></em>, for example, provides some
 general raw data files relevant for both proteomics and
@@ -357,7 +405,9 @@ package, that offers quantitative proteomics data.</p>
 <a href="raw-ms-data.html"><button class="btn btn-default">Next</button></a>
 </p>
 <p class="build-date">Page built: 
-2021-03-15
+2021-03-16
+ using 
+R version 4.0.3 Patched (2021-01-18 r79847)
 </p>
 </div>
 </div>
