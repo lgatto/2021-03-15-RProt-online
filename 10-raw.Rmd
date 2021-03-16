@@ -349,9 +349,9 @@ We are going to reproduce the figure above trought a set of exercices.
 
 #### Exercise {-}
 
-1. Create the chromatogram can be created by extracting the
-   `totIonCurrent` and `rtime` variables for all MS1 spectra. Annotate
-   the spectrum of interest.
+1.  The chromatogram can be created by extracting the `totIonCurrent`
+   and `rtime` variables for all MS1 spectra. Annotate the spectrum of
+   interest.
 
 <details>
 
