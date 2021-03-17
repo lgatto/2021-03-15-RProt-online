@@ -721,12 +721,11 @@ annotate the experiment:</p>
 <p>There are many row variables that aren’t useful here. Get rid or all
 of them but <code>Sequence</code>, <code>Proteins</code>, <code>Leading.razor.protein</code>, <code>PEP</code>,
 <code>Score</code>, <code>Reverse</code>, and <code>Potential.contaminant</code>.</p>
-
-<div class="sourceCode" id="cb306"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb306-1" title="1">keep_var &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"Sequence"</span>, <span class="st">"Proteins"</span>, <span class="st">"Leading.razor.protein"</span>, <span class="st">"PEP"</span>,</a>
+<details><div class="sourceCode" id="cb306"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb306-1" title="1">keep_var &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"Sequence"</span>, <span class="st">"Proteins"</span>, <span class="st">"Leading.razor.protein"</span>, <span class="st">"PEP"</span>,</a>
 <a class="sourceLine" id="cb306-2" title="2">              <span class="st">"Score"</span>, <span class="st">"Reverse"</span>, <span class="st">"Potential.contaminant"</span>)</a>
 <a class="sourceLine" id="cb306-3" title="3"></a>
 <a class="sourceLine" id="cb306-4" title="4"><span class="kw">rowData</span>(cptac_se) &lt;-<span class="st"> </span><span class="kw">rowData</span>(cptac_se)[, keep_var]</a></code></pre></div>
-<details></details>
+</details>
 </div>
 </div>
 <div id="analysis-pipeline" class="section level2">

@@ -470,7 +470,7 @@ of them but `Sequence`, `Proteins`, `Leading.razor.protein`, `PEP`,
 
 
 
-</details>
+<details>
 
 ```{r vars}
 keep_var <- c("Sequence", "Proteins", "Leading.razor.protein", "PEP",
@@ -479,7 +479,7 @@ keep_var <- c("Sequence", "Proteins", "Leading.razor.protein", "PEP",
 rowData(cptac_se) <- rowData(cptac_se)[, keep_var]
 ```
 
-<details>
+</details>
 
 
 ## Analysis pipeline
