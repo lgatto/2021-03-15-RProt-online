@@ -427,7 +427,7 @@ memory footprint.</li>
 ## 1862         1   259.752       931
 ##  ... 33 more variables/columns.
 ## Processing:
-##  Switch backend from MsBackendMzR to MsBackendDataFrame [Wed Mar 17 12:58:03 2021]</code></pre>
+##  Switch backend from MsBackendMzR to MsBackendDataFrame [Wed Mar 17 13:01:24 2021]</code></pre>
 <ul>
 <li>
 <code>MsBackendHdf5Peaks</code>: similar to <code>MsBackendMzR</code> this backend reads peak data
@@ -456,7 +456,7 @@ memory. The peak data are stored in Hdf5 files which guarantees scalability.</li
 ##  20171016_POOL_POS_1_105-134.h5
 ##  20171016_POOL_POS_3_105-134.h5
 ## Processing:
-##  Switch backend from MsBackendMzR to MsBackendHdf5Peaks [Wed Mar 17 12:58:11 2021]</code></pre>
+##  Switch backend from MsBackendMzR to MsBackendHdf5Peaks [Wed Mar 17 13:01:35 2021]</code></pre>
 <div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="raw-ms-data.html#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(sp_hdf5<span class="sc">$</span>dataOrigin)</span></code></pre></div>
 <pre><code>## 
 ## /home/lgatto/R/x86_64-pc-linux-gnu-library/4.0/msdata/sciex/20171016_POOL_POS_1_105-134.mzML 
@@ -465,9 +465,9 @@ memory. The peak data are stored in Hdf5 files which guarantees scalability.</li
 ##                                                                                          931</code></pre>
 <div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="raw-ms-data.html#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(sp_hdf5<span class="sc">$</span>dataStorage)</span></code></pre></div>
 <pre><code>## 
-## /tmp/RtmpV0qAfz/20171016_POOL_POS_1_105-134.h5 
+## /tmp/RtmpOLYPpt/20171016_POOL_POS_1_105-134.h5 
 ##                                            931 
-## /tmp/RtmpV0qAfz/20171016_POOL_POS_3_105-134.h5 
+## /tmp/RtmpOLYPpt/20171016_POOL_POS_3_105-134.h5 
 ##                                            931</code></pre>
 <p>All of the above mentioned backends support changing all of their their spectra
 variables, <strong>except</strong> the <code>MsBackendMzR</code> that does not support changing m/z or
@@ -628,9 +628,9 @@ identified by the vertical bars above.</p></li>
 <div id="exercise-6" class="section level4 unnumbered">
 <h4>Exercise</h4>
 <ol style="list-style-type: decimal">
-<li>Create the chromatogram can be created by extracting the
-<code>totIonCurrent</code> and <code>rtime</code> variables for all MS1 spectra. Annotate
-the spectrum of interest.</li>
+<li>The chromatogram can be created by extracting the <code>totIonCurrent</code>
+and <code>rtime</code> variables for all MS1 spectra. Annotate the spectrum of
+interest.</li>
 </ol>
 <details><div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb70-1"><a href="raw-ms-data.html#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(<span class="fu">spectraData</span>(<span class="fu">filterMsLevel</span>(sp, <span class="dv">1</span>)),</span>
 <span id="cb70-2"><a href="raw-ms-data.html#cb70-2" aria-hidden="true" tabindex="-1"></a>     <span class="fu">plot</span>(rtime, totIonCurrent, <span class="at">type =</span> <span class="st">"l"</span>))</span>
@@ -663,7 +663,7 @@ all its MS2 children.</li>
 ## file(s):
 ## 10c1f4e4c6980_TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML
 ## Processing:
-##  Filter: select parent/children scans for 2807 [Wed Mar 17 12:58:22 2021]</code></pre>
+##  Filter: select parent/children scans for 2807 [Wed Mar 17 13:01:46 2021]</code></pre>
 </details><ol start="3" style="list-style-type: decimal">
 <li>Plot the MS1 spectrum of interest and highlight all the peaks that
 will be selected for MS2 analysis.</li>
@@ -766,7 +766,7 @@ number.</li>
 <p>Using the <code>sp_sciex</code> data, select all spectra measured in the second
 mzML file and subsequently filter them to retain spectra measured
 between 175 and 189 seconds in the measurement run.</p>
-<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb82-1"><a href="raw-ms-data.html#cb82-1" aria-hidden="true" tabindex="-1"></a>fls <span class="ot">&lt;-</span> <span class="fu">unique</span>(<span class="fu">dataOrigin</span>(sp_sciex))</span>
+<details><div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb82-1"><a href="raw-ms-data.html#cb82-1" aria-hidden="true" tabindex="-1"></a>fls <span class="ot">&lt;-</span> <span class="fu">unique</span>(<span class="fu">dataOrigin</span>(sp_sciex))</span>
 <span id="cb82-2"><a href="raw-ms-data.html#cb82-2" aria-hidden="true" tabindex="-1"></a>fls</span></code></pre></div>
 <pre><code>## [1] "/home/lgatto/R/x86_64-pc-linux-gnu-library/4.0/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
 ## [2] "/home/lgatto/R/x86_64-pc-linux-gnu-library/4.0/msdata/sciex/20171016_POOL_POS_3_105-134.mzML"</code></pre>
@@ -799,9 +799,9 @@ between 175 and 189 seconds in the measurement run.</p>
 ## file(s):
 ## 20171016_POOL_POS_3_105-134.mzML
 ## Processing:
-##  Filter: select data origin(s) /home/lgatto/R/x86_64-pc-linux-gnu-library/4.0/msdata/sciex/20171016_POOL_POS_3_105-134.mzML [Wed Mar 17 12:58:24 2021]
-##  Filter: select retention time [175..189] on MS level(s) 1 [Wed Mar 17 12:58:24 2021]</code></pre>
-<p>As an example of data processing, below we use the <code>pickPeaks()</code>
+##  Filter: select data origin(s) /home/lgatto/R/x86_64-pc-linux-gnu-library/4.0/msdata/sciex/20171016_POOL_POS_3_105-134.mzML [Wed Mar 17 13:01:49 2021]
+##  Filter: select retention time [175..189] on MS level(s) 1 [Wed Mar 17 13:01:49 2021]</code></pre>
+</details><p>As an example of data processing, below we use the <code>pickPeaks()</code>
 function to pick peaks:</p>
 <div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb90-1"><a href="raw-ms-data.html#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotSpectra</span>(sp[<span class="dv">2807</span>], <span class="at">xlim =</span> <span class="fu">c</span>(<span class="fl">521.2</span>, <span class="fl">522.5</span>))</span></code></pre></div>
 <p><img src="physalia_files/figure-html/unnamed-chunk-25-1.png" width="672"></p>
@@ -873,7 +873,7 @@ below (next to Lazy evaluation queue).</p>
 ## 20171016_POOL_POS_3_105-134.mzML
 ## Lazy evaluation queue: 1 processing step(s)
 ## Processing:
-##  Remove peaks with intensities outside [10, Inf] in spectra of MS level(s) 1. [Wed Mar 17 12:58:25 2021]</code></pre>
+##  Remove peaks with intensities outside [10, Inf] in spectra of MS level(s) 1. [Wed Mar 17 13:01:49 2021]</code></pre>
 <div class="sourceCode" id="cb96"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb96-1"><a href="raw-ms-data.html#cb96-1" aria-hidden="true" tabindex="-1"></a><span class="fu">min</span>(<span class="fu">intensity</span>(sp_sciex[<span class="dv">1</span>]))</span></code></pre></div>
 <pre><code>## [1] 412</code></pre>
 <div class="sourceCode" id="cb98"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb98-1"><a href="raw-ms-data.html#cb98-1" aria-hidden="true" tabindex="-1"></a>sp_sciex<span class="sc">@</span>processingQueue</span></code></pre></div>

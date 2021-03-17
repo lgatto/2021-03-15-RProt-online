@@ -349,9 +349,9 @@ We are going to reproduce the figure above trought a set of exercices.
 
 #### Exercise {-}
 
-1. Create the chromatogram can be created by extracting the
-   `totIonCurrent` and `rtime` variables for all MS1 spectra. Annotate
-   the spectrum of interest.
+1.  The chromatogram can be created by extracting the `totIonCurrent`
+   and `rtime` variables for all MS1 spectra. Annotate the spectrum of
+   interest.
 
 <details>
 
@@ -491,6 +491,8 @@ Using the `sp_sciex` data, select all spectra measured in the second
 mzML file and subsequently filter them to retain spectra measured
 between 175 and 189 seconds in the measurement run.
 
+<details>
+
 ```{r filterfile-filterrt1}
 fls <- unique(dataOrigin(sp_sciex))
 fls
@@ -506,6 +508,7 @@ sp_sciex %>%
     filterDataOrigin(fls[2]) %>%
     filterRt(c(175, 189))
 ```
+</details>
 
 As an example of data processing, below we use the `pickPeaks()`
 function to pick peaks:

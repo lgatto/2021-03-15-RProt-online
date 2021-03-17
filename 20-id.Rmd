@@ -507,7 +507,7 @@ plotSpectraMirror(sp_k[3], sp_k[4], main = "SQ...")
 2. Generate a `Spectra` object containing only MS2 scans and a table
    of filtered PSMs. Check the quality of the identification data by
    comparing the density of the decoy and forward PSMs id scores for
-   each file. What is the proportion if identified MS2 spectra?
+   each file. What is the proportion of identified MS2 spectra?
 
 3. Join the raw and identification data. Beware though that the
    joining must now be performed by spectrum ids and by files.
