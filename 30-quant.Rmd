@@ -1,5 +1,7 @@
 # Quantitative data {#sec:quant}
 
+## Quantitation methodologies
+
 There are a wide range of proteomics quantitation techniques that can
 broadly be classified as labelled vs. label-free, depending whether
 the features are labelled prior the MS acquisition and the MS level at
@@ -15,9 +17,71 @@ dimnames(qtb) <- list(
 knitr::kable(qtb)
 ```
 
-In terms of raw data quantitation, most efforts have been devoted to
-MS2-level quantitation. Label-free XIC quantitation has however been
-addressed in the frame of metabolomics data processing by the
+### Label-free MS2: Spectral counting
+
+In spectral counting, on simply counts the number of quantified
+peptides that are assigned to a protein.
+
+```{r sc, echo=FALSE, out.width = "75%", fig.cap = "Spectral counting. Figure from the `Pbase` package."}
+knitr::include_graphics("./img/pbase.png")
+```
+
+### Labelled MS2: Isobaric tagging
+
+Isobaric tagging refers to the labelling using isobaric tags,
+i.e. chemical tags that have the same mass and hence can't be
+distinguish by the spectrometer. The peptides of different samples (4,
+6, 10, 11 or 16) are labelled with different tags and combined prior
+to mass spectrometry acquisition. Given that they are isobaric, all
+identical peptides, irrespective of the tag and this the sample of
+origin, are co-analysed, up to fragmentation prior to MS2
+analysis. During fragmentation, the isobaric tags fall of, fragment
+themselves, and result in a set of sample specific peaks. These
+specific peaks can be used to infer sample-specific quantitation,
+while the rest of the MS2 spectrum is used for identification.
+
+```{r itraq, echo=FALSE, out.width = "75%", fig.cap = "iTRAQ 4-plex isobaric tagging. Tandem Mass Tags (TMT) offer up to 16 tags."}
+knitr::include_graphics("./img/itraq.png")
+```
+
+### Label-free MS1: extracted ion chromatograms
+
+In label-free quantitation, the precursor peaks that match an
+identified peptide are integrated of retention time and the area under
+that *extracted ion chromatogram* is used to quantify that peptide in
+that sample.
+
+```{r lf, echo=FALSE, out.width = "75%", fig.cap = "Label-free quantitation. Figure credit [Johannes Rainer](https://github.com/jorainer/)."}
+knitr::include_graphics("./img/chrompeaks.png")
+```
+
+
+### Labelled MS1: SILAC
+
+In SILAc quantitation, sample are grown in a medium that contains
+heavy amino acids (typically arginine and lysine). All proteins gown
+in this *heavy* growth medium contain the heavy form of these amino
+acids. Two samples, one grown in heavy medium, and one grown in normal
+(light) medium are then combined and analysed together. The heavy
+peptides precursor peaks are systematically shifted compared to the
+light ones, and the ratio between the height of a heavy and light
+peaks can be used to calculate peptide and protein fold-changes.
+
+
+```{r silab, echo=FALSE, out.width = "75%", fig.cap = "Silac quantitation. Figure credit Wikimedia Commons."}
+knitr::include_graphics("./img/Silac.png")
+```
+
+These different quantitation techniques come with their respective
+benefits and distinct challenges, such as large quantities of raw data
+processing, data transformation and normalisation, missing values, and
+different underlying statistical models for the quantitative data
+(count data for spectral counting, continuous data for the others).
+
+
+In terms of raw data quantitation in R/Bioconductor, most efforts have
+been devoted to MS2-level quantitation. Label-free XIC quantitation
+has been addressed in the frame of metabolomics data processing by the
 `r Biocpkg("xcms")` infrastructure.
 
 Below is a list of suggested packages for some common proteomics

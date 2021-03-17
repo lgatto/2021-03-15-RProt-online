@@ -429,6 +429,15 @@ plotSpectra(sp[i], labels = addFragments,
 ```
 
 
+When a precursor peptide ion is fragmented in a CID cell, it breaks at
+specific bonds, producing sets of peaks (*a*, *b*, *c* and *x*, *y*,
+*z*) that can be predicted.
+
+
+```{r frag_img, results='markup', fig.margin=FALSE, fig.cap="Peptide fragmentation.", echo=FALSE, out.width = "80%"}
+knitr::include_graphics("img/frag.png")
+```
+
 The annotation of spectra is obtained by simulating fragmentation of a
 peptide and matching observed peaks to fragments:
 

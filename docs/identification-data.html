@@ -14,7 +14,7 @@
 
 <meta name="author" content="Laurent Gatto" />
 
-<meta name="date" content="2021-03-15" />
+<meta name="date" content="2021-03-17" />
 
 
 <meta name="description" content="Chapter 4 Identification data | R/Bioconductor for Mass Spectrometry and Proteomics">
@@ -809,6 +809,15 @@ annotates its peaks.</p>
 <div class="sourceCode" id="cb187"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb187-1"><a href="identification-data.html#cb187-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotSpectra</span>(sp[i], <span class="at">labels =</span> addFragments,</span>
 <span id="cb187-2"><a href="identification-data.html#cb187-2" aria-hidden="true" tabindex="-1"></a>            <span class="at">labelPos =</span> <span class="dv">3</span>, <span class="at">labelCol =</span> <span class="st">"steelblue"</span>)</span></code></pre></div>
 <p><img src="physalia_files/figure-html/unnamed-chunk-52-1.png" width="672"></p>
+<p>When a precursor peptide ion is fragmented in a CID cell, it breaks at
+specific bonds, producing sets of peaks (<em>a</em>, <em>b</em>, <em>c</em> and <em>x</em>, <em>y</em>,
+<em>z</em>) that can be predicted.</p>
+<div class="figure">
+<p class="caption marginnote shownote">
+(#fig:frag_img)Peptide fragmentation.
+</p>
+<img src="img/frag.png" alt="Peptide fragmentation." width="80%">
+</div>
 <p>The annotation of spectra is obtained by simulating fragmentation of a
 peptide and matching observed peaks to fragments:</p>
 <div class="sourceCode" id="cb188"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb188-1"><a href="identification-data.html#cb188-1" aria-hidden="true" tabindex="-1"></a>sp[i]<span class="sc">$</span>sequence</span></code></pre></div>
@@ -1170,7 +1179,7 @@ further processed and analyses using appropriate statistical tests.</p>
 <a href="sec-quant.html"><button class="btn btn-default">Next</button></a>
 </p>
 <p class="build-date">Page built: 
-2021-03-15
+2021-03-17
 </p>
 </div>
 </div>

@@ -7,6 +7,10 @@ fig:unnamed-chunk-8
 fig:unnamed-chunk-9
 fig:unnamed-chunk-27
 fig:answid1
+fig:sc
+fig:itraq
+fig:lf
+fig:silab
 fig:sefig
 fig:featuresplot
 fig:cptac
@@ -59,6 +63,11 @@ setting-filters
 filter-optimisation
 export-msnid-data
 sec:quant
+quantitation-methodologies
+label-free-ms2-spectral-counting
+labelled-ms2-isobaric-tagging
+label-free-ms1-extracted-ion-chromatograms
+labelled-ms1-silac
 sec:qf
 the-qfeatures-class
 feature-aggregation
