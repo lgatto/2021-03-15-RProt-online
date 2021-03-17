@@ -777,7 +777,8 @@ assays within a `QFeatures` object.
 #### Exercise {-}
 
 Using the `filterFeatures()` function, filter out the reverse and
-contaminant hits.
+contaminant hits, and also retein those that have a posterior error
+probability smaller than 0.05.
 
 <details>
 
@@ -785,7 +786,8 @@ contaminant hits.
 cptac <-
     cptac %>%
     filterFeatures(~ Reverse != "+") %>%
-    filterFeatures(~ Potential.contaminant != "+")
+    filterFeatures(~ Potential.contaminant != "+") %>%
+    filterFeatures(~ PEP < 0.05)
 ```
 
 </details>

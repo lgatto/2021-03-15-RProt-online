@@ -67,7 +67,7 @@ the [*bioc-ms-prot*](https://lgatto.github.io/bioc-ms-prot/lab.html)
 and
 [*CSAMA*](https://lgatto.github.io/bioc-ms-prot/csama2019-lab.html)
 labs. See also [a previous
-interation]([https://github.com/lgatto/2020-02-17-RProt-Berlin]) of
+interation](https://github.com/lgatto/2020-02-17-RProt-Berlin) of
 this course.
 
 

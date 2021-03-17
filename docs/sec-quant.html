@@ -1015,11 +1015,13 @@ assays within a <code>QFeatures</code> object.</p>
 <div id="exercise-19" class="section level4 unnumbered">
 <h4>Exercise</h4>
 <p>Using the <code>filterFeatures()</code> function, filter out the reverse and
-contaminant hits.</p>
+contaminant hits, and also retein those that have a posterior error
+probability smaller than 0.05.</p>
 <details><div class="sourceCode" id="cb338"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb338-1" title="1">cptac &lt;-</a>
 <a class="sourceLine" id="cb338-2" title="2"><span class="st">    </span>cptac <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb338-3" title="3"><span class="st">    </span><span class="kw">filterFeatures</span>(<span class="op">~</span><span class="st"> </span>Reverse <span class="op">!=</span><span class="st"> "+"</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb338-4" title="4"><span class="st">    </span><span class="kw">filterFeatures</span>(<span class="op">~</span><span class="st"> </span>Potential.contaminant <span class="op">!=</span><span class="st"> "+"</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb338-4" title="4"><span class="st">    </span><span class="kw">filterFeatures</span>(<span class="op">~</span><span class="st"> </span>Potential.contaminant <span class="op">!=</span><span class="st"> "+"</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb338-5" title="5"><span class="st">    </span><span class="kw">filterFeatures</span>(<span class="op">~</span><span class="st"> </span>PEP <span class="op">&lt;</span><span class="st"> </span><span class="fl">0.05</span>)</a></code></pre></div>
 </details>
 </div>
 </div>
@@ -1080,9 +1082,9 @@ less, while very few proteins are accounted for by tens of peptides.</p>
 <div class="sourceCode" id="cb343"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb343-1" title="1"><span class="kw">table</span>(<span class="kw">rowData</span>(cptac[[<span class="st">"proteins_med"</span>]])<span class="op">$</span>.n)</a></code></pre></div>
 <pre><code>## 
 ##   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20 
-## 328 234 162 138  85  72  66  49  46  34  25  28  21  12  17   9   5   4  13   5 
-##  21  22  23  24  25  26  28  29  30  31  32  35  38  39  42  43  51  52  62 
-##   7   6   4   4   3   3   1   3   1   1   3   1   2   1   1   1   1   1   1</code></pre>
+## 327 234 167 132  84  73  62  49  49  29  29  24  20  13  15  12   4   6  11   5 
+##  21  22  23  24  25  26  28  29  30  31  32  34  37  38  39  42  51  52  62 
+##   7   4   7   2   2   3   1   3   1   2   2   1   1   1   1   2   1   1   1</code></pre>
 </div>
 </div>
 <div id="principal-component-analysis" class="section level3">
@@ -1202,7 +1204,7 @@ apply the empirical Bayes moderation.</p>
 <div class="sourceCode" id="cb349"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb349-1" title="1"><span class="kw">library</span>(<span class="st">"limma"</span>)</a>
 <a class="sourceLine" id="cb349-2" title="2">design &lt;-<span class="st"> </span><span class="kw">model.matrix</span>(<span class="op">~</span><span class="st"> </span>prots<span class="op">$</span>condition)</a>
 <a class="sourceLine" id="cb349-3" title="3">fit &lt;-<span class="st"> </span><span class="kw">lmFit</span>(<span class="kw">assay</span>(prots), design)</a></code></pre></div>
-<pre><code>## Warning: Partial NA coefficients for 23 probe(s)</code></pre>
+<pre><code>## Warning: Partial NA coefficients for 25 probe(s)</code></pre>
 <div class="sourceCode" id="cb351"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb351-1" title="1">fit &lt;-<span class="st"> </span><span class="kw">eBayes</span>(fit)</a></code></pre></div>
 <p>Finally, the <code>topTable()</code> function is used the extract the results for
 the coefficient of interest.</p>
@@ -1217,40 +1219,40 @@ the coefficient of interest.</p>
 <a class="sourceLine" id="cb353-3" title="3"><span class="st">    </span><span class="kw">pull</span>(protein)</a>
 <a class="sourceLine" id="cb353-4" title="4"><span class="kw">assay</span>(prots[na_coefs, ])</a></code></pre></div>
 <pre><code>##                                6A_7      6A_8       6A_9       6B_7       6B_8
-## P00167ups|CYB5_HUMAN_UPS        NaN       NaN        NaN -0.7642817 -2.0050174
-## P01112ups|RASH_HUMAN_UPS        NaN       NaN        NaN -1.5367155        NaN
-## P05413ups|FABPH_HUMAN_UPS       NaN       NaN        NaN -3.3221739        NaN
-## P08758ups|ANXA5_HUMAN_UPS       NaN       NaN        NaN -2.7776131 -1.9904771
-## sp|P06704|CDC31_YEAST           NaN       NaN        NaN -1.1834305 -2.1019557
-## sp|P32608|RTG2_YEAST            NaN       NaN        NaN        NaN -4.4191375
-## sp|P32769|HBS1_YEAST            NaN -1.359851 -0.7138411        NaN        NaN
-## sp|P34217|PIN4_YEAST            NaN       NaN        NaN -0.8180873 -0.1083583
-## sp|P34237|CASP_YEAST            NaN       NaN        NaN -1.5447431 -1.6367477
-## sp|P38166|SFT2_YEAST      -1.564052 -1.052527        NaN        NaN        NaN
-## sp|P40056|GET2_YEAST            NaN -1.067516 -1.3866843        NaN        NaN
-## sp|P40533|TED1_YEAST            NaN       NaN        NaN -2.0294135        NaN
-## sp|P46965|SPC1_YEAST            NaN -3.404591 -3.6174615        NaN        NaN
-## sp|P48363|PFD3_YEAST            NaN       NaN        NaN -0.1707164        NaN
-## sp|P53044|UFD1_YEAST            NaN       NaN        NaN -2.3740155 -1.4905932
-## sp|P53091|MCM6_YEAST            NaN -1.229600 -1.6762933        NaN        NaN
+## P00167ups|CYB5_HUMAN_UPS        NaN       NaN        NaN -0.7840558 -2.0282987
+## P01112ups|RASH_HUMAN_UPS        NaN       NaN        NaN -1.5564896        NaN
+## P05413ups|FABPH_HUMAN_UPS       NaN       NaN        NaN -3.3419480        NaN
+## P08758ups|ANXA5_HUMAN_UPS       NaN       NaN        NaN -2.7973872 -2.0137585
+## sp|P06704|CDC31_YEAST           NaN       NaN        NaN -1.2032046 -2.1252371
+## sp|P25574|EMC1_YEAST      -1.506177 -1.983737 -0.7795009        NaN        NaN
+## sp|P32608|RTG2_YEAST            NaN       NaN        NaN        NaN -4.4424189
+## sp|P32769|HBS1_YEAST            NaN -1.384031 -0.7285780        NaN        NaN
+## sp|P34217|PIN4_YEAST            NaN       NaN        NaN -0.8378614 -0.1316397
+## sp|P34237|CASP_YEAST            NaN       NaN        NaN -1.5645172 -1.6600291
+## sp|P38166|SFT2_YEAST      -1.585685 -1.076707        NaN        NaN        NaN
+## sp|P40056|GET2_YEAST            NaN -1.091696 -1.4014211        NaN        NaN
+## sp|P40533|TED1_YEAST            NaN       NaN        NaN -2.0491876        NaN
+## sp|P43582|WWM1_YEAST            NaN       NaN        NaN -0.5538711 -0.7360990
+## sp|P46965|SPC1_YEAST            NaN -3.428771 -3.6321984        NaN        NaN
+## sp|P48363|PFD3_YEAST            NaN       NaN        NaN -0.1904905        NaN
 ##                                 6B_9
-## P00167ups|CYB5_HUMAN_UPS  -1.1067954
-## P01112ups|RASH_HUMAN_UPS  -1.5455337
-## P05413ups|FABPH_HUMAN_UPS -3.8744226
-## P08758ups|ANXA5_HUMAN_UPS -2.0731897
-## sp|P06704|CDC31_YEAST     -1.5681249
-## sp|P32608|RTG2_YEAST      -2.7710331
+## P00167ups|CYB5_HUMAN_UPS  -1.1230809
+## P01112ups|RASH_HUMAN_UPS  -1.5618192
+## P05413ups|FABPH_HUMAN_UPS -3.8907081
+## P08758ups|ANXA5_HUMAN_UPS -2.0894752
+## sp|P06704|CDC31_YEAST     -1.5844104
+## sp|P25574|EMC1_YEAST             NaN
+## sp|P32608|RTG2_YEAST      -2.7873186
 ## sp|P32769|HBS1_YEAST             NaN
-## sp|P34217|PIN4_YEAST      -0.1826536
-## sp|P34237|CASP_YEAST      -1.6714608
+## sp|P34217|PIN4_YEAST      -0.1989392
+## sp|P34237|CASP_YEAST      -1.6877463
 ## sp|P38166|SFT2_YEAST             NaN
 ## sp|P40056|GET2_YEAST             NaN
-## sp|P40533|TED1_YEAST      -1.7311957
+## sp|P40533|TED1_YEAST      -1.7474812
+## sp|P43582|WWM1_YEAST      -0.7207043
 ## sp|P46965|SPC1_YEAST             NaN
-## sp|P48363|PFD3_YEAST      -0.4924892
-## sp|P53044|UFD1_YEAST             NaN
-## sp|P53091|MCM6_YEAST             NaN
-##  [ reached getOption("max.print") -- omitted 7 rows ]</code></pre>
+## sp|P48363|PFD3_YEAST      -0.5087747
+##  [ reached getOption("max.print") -- omitted 9 rows ]</code></pre>
 <p>We can now visualise the results using a volcano plot:</p>
 <div class="sourceCode" id="cb355"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb355-1" title="1">res <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb355-2" title="2"><span class="st">    </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> logFC, <span class="dt">y =</span> <span class="op">-</span><span class="kw">log10</span>(adj.P.Val))) <span class="op">+</span></a>
@@ -1258,7 +1260,7 @@ the coefficient of interest.</p>
 <a class="sourceLine" id="cb355-4" title="4"><span class="st">    </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)) <span class="op">+</span></a>
 <a class="sourceLine" id="cb355-5" title="5"><span class="st">    </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="op">-</span><span class="kw">log10</span>(<span class="fl">0.05</span>)) <span class="op">+</span></a>
 <a class="sourceLine" id="cb355-6" title="6"><span class="st">    </span><span class="kw">scale_color_manual</span>(<span class="dt">values =</span> <span class="kw">c</span>(<span class="st">"black"</span>,<span class="st">"red"</span>))</a></code></pre></div>
-<pre><code>## Warning: Removed 23 rows containing missing values (geom_point).</code></pre>
+<pre><code>## Warning: Removed 25 rows containing missing values (geom_point).</code></pre>
 <div class="figure">
 <span id="fig:vp"></span>
 <p class="caption marginnote shownote">
@@ -1273,7 +1275,7 @@ other 36 expected spike-in proteins.</p>
 <ul>
 <li>True positives: 1</li>
 <li>False positives: 0</li>
-<li>True negatives: 1342</li>
+<li>True negatives: 1330</li>
 <li>False negatives: 32</li>
 </ul>
 </div>
